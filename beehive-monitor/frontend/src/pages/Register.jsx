@@ -295,6 +295,7 @@ export default function Register() {
                     <div className="genesis-actions">
                       <Link className="btn btn-primary" to={`/verify/${genesis.hash}?s=${genesis.scan_secret}`}>Verify genesis</Link>
                       <Link className="btn btn-outline" to="/ledger">Open ledger</Link>
+                      <Link className="btn btn-outline" to={`/twin?id=${genesis.hash}`}>Track my twin →</Link>
                     </div>
                     <div className="scan-hint" style={{ marginTop: 8 }}>scan_secret: <code>{genesis.scan_secret}</code> • QR = {window.location.origin}/verify/{genesis.hash.slice(0, 10)}…?s=…</div>
                   </div>

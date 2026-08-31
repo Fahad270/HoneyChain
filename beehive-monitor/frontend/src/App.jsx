@@ -6,6 +6,7 @@ import Learn from "./pages/Learn.jsx";
 import DiseaseDetection from "./pages/DiseaseDetection.jsx";
 import Ledger from "./pages/Ledger.jsx";
 import Verify from "./pages/Verify.jsx";
+import FarmerTwin from "./pages/FarmerTwin.jsx";
 
 export default function App() {
   return (
@@ -19,6 +20,8 @@ export default function App() {
         <Route path="/ledger" element={<Ledger />} />
         <Route path="/verify/:hash" element={<Verify />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="/twin" element={<FarmerTwin />} />
+        <Route path="/track" element={<FarmerTwin />} />
       </Routes>
     </div>
   );

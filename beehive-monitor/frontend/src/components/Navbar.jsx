@@ -6,6 +6,7 @@ const links = [
   { to: "/", label: "Register", end: true },
   { to: "/dashboard", label: "Hive Dashboard" },
   { to: "/ledger", label: "Ledger" },
+  { to: "/twin", label: "My Twin" },
   { to: "/learn", label: "Learn" },
   { to: "/diagnose", label: "Disease & Yield" },
 ];

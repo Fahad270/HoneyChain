@@ -1,0 +1,69 @@
+.twin-page h1 { font-size: 28px; }
+.twin-head { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.twin-role-hint { display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+.role-pill { padding:6px 12px; border-radius:999px; font-size:11px; font-weight:800; border:1px solid var(--color-border); }
+.role-pill.beekeeper { background: var(--color-success-bg); color: var(--color-success); }
+.role-pill.kvic { background: var(--color-primary-light); color: var(--color-primary); }
+.small-muted { font-size:11px; color: var(--color-text-muted); }
+
+.twin-controls { margin-bottom:16px; }
+.twin-inputs { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end; }
+.twin-inputs .field { min-width: 240px; }
+.twin-examples { margin-top:10px; font-size:11px; color:var(--color-text-muted); background:var(--color-bg); padding:8px 10px; border-radius:8px; border:1px dashed var(--color-border); }
+
+.twin-summary { margin-bottom:16px; }
+.twin-summary-top { display:grid; grid-template-columns: 90px 1fr 140px; gap:16px; align-items:center; }
+@media(max-width:720px){ .twin-summary-top{ grid-template-columns: 1fr; } }
+.twin-jar { position:relative; width:90px; height:90px; display:flex; align-items:center; justify-content:center; background: var(--color-warning-bg); border:1px solid #F0D9A6; border-radius:16px; }
+.jar-icon { font-size:42px; }
+.jar-glow { position:absolute; bottom:8px; width:44px; height:10px; background: rgba(227,162,61,0.3); border-radius:50%; filter: blur(6px); }
+.twin-meta { }
+.twin-name { font-family:var(--font-heading); font-weight:800; color:var(--color-primary-dark); font-size:16px; }
+.twin-sub { font-size:11px; color:var(--color-text-muted); margin-top:4px; }
+.twin-current { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; font-size:12px; }
+.current-loc { color:var(--color-text-muted); }
+.progress-bar { margin-top:10px; height:8px; background:var(--color-bg); border:1px solid var(--color-border); border-radius:999px; overflow:hidden; }
+.progress-fill { height:100%; background: linear-gradient(90deg, var(--color-success), var(--color-accent)); transition: width 0.4s ease; }
+.progress-label { margin-top:6px; font-size:11px; color:var(--color-text-muted); }
+.twin-qr { text-align:center; }
+.twin-qr .qr-box { background:#fff; border:1px solid var(--color-border); border-radius:12px; padding:8px; display:inline-block; }
+
+.pipeline { margin-bottom:16px; }
+.pipeline-steps { display:flex; gap:8px; overflow-x:auto; padding:8px 0; }
+.pipe-step { flex:1; min-width:86px; text-align:center; padding:10px 6px; border-radius:12px; border:1px solid transparent; background:var(--color-surface-2); }
+.pipe-step.completed { background: var(--color-success-bg); border-color:#C5E6D2; }
+.pipe-step.current { background: linear-gradient(0deg, #FFF7E6, #FFFFFF); border-color: var(--color-accent); box-shadow: 0 4px 16px rgba(227,162,61,0.15); }
+.pipe-step.pending { opacity:0.6; }
+.pipe-icon { font-size:18px; }
+.pipe-label { font-size:10px; font-weight:800; margin-top:4px; color:var(--color-primary-dark); line-height:1.2; }
+.pipe-dot { width:10px; height:10px; border-radius:50%; margin:8px auto 0; border:2px solid var(--color-border); }
+.pipe-dot.completed { background:var(--color-success); border-color:var(--color-success); }
+.pipe-dot.current { background:var(--color-accent); border-color:var(--color-accent); animation: pulse 1.6s infinite; }
+.pipe-dot.pending { background:#E1DFD3; }
+@keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(227,162,61,0.4)} 70%{box-shadow:0 0 0 8px rgba(227,162,61,0)} 100%{box-shadow:0 0 0 0 rgba(227,162,61,0)} }
+.pipe-state { font-size:10px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:var(--color-text-muted); margin-top:4px; }
+.pipeline-legend { display:flex; gap:14px; flex-wrap:wrap; align-items:center; font-size:11px; color:var(--color-text-muted); margin-top:10px; border-top:1px dashed var(--color-border); padding-top:10px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.legend-dot.completed{ background:var(--color-success); } .legend-dot.current{ background:var(--color-accent); } .legend-dot.pending{ background:#E1DFD3; border:1px solid var(--color-border); }
+
+.twin-layout { display:grid; grid-template-columns: 1.6fr 0.9fr; gap:16px; align-items:start; }
+@media(max-width:1040px){ .twin-layout{ grid-template-columns:1fr; } }
+.twin-timeline { display:flex; flex-direction:column; gap:14px; }
+.twin-card { position:relative; }
+.twin-card.current { border-color: var(--color-accent); box-shadow: 0 6px 20px rgba(227,162,61,0.15); }
+.twin-card.frozen { border-color: var(--color-danger); background: linear-gradient(0deg, var(--color-danger-bg), var(--color-surface)); }
+.twin-card-head { display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; }
+.twin-card-icon { width:36px; height:36px; border-radius:10px; background:var(--color-primary-light); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.twin-card-stage { font-weight:800; font-family:var(--font-heading); color:var(--color-primary-dark); font-size:14px; }
+.twin-card-sub { font-size:11px; color:var(--color-text-muted); }
+.twin-card-pill { margin-left:auto; background:var(--color-surface-2); border:1px solid var(--color-border); padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+.twin-card-pill.current{ background:var(--color-accent); color:var(--color-primary-dark); border-color:var(--color-accent); }
+.twin-pooled { margin:8px 0; font-size:11px; background:var(--color-warning-bg); color:var(--color-warning); padding:6px 10px; border-radius:8px; }
+
+.twin-card-actions { display:flex; gap:8px; margin-top:10px; }
+
+.twin-side { position:sticky; top:16px; }
+.hive-twin { margin:10px 0; }
+.hive-twin-row { display:flex; justify-content:space-between; padding:8px 10px; background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:8px; margin-bottom:8px; font-size:12px; }
+.twin-help h4{ font-size:13px; margin:12px 0 6px; }
+.twin-help ul{ margin:0 0 12px 16px; font-size:12px; color:var(--color-text-muted); line-height:1.6; }

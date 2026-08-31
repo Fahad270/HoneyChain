@@ -7,6 +7,11 @@ router.get("/roles", (req, res) => {
   res.json({ success: true, data: getRoleMap() });
 });
 
+// farmer digital twin — where is my honey?
+const { getTwin } = require("../controllers/blockchainController");
+router.get("/twin/:id", getTwin);
+router.get("/twin", getTwin); // also supports ?hash= or ?id=
+
 // create linear or pooled block — pooled when body.prev_hashes array present (stage must be 'pooled')
 router.post("/block", createBlock);
 

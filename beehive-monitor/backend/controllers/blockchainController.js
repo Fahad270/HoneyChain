@@ -254,6 +254,134 @@ async function mintGenesisForBeekeeper(beekeeperDoc) {
   return block;
 }
 
+// Digital twin: farmer tracks where his honey is in the chain
+// Given a beekeeperId (ObjectId) or a specific block hash, BFS forward via children map
+// to find every descendant (including pooled shared lots). Returns journey sorted.
+async function getTwin(req, res) {
+  try {
+    const rawId = (req.params.id || req.query.id || req.query.hash || "").trim();
+    if (!rawId) return res.status(400).json({ success: false, error: "provide beekeeper id or hash in :id or ?hash=" });
+
+    const all = await LedgerBlock.find({}).sort({ createdAt: 1 }).lean();
+    if (!all.length) return res.status(404).json({ success: false, error: "ledger empty" });
+
+    const byHash = new Map(all.map((b) => [b.hash, b]));
+    // children map: parent hash -> [child block]
+    const childrenMap = new Map();
+    for (const b of all) {
+      const parents = b.prev_hashes && b.prev_hashes.length ? b.prev_hashes : b.prev_hash ? [b.prev_hash] : [];
+      for (const p of parents) {
+        if (!childrenMap.has(p)) childrenMap.set(p, []);
+        childrenMap.get(p).push(b);
+      }
+    }
+
+    let startHashes = [];
+    let beekeeperDoc = null;
+
+    // try as beekeeper ObjectId
+    const isObjectId = /^[a-f0-9]{24}$/i.test(rawId);
+    const isHash = /^[a-f0-9]{64}$/i.test(rawId);
+
+    if (isObjectId) {
+      beekeeperDoc = await Beekeeper.findById(rawId).lean();
+      // collect every block belonging to this beekeeper (beekeeper ref or data.beekeeperId)
+      startHashes = all
+        .filter((b) => String(b.beekeeper || "") === rawId || String(b.data?.beekeeperId || "") === rawId)
+        .map((b) => b.hash);
+      if (!startHashes.length && beekeeperDoc) {
+        // beekeeper exists but no blocks yet - return genesis hint
+        return res.json({
+          success: true,
+          data: {
+            beekeeper: beekeeperDoc,
+            startHashes: [],
+            journey: [],
+            current: null,
+            progress: buildProgress([]),
+            message: "No honey blocks yet for this beekeeper. Register extraction at Ledger as Beekeeper.",
+          },
+        });
+      }
+    }
+
+    // if not found as beekeeper, try as hash (or also if isHash)
+    if (!startHashes.length) {
+      if (byHash.has(rawId)) {
+        startHashes = [rawId];
+        const block = byHash.get(rawId);
+        if (block.beekeeper) beekeeperDoc = await Beekeeper.findById(block.beekeeper).lean();
+        else if (block.data?.beekeeperId && /^[a-f0-9]{24}$/i.test(block.data.beekeeperId)) {
+          beekeeperDoc = await Beekeeper.findById(block.data.beekeeperId).lean();
+        }
+      }
+    }
+
+    if (!startHashes.length) {
+      return res.status(404).json({ success: false, error: "no blocks found for id/hash: " + rawId });
+    }
+
+    // BFS forward from startHashes
+    const visited = new Set(startHashes);
+    const queue = [...startHashes];
+    while (queue.length) {
+      const h = queue.shift();
+      const kids = childrenMap.get(h) || [];
+      for (const kid of kids) {
+        if (!visited.has(kid.hash)) {
+          visited.add(kid.hash);
+          queue.push(kid.hash);
+        }
+      }
+    }
+
+    const journey = all.filter((b) => visited.has(b.hash)).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    const enriched = journey.map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
+    const current = enriched.length ? enriched[enriched.length - 1] : null;
+    const progress = buildProgress(enriched);
+
+    // aggregate honey stats from data
+    const totalWeight = enriched.reduce((sum, b) => sum + (Number(b.data?.weight_kg) || Number(b.data?.weight) || 0), 0);
+    const hives = [...new Set(enriched.map((b) => b.data?.hive_id).filter(Boolean))];
+
+    res.json({
+      success: true,
+      data: {
+        beekeeper: beekeeperDoc,
+        query: rawId,
+        startHashes,
+        journey: enriched,
+        current,
+        progress,
+        stats: { totalBlocks: enriched.length, totalWeight, hives, isFrozen: !!current?.is_frozen },
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+function buildProgress(journey) {
+  const order = ["beekeeper_registration", "honey_extraction", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+  const has = new Set(journey.map((b) => b.stage));
+  const currentStage = journey.length ? journey[journey.length - 1].stage : null;
+  const steps = order.map((stage) => {
+    const meta = stageMeta(stage);
+    let state = "pending";
+    if (has.has(stage)) state = "completed";
+    if (stage === currentStage) state = "current";
+    // pooled and collection share step 3
+    if ((stage === "collection" || stage === "pooled") && (has.has("collection") || has.has("pooled")) && stage !== currentStage) {
+      // both count as same step, mark whichever exists as completed if not current
+      if (has.has(stage)) state = has.has(stage) && stage === currentStage ? "current" : "completed";
+    }
+    return { stage, ...meta, state, has: has.has(stage) };
+  });
+  const completed = steps.filter((s) => s.state === "completed" || s.state === "current").length;
+  const percent = Math.round((completed / steps.length) * 100);
+  return { steps, currentStage, percent, completed, total: steps.length };
+}
+
 // who gets what — from workflow image supporting institutions
 function getRoleMap() {
   return {
@@ -278,4 +406,4 @@ function getRoleMap() {
   };
 }
 
-module.exports = { createBlock, getChain, verifyBlock, getBlock, mintGenesisForBeekeeper, stageMeta, STAGE_META, verifyChain, getRoleMap, STAGE_ROLES, ROLE_LABEL };
+module.exports = { createBlock, getChain, verifyBlock, getBlock, mintGenesisForBeekeeper, stageMeta, STAGE_META, verifyChain, getRoleMap, STAGE_ROLES, ROLE_LABEL, getTwin, buildProgress };
