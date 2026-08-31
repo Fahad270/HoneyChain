@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link, useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
 import "./Verify.css";
@@ -11,6 +11,7 @@ function short(h) {
 export default function Verify() {
   const { hash } = useParams();
   const [search] = useSearchParams();
+  const navigate = useNavigate();
   const token = search.get("s");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,9 +54,19 @@ export default function Verify() {
             <span>Paste hash from QR</span>
             <input value={inputHash} onChange={(e) => setInputHash(e.target.value)} placeholder="hash …" />
           </label>
-          <Link className="btn btn-primary" to={`/verify/${inputHash.trim()}${token ? `?s=${token}` : ""}`} onClick={() => inputHash.trim() && fetchVerify(inputHash.trim(), token)}>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              const h = inputHash.trim();
+              if (!h) return;
+              const target = token ? `/verify/${h}?s=${encodeURIComponent(token)}` : `/verify/${h}`;
+              navigate(target);
+              fetchVerify(h, token);
+            }}
+            disabled={!inputHash.trim()}
+          >
             Verify
-          </Link>
+          </button>
         </div>
         {hash && (
           <div className="verify-meta">
@@ -107,7 +118,7 @@ export default function Verify() {
                   <div className="payload-label">Pooled from {block.prev_hashes.length} farmer blocks</div>
                   <div className="parent-list">
                     {data.pooledParents?.map((p) => (
-                      <Link key={p.hash} to={`/verify/${p.hash}?s=${p.scan_secret}`} className="parent-chip">
+                      <Link key={p.hash} to={`/verify/${p.hash}`} className="parent-chip">
                         {p.stage} • {short(p.hash)} • {p.data?.hive_id || p.data?.name || "-"}
                       </Link>
                     ))}
@@ -128,7 +139,7 @@ export default function Verify() {
 
               <div className="verify-qr">
                 <div className="qr-box">
-                  <QRCodeSVG value={`${window.location.origin}/verify/${block.hash}?s=${block.scan_secret}`} size={130} />
+                  <QRCodeSVG value={`${window.location.origin}/verify/${block.hash}${block.scan_secret ? `?s=${block.scan_secret}` : token ? `?s=${token}` : ""}`} size={130} />
                 </div>
                 <div className="qr-caption">Present this QR at next hop to append</div>
               </div>
@@ -141,7 +152,7 @@ export default function Verify() {
                 {chain.map((c, i) => {
                   if (c.missing) return <div key={c.hash} className="v-item missing">⚠️ Missing {short(c.hash)}</div>;
                   return (
-                    <Link key={c.hash} to={`/verify/${c.hash}?s=${c.scan_secret}`} className={`v-item ${c.hash === block.hash ? "active" : ""} ${c.is_frozen ? "frozen" : ""}`}>
+                    <Link key={c.hash} to={`/verify/${c.hash}`} className={`v-item ${c.hash === block.hash ? "active" : ""} ${c.is_frozen ? "frozen" : ""}`}>
                       <div className="v-dot">{c.stage_meta?.icon || i + 1}</div>
                       <div className="v-body">
                         <div className="v-label">{c.stage_meta?.label || c.stage}</div>

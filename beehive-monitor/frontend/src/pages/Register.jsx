@@ -67,7 +67,9 @@ export default function Register() {
           ? "individual"
           : CATEGORIES[category].toLowerCase(),
       });
-      setGenesis(res.data.genesis || null);
+      const payload = res.data.data;
+      const genesisBlock = payload?.genesis || res.data.genesis || null;
+      setGenesis(genesisBlock);
       setStatus("success");
     } catch (err) {
       setStatus("error");

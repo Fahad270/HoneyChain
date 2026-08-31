@@ -11,7 +11,7 @@ async function registerBeekeeper(req, res) {
       // genesis mint is best-effort — don't fail registration if chain is unreachable
       console.warn("[beekeeper] genesis mint failed:", e.message);
     }
-    res.status(201).json({ success: true, data: beekeeper, genesis });
+    res.status(201).json({ success: true, data: { beekeeper, genesis } });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }

@@ -1,6 +1,6 @@
 const LedgerBlock = require("../models/LedgerBlock");
 const Beekeeper = require("../models/Beekeeper");
-const { blockHash, pooledHash, randomSecret } = require("../utils/hash");
+const { sha256, blockHash, pooledHash, randomSecret } = require("../utils/hash");
 const { getRole, canCreateStage, STAGE_ROLES, ROLE_LABEL } = require("../middleware/auth");
 
 // Stage display meta for UI — matches diagram 1→9
@@ -21,13 +21,15 @@ function stageMeta(stage) {
   return STAGE_META[stage] || { label: stage, step: 0, desc: "", icon: "⬡" };
 }
 
-// walk chain backwards from target hash, detect broken link / cycle / freeze violation
-async function verifyChain(targetHash) {
-  const all = await LedgerBlock.find({}).sort({ createdAt: 1 }).lean();
-  if (!all.length) return { found: false, valid: false, reason: "ledger empty", chain: [] };
-
-  const byHash = new Map(all.map((b) => [b.hash, b]));
-  if (!byHash.has(targetHash)) return { found: false, valid: false, reason: "hash not found", chain: [] };
+// walk chain backwards from target hash using indexed lookups only (no full collection scan)
+// detects broken link / cycle / freeze violation, bounded by maxDepth to avoid runaway
+async function verifyChain(targetHash, maxDepth = 500) {
+  const start = await LedgerBlock.findOne({ hash: targetHash }).lean();
+  if (!start) {
+    const any = await LedgerBlock.countDocuments();
+    if (!any) return { found: false, valid: false, reason: "ledger empty", chain: [] };
+    return { found: false, valid: false, reason: "hash not found", chain: [] };
+  }
 
   const chain = [];
   let h = targetHash;
@@ -35,38 +37,52 @@ async function verifyChain(targetHash) {
   let valid = true;
   let reason = null;
   let frozenBlock = null;
+  let depth = 0;
 
-  while (h) {
+  while (h && depth < maxDepth) {
+    depth++;
     if (visited.has(h)) { valid = false; reason = "cycle detected"; break; }
     visited.add(h);
-    const block = byHash.get(h);
-    if (!block) break;
+    const block = await LedgerBlock.findOne({ hash: h }).lean();
+    if (!block) {
+      valid = false;
+      reason = `missing block ${h.slice(0, 10)}…`;
+      chain.push({ hash: h, missing: true, stage: "missing" });
+      break;
+    }
     chain.push(block);
     if (block.is_frozen) frozenBlock = block.hash;
 
-    // handle pooled convergence — all parents must exist
     const parents = block.prev_hashes && block.prev_hashes.length ? block.prev_hashes : block.prev_hash ? [block.prev_hash] : [];
     if (parents.length === 0) break; // genesis
     if (parents.length === 1) {
       const p = parents[0];
-      if (!byHash.has(p)) { valid = false; reason = `missing parent ${p.slice(0, 10)}…`; chain.push({ hash: p, missing: true, stage: "missing" }); break; }
-      // if parent was frozen, no child should exist — freeze violation
-      const parentBlock = byHash.get(p);
-      if (parentBlock && parentBlock.is_frozen) { valid = false; reason = `child of frozen block ${p.slice(0, 10)}… — chain should be frozen at retail`; /* still continue to show chain */ }
+      const parentBlock = await LedgerBlock.findOne({ hash: p }).lean();
+      if (!parentBlock) { valid = false; reason = `missing parent ${p.slice(0, 10)}…`; chain.push({ hash: p, missing: true, stage: "missing" }); break; }
+      if (parentBlock.is_frozen) { valid = false; reason = `child of frozen block ${p.slice(0, 10)}… — chain should be frozen at retail`; }
       h = p;
     } else {
-      // pooled — walk first parent for linear display; validate all parents exist
+      const found = await LedgerBlock.find({ hash: { $in: parents } }).lean();
+      const foundSet = new Set(found.map((b) => b.hash));
       for (const p of parents) {
-        if (!byHash.has(p)) { valid = false; reason = `pooled missing parent ${p.slice(0, 10)}…`; }
+        if (!foundSet.has(p)) { valid = false; reason = `pooled missing parent ${p.slice(0, 10)}…`; }
       }
-      // for chain display, walk the first parent; DAG branches shown separately in verify payload
-      h = parents[0];
-      // break after one pooled hop? Continue walking that lineage for linear traceback
-      // Keep loop — will walk ancestry of first parent
+      const first = parents[0];
+      if (!foundSet.has(first)) {
+        chain.push({ hash: first, missing: true, stage: "missing" });
+        break;
+      }
+      h = first;
     }
   }
-
+  if (depth >= maxDepth) { valid = false; reason = `max depth ${maxDepth} exceeded — possible cycle`; }
   return { found: true, valid, reason, frozenBlock, chain: chain.reverse() };
+}
+
+function redactSecret(block) {
+  if (!block || block.missing) return block;
+  const { scan_secret, ...rest } = block;
+  return rest;
 }
 
 // POST /api/ledger/block — linear block (most stages)
@@ -100,29 +116,29 @@ async function createBlock(req, res) {
     let hash, prev_hash = null, prev_hashes = undefined;
 
     if (isPooled) {
-      const hashes = Array.isArray(prevHashesInput) ? prevHashesInput.filter(Boolean) : [];
-      if (hashes.length < 2) return res.status(400).json({ success: false, error: "pooled needs at least 2 prev_hashes to converge" });
+      const raw = Array.isArray(prevHashesInput) ? prevHashesInput.filter(Boolean).map((h) => String(h).trim()).filter(Boolean) : [];
+      const hashes = [...new Set(raw)].sort();
+      if (hashes.length < 2) return res.status(400).json({ success: false, error: "pooled needs at least 2 prev_hashes to converge (after trim/dedup)" });
       // all parents must exist and not be missing
       const found = await LedgerBlock.find({ hash: { $in: hashes } }).lean();
       if (found.length !== hashes.length) return res.status(400).json({ success: false, error: "one or more prev_hashes not found" });
       // no parent may be frozen child? Actually pooled can read from frozen? No — forbid pooling from frozen retail
       const frozenParent = found.find((b) => b.is_frozen);
       if (frozenParent) return res.status(400).json({ success: false, error: `cannot pool from frozen block ${frozenParent.hash.slice(0, 10)}…` });
-      prev_hashes = hashes;
+      prev_hashes = hashes; // stored normalized (trimmed, deduped, sorted)
       hash = pooledHash(hashes, stage, data || {});
     } else {
-      // linear
-      if (prevHashInput) {
-        const parent = await LedgerBlock.findOne({ hash: prevHashInput }).lean();
+      // linear — normalize single prev_hash
+      const normalizedPrev = prevHashInput ? String(prevHashInput).trim() : null;
+      if (normalizedPrev) {
+        const parent = await LedgerBlock.findOne({ hash: normalizedPrev }).lean();
         if (!parent) return res.status(400).json({ success: false, error: "prev_hash not found" });
         if (parent.is_frozen) return res.status(400).json({ success: false, error: "cannot append to a frozen block (retail) — chain is locked" });
-        prev_hash = prevHashInput;
+        prev_hash = normalizedPrev;
       } else {
-        // allow genesis only for beekeeper_registration without prev
+        // only beekeeper_registration may be genesis (no prev)
         if (stage !== "beekeeper_registration") {
-          // first block ever can also be genesis for other stages? Require prev if ledger not empty
-          const count = await LedgerBlock.countDocuments();
-          if (count > 0) return res.status(400).json({ success: false, error: "prev_hash required (not genesis stage)" });
+          return res.status(400).json({ success: false, error: "prev_hash required — only beekeeper_registration can be genesis (no prev_hash)" });
         }
         prev_hash = null;
       }
@@ -184,7 +200,7 @@ async function verifyBlock(req, res) {
 
     const chainRes = await verifyChain(hash);
 
-    // scan_secret guard: if block has secret, require matching token for full verification
+    // scan_secret guard: if block has secret, require matching token
     let tokenValid = true;
     if (block.scan_secret) {
       tokenValid = token === block.scan_secret;
@@ -196,13 +212,18 @@ async function verifyBlock(req, res) {
       pooledParents = await LedgerBlock.find({ hash: { $in: block.prev_hashes } }).lean();
     }
 
+    const blockWithMeta = { ...block, stage_meta: stageMeta(block.stage) };
+    const blockForClient = tokenValid ? blockWithMeta : redactSecret(blockWithMeta);
+    const pooledForClient = pooledParents.map((p) => redactSecret({ ...p, stage_meta: stageMeta(p.stage) }));
+    const chainForClient = chainRes.chain.map((c) => (c.missing ? c : redactSecret({ ...c, stage_meta: stageMeta(c.stage) })));
+
     res.json({
       success: true,
       data: {
-        block: { ...block, stage_meta: stageMeta(block.stage) },
+        block: blockForClient,
         tokenValid,
-        pooledParents: pooledParents.map((p) => ({ ...p, stage_meta: stageMeta(p.stage) })),
-        chain: chainRes.chain.map((c) => c.missing ? c : { ...c, stage_meta: stageMeta(c.stage) }),
+        pooledParents: pooledForClient,
+        chain: chainForClient,
         valid: chainRes.valid,
         reason: chainRes.reason,
         frozenBlock: chainRes.frozenBlock,
@@ -227,11 +248,17 @@ async function getBlock(req, res) {
 // helper after beekeeper registration: auto-mint genesis block — called from beekeeperController
 async function mintGenesisForBeekeeper(beekeeperDoc) {
   const stage = "beekeeper_registration";
+  const rawAadhaar = String(beekeeperDoc.aadhaarNo || "");
+  const aadhaarLast4 = rawAadhaar.slice(-4);
+  const aadhaarMasked = rawAadhaar.length >= 4 ? `XXXX-XXXX-${aadhaarLast4}` : "XXXX";
+  const aadhaarHash = rawAadhaar ? sha256(rawAadhaar) : null;
   const data = {
     beekeeperId: String(beekeeperDoc._id),
     name: beekeeperDoc.name,
     village: beekeeperDoc.village,
-    aadhaarNo: beekeeperDoc.aadhaarNo,
+    aadhaarHash,
+    aadhaarLast4,
+    aadhaarMasked,
     category: beekeeperDoc.category,
     registeredAt: new Date().toISOString(),
   };
