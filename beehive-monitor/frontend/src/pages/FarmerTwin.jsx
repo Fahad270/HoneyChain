@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import "./FarmerTwin.css";
 
-const STAGE_ORDER = ["beekeeper_registration","honey_extraction","collection","pooled","transport","processing","lab_certified","packaging","distribution","retail"];
+const STAGE_ORDER = ["beekeeper_registration","collection","pooled","transport","processing","lab_certified","packaging","distribution","retail"];
 
 function short(h){ return h ? h.slice(0,10)+"…"+h.slice(-6) : ""; }
 
@@ -18,6 +18,10 @@ export default function FarmerTwin(){
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [rtiSubject, setRtiSubject] = useState("");
+  const [rtiQuestion, setRtiQuestion] = useState("");
+  const [rtiSubmitting, setRtiSubmitting] = useState(false);
+  const [rtiResult, setRtiResult] = useState(null);
 
   useEffect(()=>{
     api.get("/beekeepers").then(r=>setBeekeepers(r.data.data||[])).catch(()=>{});
@@ -32,13 +36,34 @@ export default function FarmerTwin(){
   async function track(id){
     const q = (id || selId || hashInput || "").trim();
     if(!q){ setError("Pick a beekeeper or paste a hash"); return; }
-    setLoading(true); setError(null); setData(null);
+    setLoading(true); setError(null); setData(null); setRtiResult(null);
     try{
       const res = await api.get(`/ledger/twin/${encodeURIComponent(q)}`);
       setData(res.data.data);
     }catch(e){
       setError(e?.response?.data?.error || e.message);
     }finally{ setLoading(false); }
+  }
+
+  async function submitRti(e) {
+    e.preventDefault();
+    if (!data?.query) { setError("Track honey first to file RTI"); return; }
+    setRtiSubmitting(true);
+    setRtiResult(null);
+    try {
+      const res = await api.post("/rti", {
+        beekeeperId: data.query,
+        subject: rtiSubject || "Where did my honey go?",
+        question: rtiQuestion,
+      });
+      setRtiResult(res.data.data);
+      setRtiSubject("");
+      setRtiQuestion("");
+    } catch (e) {
+      setError(e?.response?.data?.error || "RTI failed");
+    } finally {
+      setRtiSubmitting(false);
+    }
   }
 
   const progress = data?.progress;
@@ -157,6 +182,46 @@ export default function FarmerTwin(){
               <span className="legend-dot pending" /><span>ahead</span>
               <span>• Pooled = your honey merged at collective (many→one)</span>
             </div>
+          </div>
+
+          {/* RTI — Right to Information */}
+          <div className="card rti-card">
+            <h3 style={{marginBottom:8}}>📋 Right to Information (RTI)</h3>
+            <p className="dashboard-sub" style={{marginBottom:14}}>
+              As a beekeeper, you have the right to know exactly where your honey went. File an RTI request — the system automatically traces your honey through every hop on the ledger.
+            </p>
+
+            {rtiResult && (
+              <div className="card" style={{ borderColor: "var(--color-success)", background: "var(--color-success-bg)", marginBottom: 12 }}>
+                <strong>✅ RTI Filed — Transparency Report</strong>
+                <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.6 }}>
+                  {rtiResult.summary || "Your honey trail has been recorded. All ledger hops are immutable and timestamped."}
+                </div>
+                {rtiResult.request && (
+                  <div style={{ marginTop: 8, fontSize: 12, color: "var(--color-text-muted)" }}>
+                    Request ID: {rtiResult.request._id} • Filed: {new Date(rtiResult.request.createdAt).toLocaleString()}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <form onSubmit={submitRti} className="rti-form">
+              <label className="field">
+                <span>Subject</span>
+                <input value={rtiSubject} onChange={(e) => setRtiSubject(e.target.value)} placeholder="Where did my honey go?" />
+              </label>
+              <label className="field">
+                <span>Your Question</span>
+                <textarea rows={3} value={rtiQuestion} onChange={(e) => setRtiQuestion(e.target.value)} placeholder="I want to know the complete journey of my honey from my hive to the retail store..." required />
+              </label>
+              <div className="form-msg hint">
+                The system will auto-populate your honey trail: collection, lab report, packaging, distribution, and retail details.
+              </div>
+              <button type="submit" className="btn btn-primary" disabled={rtiSubmitting || !data?.query} style={{marginTop:8}}>
+                {rtiSubmitting ? "Filing RTI…" : "File RTI — Trace My Honey"}
+              </button>
+              {!data?.query && <div className="form-msg error" style={{marginTop:6}}>Track your honey first to enable RTI.</div>}
+            </form>
           </div>
 
           {/* Journey timeline */}

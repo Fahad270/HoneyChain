@@ -2,19 +2,20 @@ const LedgerBlock = require("../models/LedgerBlock");
 const Beekeeper = require("../models/Beekeeper");
 const { sha256, blockHash, pooledHash, randomSecret } = require("../utils/hash");
 const { getRole, canCreateStage, STAGE_ROLES, ROLE_LABEL } = require("../middleware/auth");
+const store = require("../store/appStore");
+const { pinJson } = require("../services/pinata");
+const { getRegistryKey, issuePrivateKey, commitPrivateKey, jarSerial } = require("../services/chainKeys");
 
-// Stage display meta for UI — matches diagram 1→9
 const STAGE_META = {
-  beekeeper_registration: { label: "Beekeeper Registration", step: 1, desc: "Bee colony management — colony enrolled, beekeeper QR minted", icon: "🐝" },
-  honey_extraction:       { label: "Honey Extraction", step: 2, desc: "Harvested from frames, filtered for wax & impurities", icon: "🍯" },
-  collection:             { label: "Collection", step: 3, desc: "Raw honey procured by Cooperative / NGO / Trader", icon: "🤝" },
-  pooled:                 { label: "Collective Pool", step: 3, desc: "Many farmer blocks converge — DAG: pooled lot from N prev hashes", icon: "🔗" },
-  transport:              { label: "Transport", step: 4, desc: "Procured honey trucked to Processing Plant — cold chain care", icon: "🚚" },
-  processing:             { label: "Processing & QC", step: 5, desc: "Filtered, clarified, pasteurized — QA tests moisture/purity/FSSAI", icon: "🧪" },
-  lab_certified:          { label: "Lab Certified", step: 5, desc: "NABL lab scans & adds CA number + cert hash", icon: "🔬" },
-  packaging:              { label: "Packaging & Labeling", step: 6, desc: "Food-grade pack + brand, FSSAI licence, nutrition, batch no.", icon: "🏷️" },
-  distribution:           { label: "Distribution", step: 7, desc: "To KVIC outlets, institutions, e-commerce", icon: "📦" },
-  retail:                 { label: "Retail — Khadi India", step: 8, desc: "Frozen at retailer — sale outlet, chain locked", icon: "🏪" },
+  beekeeper_registration: { label: "Beekeeper Registration", step: 1, desc: "Beekeeper enrolled — record pinned (Pinata / Mongo) and appended", icon: "🐝" },
+  collection:             { label: "Collection Phase 1", step: 2, desc: "Collector, quantity, flower type, destination lab / smart van", icon: "🤝" },
+  pooled:                 { label: "Collective Pool", step: 2, desc: "Optional many-farmer collection lot", icon: "🔗" },
+  transport:              { label: "Transport", step: 3, desc: "Truck to processing plant", icon: "🚚" },
+  processing:             { label: "Processing & QC", step: 4, desc: "Filtered / clarified / pasteurized + QA tester scans prev QR", icon: "🧪" },
+  lab_certified:          { label: "Lab Report", step: 4, desc: "KVIC / lab form + moisture/purity — QR appended", icon: "🔬" },
+  packaging:              { label: "Packaging", step: 5, desc: "Khadi village institutions print & stick jar QR (public key)", icon: "🏷️" },
+  distribution:           { label: "Distribution", step: 6, desc: "Which lot went to which Khadi / KVIC store", icon: "📦" },
+  retail:                 { label: "Retail sale", step: 7, desc: "Bill issues one-time private key; chain freezes", icon: "🏪" },
 };
 
 function stageMeta(stage) {
@@ -24,9 +25,9 @@ function stageMeta(stage) {
 // walk chain backwards from target hash using indexed lookups only (no full collection scan)
 // detects broken link / cycle / freeze violation, bounded by maxDepth to avoid runaway
 async function verifyChain(targetHash, maxDepth = 500) {
-  const start = await LedgerBlock.findOne({ hash: targetHash }).lean();
-  if (!start) {
-    const any = await LedgerBlock.countDocuments();
+    const start = await store.findBlockByHash(targetHash);
+    if (!start) {
+      const any = await store.countBlocks();
     if (!any) return { found: false, valid: false, reason: "ledger empty", chain: [] };
     return { found: false, valid: false, reason: "hash not found", chain: [] };
   }
@@ -43,7 +44,7 @@ async function verifyChain(targetHash, maxDepth = 500) {
     depth++;
     if (visited.has(h)) { valid = false; reason = "cycle detected"; break; }
     visited.add(h);
-    const block = await LedgerBlock.findOne({ hash: h }).lean();
+    const block = await store.findBlockByHash(h);
     if (!block) {
       valid = false;
       reason = `missing block ${h.slice(0, 10)}…`;
@@ -57,12 +58,12 @@ async function verifyChain(targetHash, maxDepth = 500) {
     if (parents.length === 0) break; // genesis
     if (parents.length === 1) {
       const p = parents[0];
-      const parentBlock = await LedgerBlock.findOne({ hash: p }).lean();
+      const parentBlock = await store.findBlockByHash(p);
       if (!parentBlock) { valid = false; reason = `missing parent ${p.slice(0, 10)}…`; chain.push({ hash: p, missing: true, stage: "missing" }); break; }
       if (parentBlock.is_frozen) { valid = false; reason = `child of frozen block ${p.slice(0, 10)}… — chain should be frozen at retail`; }
       h = p;
     } else {
-      const found = await LedgerBlock.find({ hash: { $in: parents } }).lean();
+      const found = await store.findBlocks({ hash: { $in: parents } });
       const foundSet = new Set(found.map((b) => b.hash));
       for (const p of parents) {
         if (!foundSet.has(p)) { valid = false; reason = `pooled missing parent ${p.slice(0, 10)}…`; }
@@ -111,32 +112,28 @@ async function createBlock(req, res) {
       });
     }
 
-    // pooled stage must use prev_hashes, others use prev_hash (linear)
-    const isPooled = stage === "pooled";
+    // pooled / collection-many: prev_hashes; others: prev_hash
+    const isPooled = stage === "pooled" || (Array.isArray(prevHashesInput) && prevHashesInput.filter(Boolean).length >= 2);
     let hash, prev_hash = null, prev_hashes = undefined;
 
     if (isPooled) {
       const raw = Array.isArray(prevHashesInput) ? prevHashesInput.filter(Boolean).map((h) => String(h).trim()).filter(Boolean) : [];
       const hashes = [...new Set(raw)].sort();
-      if (hashes.length < 2) return res.status(400).json({ success: false, error: "pooled needs at least 2 prev_hashes to converge (after trim/dedup)" });
-      // all parents must exist and not be missing
-      const found = await LedgerBlock.find({ hash: { $in: hashes } }).lean();
+      if (hashes.length < 2) return res.status(400).json({ success: false, error: "pooled / multi-farmer collection needs at least 2 prev_hashes" });
+      const found = await store.findBlocks({ hash: { $in: hashes } });
       if (found.length !== hashes.length) return res.status(400).json({ success: false, error: "one or more prev_hashes not found" });
-      // no parent may be frozen child? Actually pooled can read from frozen? No — forbid pooling from frozen retail
       const frozenParent = found.find((b) => b.is_frozen);
       if (frozenParent) return res.status(400).json({ success: false, error: `cannot pool from frozen block ${frozenParent.hash.slice(0, 10)}…` });
-      prev_hashes = hashes; // stored normalized (trimmed, deduped, sorted)
+      prev_hashes = hashes;
       hash = pooledHash(hashes, stage, data || {});
     } else {
-      // linear — normalize single prev_hash
       const normalizedPrev = prevHashInput ? String(prevHashInput).trim() : null;
       if (normalizedPrev) {
-        const parent = await LedgerBlock.findOne({ hash: normalizedPrev }).lean();
+        const parent = await store.findBlockByHash(normalizedPrev);
         if (!parent) return res.status(400).json({ success: false, error: "prev_hash not found" });
         if (parent.is_frozen) return res.status(400).json({ success: false, error: "cannot append to a frozen block (retail) — chain is locked" });
         prev_hash = normalizedPrev;
       } else {
-        // only beekeeper_registration may be genesis (no prev)
         if (stage !== "beekeeper_registration") {
           return res.status(400).json({ success: false, error: "prev_hash required — only beekeeper_registration can be genesis (no prev_hash)" });
         }
@@ -145,17 +142,37 @@ async function createBlock(req, res) {
       hash = blockHash(prev_hash, stage, data || {});
     }
 
-    // optional beekeeper ref validation
     let beekeeperRef = null;
     if (beekeeperId) {
-      const bk = await Beekeeper.findById(beekeeperId).lean();
+      const bk = await store.findBeekeeperById(beekeeperId);
       if (bk) beekeeperRef = bk._id;
     }
 
     const scan_secret = randomSecret(8);
-    const is_frozen = stage === "retail"; // freeze at retailer per spec
+    const is_frozen = stage === "retail";
+    let serial = null;
+    if (stage === "packaging") {
+      serial = (data && data.jar_serial) || jarSerial();
+      const existingJar = await store.findJarBySerial(serial);
+      if (existingJar) {
+        return res.status(409).json({ success: false, error: `duplicate jar serial ${serial} — each QR jar must be unique` });
+      }
+      if (data) data.jar_serial = serial;
+      hash = isPooled ? pooledHash(prev_hashes, stage, data || {}) : blockHash(prev_hash, stage, data || {});
+    }
 
-    const block = await LedgerBlock.create({
+    const pin = await pinJson(`ledger-${stage}-${hash.slice(0, 12)}`, {
+      hash,
+      prev_hash,
+      prev_hashes,
+      stage,
+      data: data || {},
+      lab: lab || null,
+      qa: qa || null,
+      registryKey: getRegistryKey(),
+    });
+
+    const block = await store.createBlock({
       hash,
       prev_hash,
       prev_hashes,
@@ -167,10 +184,37 @@ async function createBlock(req, res) {
       is_frozen,
       lab: lab || undefined,
       qa: qa || undefined,
+      ipfsCid: pin.cid,
+      ipfsUrl: pin.url,
+      pinataPinned: pin.pinned,
+      publicKey: hash,
+      jarSerial: serial,
+      registryKey: getRegistryKey(),
     });
 
+    if (stage === "packaging" && serial) {
+      await store.upsertJar({
+        jarSerial: serial,
+        hash,
+        publicKey: hash,
+        ipfsCid: pin.cid,
+        packagingHash: hash,
+      });
+    }
+
     const verify_url = `/verify/${hash}?s=${scan_secret}`;
-    res.status(201).json({ success: true, data: block, meta: { verify_url, stage: stageMeta(stage) } });
+    res.status(201).json({
+      success: true,
+      data: block,
+      meta: {
+        verify_url,
+        stage: stageMeta(stage),
+        pinata: { cid: pin.cid, url: pin.url, pinned: pin.pinned, provider: pin.provider },
+        publicKey: hash,
+        jarSerial: serial,
+        registryKey: getRegistryKey(),
+      },
+    });
   } catch (err) {
     if (err.code === 11000) return res.status(409).json({ success: false, error: "duplicate hash — same prev+stage+data already exists", detail: err.keyValue });
     res.status(500).json({ success: false, error: err.message });
@@ -181,7 +225,7 @@ async function createBlock(req, res) {
 async function getChain(req, res) {
   try {
     const role = getRole(req);
-    const blocks = await LedgerBlock.find({}).sort({ createdAt: 1 }).populate("beekeeper", "name village").lean();
+    const blocks = await store.findBlocks({});
     // enrich with meta + role hint
     const enriched = blocks.map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
     res.json({ success: true, data: enriched, meta: { role, role_label: ROLE_LABEL[role], stage_roles: STAGE_ROLES } });
@@ -195,7 +239,7 @@ async function verifyBlock(req, res) {
   try {
     const { hash } = req.params;
     const token = req.query.s || null;
-    const block = await LedgerBlock.findOne({ hash }).populate("beekeeper").lean();
+    const block = await store.findBlockByHash(hash);
     if (!block) return res.status(404).json({ success: false, error: "hash not found" });
 
     const chainRes = await verifyChain(hash);
@@ -209,9 +253,10 @@ async function verifyBlock(req, res) {
     // also walk parents DAG for pooled display
     let pooledParents = [];
     if (block.prev_hashes && block.prev_hashes.length) {
-      pooledParents = await LedgerBlock.find({ hash: { $in: block.prev_hashes } }).lean();
+      pooledParents = await store.findBlocks({ hash: { $in: block.prev_hashes } });
     }
 
+    const jar = await store.findJarByHash(hash);
     const blockWithMeta = { ...block, stage_meta: stageMeta(block.stage) };
     const blockForClient = tokenValid ? blockWithMeta : redactSecret(blockWithMeta);
     const pooledForClient = pooledParents.map((p) => redactSecret({ ...p, stage_meta: stageMeta(p.stage) }));
@@ -227,6 +272,20 @@ async function verifyBlock(req, res) {
         valid: chainRes.valid,
         reason: chainRes.reason,
         frozenBlock: chainRes.frozenBlock,
+        jar: jar
+          ? {
+              jarSerial: jar.jarSerial,
+              sold: jar.sold,
+              storeName: jar.storeName,
+              billNo: jar.billNo,
+              verifyCount: jar.verifyCount,
+              duplicateFlag: jar.duplicateFlag,
+            }
+          : null,
+        dualKey: {
+          publicKey: block.publicKey || block.hash,
+          needsPrivateKey: !!(jar && jar.sold),
+        },
       },
     });
   } catch (err) {
@@ -237,7 +296,7 @@ async function verifyBlock(req, res) {
 // GET /api/ledger/block/:hash — single block
 async function getBlock(req, res) {
   try {
-    const block = await LedgerBlock.findOne({ hash: req.params.hash }).populate("beekeeper").lean();
+    const block = await store.findBlockByHash(req.params.hash);
     if (!block) return res.status(404).json({ success: false, error: "not found" });
     res.json({ success: true, data: { ...block, stage_meta: stageMeta(block.stage) } });
   } catch (err) {
@@ -265,10 +324,11 @@ async function mintGenesisForBeekeeper(beekeeperDoc) {
   // genesis if no prev — but if ledger already has blocks, link to latest? We keep genesis detached per beekeeper for simplicity
   // For true chain continuity, use latest hash as prev if you want single chain — here we mint as isolated genesis (prev null)
   const hash = blockHash(null, stage, data);
-  const existing = await LedgerBlock.findOne({ hash }).lean();
+  const existing = await store.findBlockByHash(hash);
   if (existing) return existing;
   const scan_secret = randomSecret(8);
-  const block = await LedgerBlock.create({
+  const pin = await pinJson(`genesis-${String(beekeeperDoc._id)}`, data);
+  const block = await store.createBlock({
     hash,
     prev_hash: null,
     stage,
@@ -277,6 +337,11 @@ async function mintGenesisForBeekeeper(beekeeperDoc) {
     collective_name: null,
     scan_secret,
     is_frozen: false,
+    ipfsCid: pin.cid,
+    ipfsUrl: pin.url,
+    pinataPinned: pin.pinned,
+    publicKey: hash,
+    registryKey: getRegistryKey(),
   });
   return block;
 }
@@ -289,7 +354,7 @@ async function getTwin(req, res) {
     const rawId = (req.params.id || req.query.id || req.query.hash || "").trim();
     if (!rawId) return res.status(400).json({ success: false, error: "provide beekeeper id or hash in :id or ?hash=" });
 
-    const all = await LedgerBlock.find({}).sort({ createdAt: 1 }).lean();
+    const all = await store.findBlocks({});
     if (!all.length) return res.status(404).json({ success: false, error: "ledger empty" });
 
     const byHash = new Map(all.map((b) => [b.hash, b]));
@@ -311,10 +376,13 @@ async function getTwin(req, res) {
     const isHash = /^[a-f0-9]{64}$/i.test(rawId);
 
     if (isObjectId) {
-      beekeeperDoc = await Beekeeper.findById(rawId).lean();
+      beekeeperDoc = await store.findBeekeeperById(rawId);
       // collect every block belonging to this beekeeper (beekeeper ref or data.beekeeperId)
       startHashes = all
-        .filter((b) => String(b.beekeeper || "") === rawId || String(b.data?.beekeeperId || "") === rawId)
+        .filter((b) => {
+          const bk = b.beekeeper && typeof b.beekeeper === "object" ? b.beekeeper._id : b.beekeeper;
+          return String(bk || "") === rawId || String(b.data?.beekeeperId || "") === rawId;
+        })
         .map((b) => b.hash);
       if (!startHashes.length && beekeeperDoc) {
         // beekeeper exists but no blocks yet - return genesis hint
@@ -337,9 +405,9 @@ async function getTwin(req, res) {
       if (byHash.has(rawId)) {
         startHashes = [rawId];
         const block = byHash.get(rawId);
-        if (block.beekeeper) beekeeperDoc = await Beekeeper.findById(block.beekeeper).lean();
+        if (block.beekeeper) beekeeperDoc = await store.findBeekeeperById(block.beekeeper);
         else if (block.data?.beekeeperId && /^[a-f0-9]{24}$/i.test(block.data.beekeeperId)) {
-          beekeeperDoc = await Beekeeper.findById(block.data.beekeeperId).lean();
+          beekeeperDoc = await store.findBeekeeperById(block.data.beekeeperId);
         }
       }
     }
@@ -381,6 +449,7 @@ async function getTwin(req, res) {
         current,
         progress,
         stats: { totalBlocks: enriched.length, totalWeight, hives, isFrozen: !!current?.is_frozen },
+        trail: summarizeTrail(enriched, beekeeperDoc),
       },
     });
   } catch (err) {
@@ -389,7 +458,7 @@ async function getTwin(req, res) {
 }
 
 function buildProgress(journey) {
-  const order = ["beekeeper_registration", "honey_extraction", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+  const order = ["beekeeper_registration", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
   const has = new Set(journey.map((b) => b.stage));
   const currentStage = journey.length ? journey[journey.length - 1].stage : null;
   const steps = order.map((stage) => {
@@ -397,9 +466,7 @@ function buildProgress(journey) {
     let state = "pending";
     if (has.has(stage)) state = "completed";
     if (stage === currentStage) state = "current";
-    // pooled and collection share step 3
     if ((stage === "collection" || stage === "pooled") && (has.has("collection") || has.has("pooled")) && stage !== currentStage) {
-      // both count as same step, mark whichever exists as completed if not current
       if (has.has(stage)) state = has.has(stage) && stage === currentStage ? "current" : "completed";
     }
     return { stage, ...meta, state, has: has.has(stage) };
@@ -433,4 +500,233 @@ function getRoleMap() {
   };
 }
 
-module.exports = { createBlock, getChain, verifyBlock, getBlock, mintGenesisForBeekeeper, stageMeta, STAGE_META, verifyChain, getRoleMap, STAGE_ROLES, ROLE_LABEL, getTwin, buildProgress };
+async function issueSale(req, res) {
+  try {
+    const role = getRole(req);
+    if (role !== "kvic") {
+      return res.status(403).json({ success: false, error: "Only KVIC / retail can issue a bill private key" });
+    }
+    const { hash, billNo, storeName } = req.body || {};
+    if (!hash) return res.status(400).json({ success: false, error: "hash (QR public key) required" });
+    const block = await store.findBlockByHash(String(hash).trim());
+    if (!block) return res.status(404).json({ success: false, error: "jar / block not found" });
+
+    let jar = await store.findJarByHash(block.hash);
+    if (!jar) {
+      const serial = block.jarSerial || (block.data && block.data.jar_serial) || jarSerial();
+      jar = await store.upsertJar({
+        jarSerial: serial,
+        hash: block.hash,
+        publicKey: block.publicKey || block.hash,
+        ipfsCid: block.ipfsCid,
+        packagingHash: block.hash,
+      });
+    }
+    if (jar.sold) {
+      return res.status(409).json({
+        success: false,
+        error: "This jar already has a bill code. Re-issuing would enable a duplicate QR scam.",
+        jarSerial: jar.jarSerial,
+      });
+    }
+
+    const bill = billNo || `BILL-${Date.now().toString(36).toUpperCase()}`;
+    const storeLabel = storeName || block.data?.store_name || block.collective_name || "Khadi India";
+    const issued = issuePrivateKey(jar.publicKey || block.hash, jar.jarSerial, bill);
+    await store.upsertJar({
+      ...jar,
+      sold: true,
+      billNo: bill,
+      storeName: storeLabel,
+      privateKeyCommit: issued.privateKeyCommit,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: {
+        publicKey: issued.publicKey,
+        privateKey: issued.privateKey,
+        jarSerial: jar.jarSerial,
+        billNo: bill,
+        storeName: storeLabel,
+        registryKey: issued.registryKey,
+        ipfsCid: jar.ipfsCid || block.ipfsCid,
+        note: "Print privateKey on the bill only. QR on the jar is the public key. Both are required to prove this sale.",
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+async function dualVerify(req, res) {
+  try {
+    const publicKey = String(req.body?.publicKey || req.body?.hash || "").trim();
+    const privateKey = String(req.body?.privateKey || "").trim();
+    if (!publicKey) return res.status(400).json({ success: false, error: "publicKey / hash from QR required" });
+    const block = await store.findBlockByHash(publicKey);
+    if (!block) return res.status(404).json({ success: false, error: "unknown QR public key" });
+    const chainRes = await verifyChain(publicKey);
+    const jar = await store.findJarByHash(publicKey);
+
+    if (!privateKey) {
+      return res.json({
+        success: true,
+        data: {
+          ok: false,
+          reason: "QR only — chain can be viewed but authenticity of sale is not proven. Enter the bill private key.",
+          chainValid: chainRes.valid,
+          publicView: true,
+          jar: jar ? { jarSerial: jar.jarSerial, sold: jar.sold, verifyCount: jar.verifyCount, duplicateFlag: jar.duplicateFlag } : null,
+        },
+      });
+    }
+
+    if (!jar || !jar.sold || !jar.privateKeyCommit) {
+      return res.json({
+        success: true,
+        data: {
+          ok: false,
+          reason: "This jar has not been sold yet — no bill private key exists. Copied QR without a real sale.",
+          chainValid: chainRes.valid,
+          duplicate: false,
+        },
+      });
+    }
+
+    const commit = commitPrivateKey(privateKey, jar.publicKey || publicKey);
+    if (commit !== jar.privateKeyCommit) {
+      return res.json({
+        success: true,
+        data: {
+          ok: false,
+          reason: "Private key does not match this QR. Label swap / counterfeit bill.",
+          chainValid: chainRes.valid,
+          duplicate: false,
+        },
+      });
+    }
+
+    const nextCount = (jar.verifyCount || 0) + 1;
+    const isDuplicate = nextCount > 1;
+    const now = new Date().toISOString();
+    const duplicateScans = jar.duplicateScans || [];
+    if (isDuplicate) {
+      duplicateScans.push(now);
+    }
+    await store.upsertJar({
+      ...jar,
+      verifyCount: nextCount,
+      lastVerifiedAt: now,
+      firstVerifiedAt: jar.firstVerifiedAt || now,
+      duplicateFlag: isDuplicate,
+      duplicateScans: duplicateScans.slice(-10),
+    });
+
+    res.json({
+      success: true,
+      data: {
+        ok: !isDuplicate && chainRes.valid,
+        reason: isDuplicate
+          ? `Duplicate claim — this bill code was already used ${nextCount - 1} time(s) before. Possible copied QR or second sale of the same serial.`
+          : chainRes.valid
+            ? "Authentic first claim — QR public key + bill private key match, chain intact."
+            : `Keys match but chain issue: ${chainRes.reason}`,
+        chainValid: chainRes.valid,
+        duplicate: isDuplicate,
+        verifyCount: nextCount,
+        firstVerifiedAt: jar.firstVerifiedAt || now,
+        lastVerifiedAt: now,
+        duplicateScans: duplicateScans.slice(-5),
+        jarSerial: jar.jarSerial,
+        storeName: jar.storeName,
+        billNo: jar.billNo,
+        ipfsCid: jar.ipfsCid || block.ipfsCid,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+function summarizeTrail(journey, beekeeper) {
+  const pick = (stage) => journey.filter((b) => b.stage === stage);
+  const collections = pick("collection").map((b) => ({
+    collector: b.data?.collector_name || b.collective_name,
+    org: b.data?.collector_org,
+    quantity_kg: b.data?.quantity_kg || b.data?.weight_kg,
+    flower: b.data?.flower_type || b.data?.flower_source,
+    destination: b.data?.destination_lab,
+    at: b.createdAt,
+    cid: b.ipfsCid,
+  }));
+  const labs = pick("lab_certified").map((b) => ({
+    officer: b.data?.kvic_officer || b.lab?.tester_name,
+    moisture: b.data?.moisture || b.lab?.moisture,
+    purity: b.data?.purity || b.lab?.purity,
+    ca_number: b.data?.ca_number || b.lab?.ca_number,
+    at: b.createdAt,
+    cid: b.ipfsCid,
+  }));
+  const packs = pick("packaging").map((b) => ({
+    institution: b.data?.khadi_institution || b.collective_name,
+    jarSerial: b.jarSerial || b.data?.jar_serial,
+    at: b.createdAt,
+    cid: b.ipfsCid,
+  }));
+  const dist = pick("distribution").concat(pick("retail")).map((b) => ({
+    store: b.data?.store_name || b.collective_name,
+    city: b.data?.store_city,
+    at: b.createdAt,
+    cid: b.ipfsCid,
+  }));
+  return {
+    beekeeper: beekeeper
+      ? { name: beekeeper.name, village: beekeeper.village, district: beekeeper.district, state: beekeeper.state }
+      : null,
+    collections,
+    labs,
+    packaging: packs,
+    stores: dist,
+    hops: journey.map((b) => ({
+      stage: b.stage,
+      label: stageMeta(b.stage).label,
+      hash: b.hash,
+      cid: b.ipfsCid,
+      at: b.createdAt,
+      data: b.data,
+    })),
+  };
+}
+
+async function getRegistryInfo(req, res) {
+  res.json({
+    success: true,
+    data: {
+      registryKey: getRegistryKey(),
+      remixContract: "contracts/HoneyChainRegistry.sol",
+      pinataConfigured: !!(process.env.PINATA_JWT || "").trim(),
+      db: store.dbReady() ? "mongodb" : "local-json",
+    },
+  });
+}
+
+module.exports = {
+  createBlock,
+  getChain,
+  verifyBlock,
+  getBlock,
+  mintGenesisForBeekeeper,
+  stageMeta,
+  STAGE_META,
+  verifyChain,
+  getRoleMap,
+  STAGE_ROLES,
+  ROLE_LABEL,
+  getTwin,
+  buildProgress,
+  issueSale,
+  dualVerify,
+  summarizeTrail,
+  getRegistryInfo,
+};

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
@@ -47,9 +47,16 @@ export default function Register() {
   const [category, setCategory] = useState(0);
   const [activeSection, setActiveSection] = useState("basic");
   const [form, setForm] = useState(emptyForm);
-  const [status, setStatus] = useState(null); // null | "saving" | "success" | "error"
+  const [status, setStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [genesis, setGenesis] = useState(null);
+  const [clusters, setClusters] = useState([]);
+
+  useEffect(() => {
+    api.get("/map/geo").then((r) => {
+      setClusters(r.data.data?.clusters || []);
+    }).catch(() => {});
+  }, []);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -169,6 +176,15 @@ export default function Register() {
                   <option value="karnataka">Karnataka</option>
                   <option value="gujarat">Gujarat</option>
                   <option value="uttar pradesh">Uttar Pradesh</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Join Cluster (optional)</span>
+                <select value={form.clusterId || ""} onChange={(e) => update("clusterId", e.target.value || undefined)}>
+                  <option value="">— None —</option>
+                  {clusters.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name} — {c.state}</option>
+                  ))}
                 </select>
               </label>
               <label className="field">

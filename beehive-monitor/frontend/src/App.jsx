@@ -7,6 +7,7 @@ import DiseaseDetection from "./pages/DiseaseDetection.jsx";
 import Ledger from "./pages/Ledger.jsx";
 import Verify from "./pages/Verify.jsx";
 import FarmerTwin from "./pages/FarmerTwin.jsx";
+import MapPage from "./pages/Map.jsx";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/twin" element={<FarmerTwin />} />
         <Route path="/track" element={<FarmerTwin />} />
+        <Route path="/map" element={<MapPage />} />
       </Routes>
     </div>
   );

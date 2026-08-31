@@ -1,0 +1,578 @@
+{
+  "beekeepers": [
+    {
+      "_id": "f8e09841a7d8dda8265ec91d",
+      "aadhaarNo": "123987456321",
+      "name": "Mongo Test Farmer",
+      "village": "Mahad",
+      "district": "Raigad",
+      "noOfBeeColonies": 12,
+      "state": "maharashtra",
+      "phoneNumber": "9988776655",
+      "createdAt": "2026-08-31T18:57:12.623Z",
+      "updatedAt": "2026-08-31T18:57:12.623Z",
+      "status": "submitted"
+    },
+    {
+      "_id": "f663c73e8bb4759e34fad11d",
+      "aadhaarNo": "111222333444",
+      "name": "Fresh Test",
+      "village": "Madikeri",
+      "district": "Kodagu",
+      "noOfBeeColonies": 20,
+      "state": "karnataka",
+      "phoneNumber": "9123456789",
+      "createdAt": "2026-08-31T18:52:42.640Z",
+      "updatedAt": "2026-08-31T18:52:42.640Z",
+      "status": "submitted"
+    },
+    {
+      "_id": "d3062c4e23349f5c7b4e9991",
+      "aadhaarNo": "999888777666",
+      "name": "Aryan Mejari",
+      "village": "Mahad",
+      "district": "Raigad",
+      "noOfBeeColonies": 15,
+      "state": "maharashtra",
+      "phoneNumber": "9876543210",
+      "createdAt": "2026-08-31T18:50:50.423Z",
+      "updatedAt": "2026-08-31T18:50:50.423Z",
+      "status": "submitted"
+    },
+    {
+      "_id": "30f3d67877318a224bb403a7",
+      "aadhaarNo": "123456789012",
+      "name": "Test Farmer",
+      "village": "Mahad",
+      "district": "Raigad",
+      "noOfBeeColonies": 10,
+      "state": "maharashtra",
+      "phoneNumber": "9876543210",
+      "createdAt": "2026-08-31T17:57:12.348Z",
+      "updatedAt": "2026-08-31T17:57:12.348Z",
+      "status": "submitted"
+    }
+  ],
+  "blocks": [
+    {
+      "_id": "3a1fd0869763b5ad0099db4e",
+      "hash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "prev_hash": null,
+      "stage": "beekeeper_registration",
+      "data": {
+        "beekeeperId": "30f3d67877318a224bb403a7",
+        "name": "Test Farmer",
+        "village": "Mahad",
+        "aadhaarHash": "2a33349e7e606a8ad2e30e3c84521f9377450cf09083e162e0a9b1480ce0f972",
+        "aadhaarLast4": "9012",
+        "aadhaarMasked": "XXXX-XXXX-9012",
+        "registeredAt": "2026-08-31T17:57:12.350Z"
+      },
+      "beekeeper": "30f3d67877318a224bb403a7",
+      "collective_name": null,
+      "scan_secret": "9ad6fc3e35fa1920",
+      "is_frozen": false,
+      "ipfsCid": "bafyfc659b8789a5bbc5bd422170f891e12399ab2682466a35edd181",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "registryKey": "b6a92030521c15f89bda30cdb12cb38875a24c4ae674292bc15b4c6998ebd02d",
+      "createdAt": "2026-08-31T17:57:12.355Z",
+      "updatedAt": "2026-08-31T17:57:12.355Z"
+    },
+    {
+      "_id": "0b162b79a744a327619f1be3",
+      "hash": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+      "prev_hash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "stage": "packaging",
+      "data": {
+        "jar_serial": "JAR-TEST-001",
+        "store_name": "Khadi India"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "a17048f8a435f09e",
+      "is_frozen": false,
+      "ipfsCid": "bafy096fd189167b7de6c6e4f57915ac441cde5417d74ba7aaf11968",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+      "jarSerial": "JAR-TEST-001",
+      "registryKey": "b6a92030521c15f89bda30cdb12cb38875a24c4ae674292bc15b4c6998ebd02d",
+      "createdAt": "2026-08-31T18:00:52.761Z",
+      "updatedAt": "2026-08-31T18:00:52.761Z"
+    },
+    {
+      "_id": "f5cd05887669f39a225d26f6",
+      "hash": "7062fffe5849aa72893252f1e7f0e726ea38361662c871493980828b248eca3a",
+      "prev_hash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "stage": "collection",
+      "data": {
+        "destination_lab": "KVIC Lab Pune",
+        "quantity_kg": 25,
+        "collector_name": "Raigad Madhu Collective",
+        "flower_type": "mustard"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "570350a2869c681a",
+      "is_frozen": false,
+      "ipfsCid": "bafy85dceb42ac33305bda722592b5461bbf10327f7f5199941d8b1e",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "7062fffe5849aa72893252f1e7f0e726ea38361662c871493980828b248eca3a",
+      "jarSerial": null,
+      "registryKey": "b6a92030521c15f89bda30cdb12cb38875a24c4ae674292bc15b4c6998ebd02d",
+      "createdAt": "2026-08-31T18:02:12.984Z",
+      "updatedAt": "2026-08-31T18:02:12.984Z"
+    },
+    {
+      "_id": "b1fa262186def3738a6f114c",
+      "hash": "a9e3323c2d7a050d72ef64afcb2418365357f5ef20784e9ba15f35e7b813e87d",
+      "prev_hash": null,
+      "stage": "beekeeper_registration",
+      "data": {
+        "beekeeperId": "d3062c4e23349f5c7b4e9991",
+        "name": "Aryan Mejari",
+        "village": "Mahad",
+        "aadhaarHash": "4cde194846d3822f120791ac3d1fc01274b3b96c9b9d4e24a938cf487740d7da",
+        "aadhaarLast4": "7666",
+        "aadhaarMasked": "XXXX-XXXX-7666",
+        "registeredAt": "2026-08-31T18:50:50.426Z"
+      },
+      "beekeeper": "d3062c4e23349f5c7b4e9991",
+      "collective_name": null,
+      "scan_secret": "2cf41be87b09d5c8",
+      "is_frozen": false,
+      "ipfsCid": "bafy0b7eb8eb0b7f031f7fbff276f18f043f44247adcbddf26f23d1e",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "a9e3323c2d7a050d72ef64afcb2418365357f5ef20784e9ba15f35e7b813e87d",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:50:51.264Z",
+      "updatedAt": "2026-08-31T18:50:51.264Z"
+    },
+    {
+      "_id": "a21c81deda9cca3c3979fb33",
+      "hash": "9ffab0b4a0dbb10f7a14ed08d81a1b4a7dda77856d7ebf6473e115fb124cd7d0",
+      "prev_hash": "a9e3323c2d7a050d72ef64afcb2418365357f5ef20784e9ba15f35e7b813e87d",
+      "stage": "collection",
+      "data": {
+        "destination_lab": "KVIC Lab Mumbai",
+        "quantity_kg": 30,
+        "collector_name": "Raigad Madhu Collective",
+        "flower_type": "jamun"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "7c21a0f113c927f1",
+      "is_frozen": false,
+      "ipfsCid": "bafy842afbc1c2829771188c9710cc8ffef818d1f038f86370acd19d",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "9ffab0b4a0dbb10f7a14ed08d81a1b4a7dda77856d7ebf6473e115fb124cd7d0",
+      "jarSerial": null,
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:51:06.019Z",
+      "updatedAt": "2026-08-31T18:51:06.019Z"
+    },
+    {
+      "_id": "32b9d827338f716c1625d1df",
+      "hash": "f5c3209d25307b946c0962a013fc7a6453e44fe2b1247f7ce8430e543f95ee03",
+      "prev_hash": "9ffab0b4a0dbb10f7a14ed08d81a1b4a7dda77856d7ebf6473e115fb124cd7d0",
+      "stage": "packaging",
+      "data": {
+        "jar_serial": "JAR-LIVE-001",
+        "store_name": "Khadi India - Mumbai"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "6f681831453e2a77",
+      "is_frozen": false,
+      "ipfsCid": "bafy3dfb732954136b59891f83c2a2ea7c898e649e4e7e9a612f0a07",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "f5c3209d25307b946c0962a013fc7a6453e44fe2b1247f7ce8430e543f95ee03",
+      "jarSerial": "JAR-LIVE-001",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:51:18.234Z",
+      "updatedAt": "2026-08-31T18:51:18.234Z"
+    },
+    {
+      "_id": "c89f35dc5603d52be1e91cf6",
+      "hash": "877345fef86d69c73d8553697e553a6811302d5d936e8e511f3c3ac4ad378399",
+      "prev_hash": null,
+      "stage": "beekeeper_registration",
+      "data": {
+        "beekeeperId": "f663c73e8bb4759e34fad11d",
+        "name": "Fresh Test",
+        "village": "Madikeri",
+        "aadhaarHash": "84dc6b5d6e3421244165c4c94296a6d92fef4411c90d8aa167400e08634c6b9f",
+        "aadhaarLast4": "3444",
+        "aadhaarMasked": "XXXX-XXXX-3444",
+        "registeredAt": "2026-08-31T18:52:42.642Z"
+      },
+      "beekeeper": "f663c73e8bb4759e34fad11d",
+      "collective_name": null,
+      "scan_secret": "491a2b70de3944bd",
+      "is_frozen": false,
+      "ipfsCid": "bafy9ed2b9f0c9ade88a590ad3b99c87e89cc40345b091ed40f4c521",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "877345fef86d69c73d8553697e553a6811302d5d936e8e511f3c3ac4ad378399",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:52:43.662Z",
+      "updatedAt": "2026-08-31T18:52:43.662Z"
+    },
+    {
+      "_id": "c7515f098a399fab116b11b4",
+      "hash": "678e47d8a41e3d082fd0f924743ca6c6adbfb6b9fbe8f15856365e1c1f9cc34a",
+      "prev_hash": "877345fef86d69c73d8553697e553a6811302d5d936e8e511f3c3ac4ad378399",
+      "stage": "collection",
+      "data": {
+        "destination_lab": "KVIC Lab Bengaluru",
+        "quantity_kg": 40,
+        "collector_name": "Kodagu Honey Collective",
+        "flower_type": "coffee"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "07ac30a5c4c56050",
+      "is_frozen": false,
+      "ipfsCid": "bafyfe7bb8744694f1126b7c2f7fbffcc985c9f1eb17fb88d35ac33c",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "678e47d8a41e3d082fd0f924743ca6c6adbfb6b9fbe8f15856365e1c1f9cc34a",
+      "jarSerial": null,
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:52:58.639Z",
+      "updatedAt": "2026-08-31T18:52:58.639Z"
+    },
+    {
+      "_id": "c270fc9a4044ef6ce2562d13",
+      "hash": "52097682000e5eaac5f65623ecf2a77ba3f50c40671a5cd18f83ac18d37eea35",
+      "prev_hash": "678e47d8a41e3d082fd0f924743ca6c6adbfb6b9fbe8f15856365e1c1f9cc34a",
+      "stage": "packaging",
+      "data": {
+        "jar_serial": "JAR-E2E-001",
+        "store_name": "Khadi India - Bengaluru"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "6b5de5a684065764",
+      "is_frozen": false,
+      "ipfsCid": "bafy984f35b5b8fe02774acf5e5a083b54ea1aaa32618085e9916a13",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "52097682000e5eaac5f65623ecf2a77ba3f50c40671a5cd18f83ac18d37eea35",
+      "jarSerial": "JAR-E2E-001",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:53:14.002Z",
+      "updatedAt": "2026-08-31T18:53:14.002Z"
+    },
+    {
+      "_id": "7ae4db57c9f0752f58750832",
+      "hash": "47e1902b44a767395f031218aca5477d868c2236b7eaab5a55c6351b1fb15cb7",
+      "prev_hash": null,
+      "stage": "beekeeper_registration",
+      "data": {
+        "beekeeperId": "f8e09841a7d8dda8265ec91d",
+        "name": "Mongo Test Farmer",
+        "village": "Mahad",
+        "aadhaarHash": "566cb8bbfdb890894bcc4b85bfc9b5fb6f2c4603702bb3bc205ac604662807ee",
+        "aadhaarLast4": "6321",
+        "aadhaarMasked": "XXXX-XXXX-6321",
+        "registeredAt": "2026-08-31T18:57:12.628Z"
+      },
+      "beekeeper": "f8e09841a7d8dda8265ec91d",
+      "collective_name": null,
+      "scan_secret": "d733aa6c3d7c9f06",
+      "is_frozen": false,
+      "ipfsCid": "bafyec6c013737e02ec8bb46ad5b94a8d098e307bf4317ca52471445",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "47e1902b44a767395f031218aca5477d868c2236b7eaab5a55c6351b1fb15cb7",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:57:13.380Z",
+      "updatedAt": "2026-08-31T18:57:13.380Z"
+    },
+    {
+      "_id": "bab87ee7ed8c44ea90b7adb3",
+      "hash": "f648a539ca85e4a4d82a24b6ccf030b686ddb9ebfe84538b924212916e73319d",
+      "prev_hash": "47e1902b44a767395f031218aca5477d868c2236b7eaab5a55c6351b1fb15cb7",
+      "stage": "collection",
+      "data": {
+        "destination_lab": "KVIC Lab Mumbai",
+        "quantity_kg": 35,
+        "collector_name": "Raigad Madhu Collective",
+        "flower_type": "karvi"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "90ee6c54fe2fc5f9",
+      "is_frozen": false,
+      "ipfsCid": "bafyb71d22530d75cbd4df19e1c89151b76ce25e6715e33e034ae994",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "f648a539ca85e4a4d82a24b6ccf030b686ddb9ebfe84538b924212916e73319d",
+      "jarSerial": null,
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:57:26.866Z",
+      "updatedAt": "2026-08-31T18:57:26.866Z"
+    },
+    {
+      "_id": "d976f98d7f326c09913590a5",
+      "hash": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+      "prev_hash": "f648a539ca85e4a4d82a24b6ccf030b686ddb9ebfe84538b924212916e73319d",
+      "stage": "packaging",
+      "data": {
+        "jar_serial": "JAR-MONGO-001",
+        "store_name": "Khadi India - Mumbai"
+      },
+      "beekeeper": null,
+      "collective_name": null,
+      "scan_secret": "3847db2c799a40f5",
+      "is_frozen": false,
+      "ipfsCid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8",
+      "ipfsUrl": null,
+      "pinataPinned": false,
+      "publicKey": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+      "jarSerial": "JAR-MONGO-001",
+      "registryKey": "0000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc4",
+      "createdAt": "2026-08-31T18:57:40.632Z",
+      "updatedAt": "2026-08-31T18:57:40.632Z"
+    }
+  ],
+  "jars": [
+    {
+      "_id": "59007dba36b5375a71cd5836",
+      "jarSerial": "JAR-D2F5-353E24",
+      "hash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "publicKey": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "ipfsCid": "bafyfc659b8789a5bbc5bd422170f891e12399ab2682466a35edd181",
+      "packagingHash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+      "updatedAt": "2026-08-31T18:00:16.724Z",
+      "createdAt": "2026-08-31T18:00:16.719Z",
+      "sold": true,
+      "billNo": "TEST-BILL-001",
+      "storeName": "Khadi India",
+      "privateKeyCommit": "5063845e444f24c8efc97480322910b68643d7c7b7c176bf61e7ff1d5fcc870a"
+    },
+    {
+      "_id": "9ae7ef2d4f1771898a806a35",
+      "jarSerial": "JAR-TEST-001",
+      "hash": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+      "publicKey": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+      "ipfsCid": "bafy096fd189167b7de6c6e4f57915ac441cde5417d74ba7aaf11968",
+      "packagingHash": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+      "updatedAt": "2026-08-31T18:01:07.433Z",
+      "createdAt": "2026-08-31T18:00:52.764Z",
+      "sold": true,
+      "billNo": "TEST-BILL-003",
+      "storeName": "Khadi India",
+      "privateKeyCommit": "8fd84fee22edf8eb95bd57aa4bdeaf393e3a550366e53a11dc0656379b93b13b",
+      "verifyCount": 1,
+      "lastVerifiedAt": "2026-08-31T18:01:07.432Z",
+      "firstVerifiedAt": "2026-08-31T18:01:07.432Z",
+      "duplicateFlag": false,
+      "duplicateScans": []
+    },
+    {
+      "_id": "c41e3c338118ce4fdc1fcf4f",
+      "jarSerial": "JAR-LIVE-001",
+      "hash": "f5c3209d25307b946c0962a013fc7a6453e44fe2b1247f7ce8430e543f95ee03",
+      "publicKey": "f5c3209d25307b946c0962a013fc7a6453e44fe2b1247f7ce8430e543f95ee03",
+      "ipfsCid": "bafy3dfb732954136b59891f83c2a2ea7c898e649e4e7e9a612f0a07",
+      "packagingHash": "f5c3209d25307b946c0962a013fc7a6453e44fe2b1247f7ce8430e543f95ee03",
+      "updatedAt": "2026-08-31T18:51:32.239Z",
+      "createdAt": "2026-08-31T18:51:18.238Z",
+      "sold": true,
+      "billNo": "LIVE-BILL-001",
+      "storeName": "Khadi India - Mumbai",
+      "privateKeyCommit": "77595f308434696a3330813fae2e5cd06c91adcc69ecd5b54b78bc9f6f56a53a",
+      "verifyCount": 1,
+      "lastVerifiedAt": "2026-08-31T18:51:32.238Z",
+      "firstVerifiedAt": "2026-08-31T18:51:32.238Z",
+      "duplicateFlag": false,
+      "duplicateScans": []
+    },
+    {
+      "_id": "36f796f525cae7f24e9555b9",
+      "jarSerial": "JAR-E2E-001",
+      "hash": "52097682000e5eaac5f65623ecf2a77ba3f50c40671a5cd18f83ac18d37eea35",
+      "publicKey": "52097682000e5eaac5f65623ecf2a77ba3f50c40671a5cd18f83ac18d37eea35",
+      "ipfsCid": "bafy984f35b5b8fe02774acf5e5a083b54ea1aaa32618085e9916a13",
+      "packagingHash": "52097682000e5eaac5f65623ecf2a77ba3f50c40671a5cd18f83ac18d37eea35",
+      "updatedAt": "2026-08-31T18:53:54.769Z",
+      "createdAt": "2026-08-31T18:53:14.008Z",
+      "sold": true,
+      "billNo": "E2E-BILL-001",
+      "storeName": "Khadi India - Bengaluru",
+      "privateKeyCommit": "c0f392a687025c291808d36274eea0e99062f333f618c9cf377681e5e34381cd",
+      "verifyCount": 2,
+      "lastVerifiedAt": "2026-08-31T18:53:54.768Z",
+      "firstVerifiedAt": "2026-08-31T18:53:41.781Z",
+      "duplicateFlag": true,
+      "duplicateScans": [
+        "2026-08-31T18:53:54.768Z"
+      ]
+    },
+    {
+      "_id": "d6dfccb89fc2b8c18a5ee414",
+      "jarSerial": "JAR-MONGO-001",
+      "hash": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+      "publicKey": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+      "ipfsCid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8",
+      "packagingHash": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+      "updatedAt": "2026-08-31T18:58:17.463Z",
+      "createdAt": "2026-08-31T18:57:40.634Z",
+      "sold": true,
+      "billNo": "MONGO-BILL-001",
+      "storeName": "Khadi India - Mumbai",
+      "privateKeyCommit": "c1cc78dd0e893e1059407b0731b46545e5ed9e34c0f5c0994b1007eb4f02d009",
+      "verifyCount": 2,
+      "lastVerifiedAt": "2026-08-31T18:58:17.462Z",
+      "firstVerifiedAt": "2026-08-31T18:58:04.508Z",
+      "duplicateFlag": true,
+      "duplicateScans": [
+        "2026-08-31T18:58:17.462Z"
+      ]
+    }
+  ],
+  "rti": [
+    {
+      "_id": "4b2519d9b4bb797fda0aa032",
+      "beekeeperId": "f8e09841a7d8dda8265ec91d",
+      "beekeeperName": "Mongo Test Farmer",
+      "subject": "Where did my honey go?",
+      "question": "I want to know the complete journey of my honey",
+      "trail": {
+        "beekeeper": {
+          "name": "Mongo Test Farmer",
+          "village": "Mahad",
+          "district": "Raigad",
+          "state": "maharashtra"
+        },
+        "collections": [
+          {
+            "collector": "Raigad Madhu Collective",
+            "quantity_kg": 35,
+            "flower": "karvi",
+            "destination": "KVIC Lab Mumbai",
+            "at": "2026-08-31T18:57:26.866Z",
+            "cid": "bafyb71d22530d75cbd4df19e1c89151b76ce25e6715e33e034ae994"
+          }
+        ],
+        "labs": [],
+        "packaging": [
+          {
+            "institution": null,
+            "jarSerial": "JAR-MONGO-001",
+            "at": "2026-08-31T18:57:40.632Z",
+            "cid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8"
+          }
+        ],
+        "stores": [],
+        "hops": [
+          {
+            "stage": "beekeeper_registration",
+            "label": "Beekeeper Registration",
+            "hash": "47e1902b44a767395f031218aca5477d868c2236b7eaab5a55c6351b1fb15cb7",
+            "cid": "bafyec6c013737e02ec8bb46ad5b94a8d098e307bf4317ca52471445",
+            "at": "2026-08-31T18:57:13.380Z",
+            "data": {
+              "beekeeperId": "f8e09841a7d8dda8265ec91d",
+              "name": "Mongo Test Farmer",
+              "village": "Mahad",
+              "aadhaarHash": "566cb8bbfdb890894bcc4b85bfc9b5fb6f2c4603702bb3bc205ac604662807ee",
+              "aadhaarLast4": "6321",
+              "aadhaarMasked": "XXXX-XXXX-6321",
+              "registeredAt": "2026-08-31T18:57:12.628Z"
+            }
+          },
+          {
+            "stage": "collection",
+            "label": "Collection Phase 1",
+            "hash": "f648a539ca85e4a4d82a24b6ccf030b686ddb9ebfe84538b924212916e73319d",
+            "cid": "bafyb71d22530d75cbd4df19e1c89151b76ce25e6715e33e034ae994",
+            "at": "2026-08-31T18:57:26.866Z",
+            "data": {
+              "destination_lab": "KVIC Lab Mumbai",
+              "quantity_kg": 35,
+              "collector_name": "Raigad Madhu Collective",
+              "flower_type": "karvi"
+            }
+          },
+          {
+            "stage": "packaging",
+            "label": "Packaging",
+            "hash": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+            "cid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8",
+            "at": "2026-08-31T18:57:40.632Z",
+            "data": {
+              "jar_serial": "JAR-MONGO-001",
+              "store_name": "Khadi India - Mumbai"
+            }
+          }
+        ]
+      },
+      "createdAt": "2026-08-31T18:58:31.610Z"
+    },
+    {
+      "_id": "0a8ed6423bc95092e0a4a63c",
+      "beekeeperId": "30f3d67877318a224bb403a7",
+      "beekeeperName": "Test Farmer",
+      "subject": "Where did my honey go?",
+      "question": "I want to know the complete journey of my honey",
+      "trail": {
+        "beekeeper": {
+          "name": "Test Farmer",
+          "village": "Mahad",
+          "district": "Raigad",
+          "state": "maharashtra"
+        },
+        "collections": [],
+        "labs": [],
+        "packaging": [
+          {
+            "institution": null,
+            "jarSerial": "JAR-TEST-001",
+            "at": "2026-08-31T18:00:52.761Z",
+            "cid": "bafy096fd189167b7de6c6e4f57915ac441cde5417d74ba7aaf11968"
+          }
+        ],
+        "stores": [],
+        "hops": [
+          {
+            "stage": "beekeeper_registration",
+            "label": "Beekeeper Registration",
+            "hash": "308b6b9fa0d34ba49cff0840575bf224d6fbcb9017052717636d77674dcf993f",
+            "cid": "bafyfc659b8789a5bbc5bd422170f891e12399ab2682466a35edd181",
+            "at": "2026-08-31T17:57:12.355Z",
+            "data": {
+              "beekeeperId": "30f3d67877318a224bb403a7",
+              "name": "Test Farmer",
+              "village": "Mahad",
+              "aadhaarHash": "2a33349e7e606a8ad2e30e3c84521f9377450cf09083e162e0a9b1480ce0f972",
+              "aadhaarLast4": "9012",
+              "aadhaarMasked": "XXXX-XXXX-9012",
+              "registeredAt": "2026-08-31T17:57:12.350Z"
+            }
+          },
+          {
+            "stage": "packaging",
+            "label": "Packaging",
+            "hash": "ed6c57a6567dde566b197f1da5326c6d788b445b2e98777efe1938dd5b4a35b2",
+            "cid": "bafy096fd189167b7de6c6e4f57915ac441cde5417d74ba7aaf11968",
+            "at": "2026-08-31T18:00:52.761Z",
+            "data": {
+              "jar_serial": "JAR-TEST-001",
+              "store_name": "Khadi India"
+            }
+          }
+        ]
+      },
+      "createdAt": "2026-08-31T18:01:18.411Z"
+    }
+  ]
+}

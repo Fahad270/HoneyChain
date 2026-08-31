@@ -1,0 +1,169 @@
+.map-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.map-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.map-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.kvic {
+  background: #2563eb;
+}
+.legend-dot.gov {
+  background: #f59e0b;
+}
+.legend-dot.khadi {
+  background: #7c3aed;
+}
+.legend-dot.farmer {
+  background: #4ade80;
+}
+.legend-dot.cluster {
+  background: #dc2626;
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-container {
+  height: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.map-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cluster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.cluster-item {
+  text-align: left;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cluster-item:hover,
+.cluster-item.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.cluster-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.cluster-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.farmer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.farmer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.farmer-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.cluster-actions {
+  margin-top: 12px;
+}
+
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.popup {
+  font-size: 13px;
+  line-height: 1.5;
+  min-width: 180px;
+}
+
+.popup .badge {
+  margin-right: 4px;
+}

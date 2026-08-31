@@ -8,8 +8,7 @@
 // Consumer step 9 is public verify, no write.
 
 const STAGE_ROLES = {
-  beekeeper_registration: ["beekeeper", "kvic"], // genesis auto-minted, but allow both if manual
-  honey_extraction: ["beekeeper", "kvic"], // beekeeper owns extraction; kvic can help in field
+  beekeeper_registration: ["beekeeper", "kvic"],
   collection: ["kvic"],
   pooled: ["kvic"],
   transport: ["kvic"],

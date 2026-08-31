@@ -5,6 +5,7 @@ import "./Navbar.css";
 const links = [
   { to: "/", label: "Register", end: true },
   { to: "/dashboard", label: "Hive Dashboard" },
+  { to: "/map", label: "Map" },
   { to: "/ledger", label: "Ledger" },
   { to: "/twin", label: "My Twin" },
   { to: "/learn", label: "Learn" },

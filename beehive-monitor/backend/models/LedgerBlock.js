@@ -36,6 +36,13 @@ const LedgerBlockSchema = new mongoose.Schema(
     // freeze at retail — no child blocks allowed after a frozen hash appears as prev
     is_frozen: { type: Boolean, default: false },
 
+    ipfsCid: { type: String, default: null },
+    ipfsUrl: { type: String, default: null },
+    pinataPinned: { type: Boolean, default: false },
+    publicKey: { type: String, default: null },
+    jarSerial: { type: String, default: null, index: true },
+    registryKey: { type: String, default: null },
+
     // workflow-friendly extras that mirror diagram labels
     // lab cert fields (when stage === 'lab_certified')
     lab: {

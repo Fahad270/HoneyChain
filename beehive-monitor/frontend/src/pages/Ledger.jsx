@@ -7,12 +7,11 @@ import "./Ledger.css";
 
 const STAGE_LABEL = {
   beekeeper_registration: "Beekeeper Registration",
-  honey_extraction: "Honey Extraction",
-  collection: "Collection",
+  collection: "Collection Phase 1",
   pooled: "Collective Pool",
   transport: "Transport",
   processing: "Processing & QC",
-  lab_certified: "Lab Certified",
+  lab_certified: "Lab Report",
   packaging: "Packaging & Labeling",
   distribution: "Distribution",
   retail: "Retail — Khadi India",
@@ -20,7 +19,6 @@ const STAGE_LABEL = {
 
 const STAGE_ICON = {
   beekeeper_registration: "🐝",
-  honey_extraction: "🍯",
   collection: "🤝",
   pooled: "🔗",
   transport: "🚚",
@@ -33,7 +31,6 @@ const STAGE_ICON = {
 
 const WORKFLOW_STEPS = [
   { key: "beekeeper_registration", label: "Beekeeper", num: 1 },
-  { key: "honey_extraction", label: "Extraction", num: 2 },
   { key: "collection", label: "Collection", num: 3 },
   { key: "pooled", label: "Collective", num: 3 },
   { key: "transport", label: "Transport", num: 4 },
@@ -53,10 +50,9 @@ export default function Ledger() {
   const { role } = useRole();
   const isBeekeeper = role === "beekeeper";
   const allowedStages = isBeekeeper
-    ? ["honey_extraction"]
-    : ["honey_extraction", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+    ? ["collection", "pooled"]
+    : ["collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
   const stageOptions = {
-    honey_extraction: "2 — Honey Extraction (Beekeeper)",
     collection: "3 — Collection (KVIC)",
     pooled: "3′ — Collective Pool (KVIC, many → one)",
     transport: "4 — Transport (KVIC)",
@@ -72,10 +68,17 @@ export default function Ledger() {
   const [filter, setFilter] = useState("all");
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
-    stage: isBeekeeper ? "honey_extraction" : "pooled",
+    stage: isBeekeeper ? "collection" : "pooled",
     prev_hash: "",
     prev_hashes: "",
-    dataRaw: '{\n  "hive_id": "HIVE-01",\n  "weight_kg": 12,\n  "flower_source": "mustard"\n}',
+    dataRaw: JSON.stringify({
+      quantity_kg: 25,
+      flower_type: "mustard",
+      collector_name: "Raigad Madhu Collective",
+      collector_org: "Cooperative Society",
+      collector_phone: "9876500101",
+      destination_lab: "KVIC Lab Pune",
+    }, null, 2),
     collective_name: "",
   });
   const [msg, setMsg] = useState(null);
@@ -168,8 +171,8 @@ export default function Ledger() {
         <span className="role-badge">{role === "beekeeper" ? "🐝 Beekeeper" : "🏛️ KVIC"}</span>
         <span>
           {isBeekeeper
-            ? "You manage steps 1–2: colony and extraction. Your image says Beekeepers maintain hives and harvest honey. Collection onward is handled by KVIC network."
-            : "You are KVIC: steps 3–8 — Cooperative/NGO collection, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–2."}
+              ? "You manage steps 1–3: registration, collection and pooled batches. Your image says Beekeepers maintain hives and harvest honey. Collection onward is handled by KVIC network."
+              : "You are KVIC: steps 3–8 — Cooperative/NGO collection, pooled batches, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–3."}
         </span>
         <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>
       </div>
@@ -349,7 +352,7 @@ export default function Ledger() {
 
           <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 4 }}>
             {isBeekeeper
-              ? "Beekeeper: you can log extraction only (Step 2). Switch to KVIC to do collection, pooled, transport, processing, lab, packaging, distribution or retail freeze."
+              ? "Beekeeper: you can log collection and pooled batches (Steps 3). Switch to KVIC to do transport, processing, lab, packaging, distribution or retail freeze."
               : "KVIC: you handle the whole KVIC network from collection to freeze. Supporting institutions on your side: Cooperative societies, transport, processing plant, Quality Control Labs, Branding and Khadi outlets."}
           </div>
 
@@ -386,13 +389,13 @@ export default function Ledger() {
             </label>
 
             <div className="field-hint">
-              Examples: extraction →{" "}
-              <code>{`{"hive_id":"HIVE-01","weight_kg":12,"flower":"mustard"}`}</code>
+              Examples: collection →{" "}
+              <code>{`{"quantity_kg":12,"flower_type":"mustard","collector_name":"Raigad Madhu Collective","destination_lab":"KVIC Lab Pune"}`}</code>
               <br />
               processing → <code>{`{"filtered":true,"pasteurized":true,"moisture":"18%","fssai":"ok"}`}</code>
               <br />
               lab →{" "}
-              <code>{`{"ca_number":"CA/KVIC/2024/118","cert_hash":"sha256:abc…","tester":"NABL Lab Pune"}`}</code>
+              <code>{`{"ca_number":"CA/KVIC/2024/118","cert_hash":"sha256:abc…","tester":"NABL Lab Pune","moisture":"17%","purity":"99%"}`}</code>
             </div>
 
             {msg && <div className={`form-msg ${msg.type}`}>{msg.text}</div>}

@@ -17,6 +17,10 @@ export default function Verify() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [inputHash, setInputHash] = useState(hash || "");
+  const [dualPublicKey, setDualPublicKey] = useState(hash || "");
+  const [dualPrivateKey, setDualPrivateKey] = useState("");
+  const [dualResult, setDualResult] = useState(null);
+  const [dualLoading, setDualLoading] = useState(false);
 
   async function fetchVerify(h, s) {
     setLoading(true);
@@ -33,6 +37,23 @@ export default function Verify() {
     }
   }
 
+  async function handleDualVerify(e) {
+    e.preventDefault();
+    setDualLoading(true);
+    setDualResult(null);
+    try {
+      const res = await api.post("/ledger/verify-dual", {
+        publicKey: dualPublicKey.trim(),
+        privateKey: dualPrivateKey.trim(),
+      });
+      setDualResult(res.data.data);
+    } catch (e) {
+      setDualResult({ ok: false, reason: e?.response?.data?.error || "Verification failed" });
+    } finally {
+      setDualLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (hash) fetchVerify(hash, token);
     else setLoading(false);
@@ -40,6 +61,7 @@ export default function Verify() {
 
   const chain = data?.chain || [];
   const block = data?.block || null;
+  const jar = data?.jar || null;
 
   return (
     <div className="page-container verify-page">
@@ -78,6 +100,54 @@ export default function Verify() {
       {loading && <div className="card">Checking ledger…</div>}
       {error && <div className="card" style={{ borderColor: "var(--color-danger)", color: "var(--color-danger)" }}>{error}</div>}
 
+      {/* Dual-key verification form */}
+      <div className="card dual-verify-card">
+        <h3 style={{marginBottom:8}}>🔑 Dual-Key Verification</h3>
+        <p className="dashboard-sub" style={{marginBottom:14}}>
+          QR on jar = <strong>public key</strong>. Bill code = <strong>private key</strong>. Both required to prove sale authenticity and prevent duplicate QR scams.
+        </p>
+        <form onSubmit={handleDualVerify} className="dual-form">
+          <div style={{display:"flex",gap:10,flexWrap:"wrap",alignItems:"flex-end"}}>
+            <label className="field" style={{flex:1,minWidth:260}}>
+              <span>Public key (from QR on jar)</span>
+              <input value={dualPublicKey} onChange={(e) => setDualPublicKey(e.target.value)} placeholder="paste hash from QR" required />
+            </label>
+            <label className="field" style={{minWidth:220}}>
+              <span>Private key (from bill)</span>
+              <input value={dualPrivateKey} onChange={(e) => setDualPrivateKey(e.target.value)} placeholder="HC-XXXX-XXXX-XXXX-XXXX" required />
+            </label>
+            <button type="submit" className="btn btn-primary" disabled={dualLoading} style={{height:42}}>
+              {dualLoading ? "Verifying…" : "Verify Sale"}
+            </button>
+          </div>
+        </form>
+
+        {dualResult && (
+          <div className={`card dual-result ${dualResult.ok ? "ok" : "bad"}`} style={{marginTop:14}}>
+            <div className="verify-status-head">
+              <span className={`status-pill ${dualResult.ok ? "status-healthy" : "status-critical"}`}>
+                {dualResult.ok ? "Authentic" : "Not Authentic"}
+              </span>
+              {dualResult.duplicate && <span className="status-pill status-critical">⚠️ Duplicate scan</span>}
+              {!dualResult.duplicate && dualResult.ok && <span className="status-pill status-healthy">First claim</span>}
+            </div>
+            <div style={{marginTop:10,fontSize:14,lineHeight:1.6}}>{dualResult.reason}</div>
+            {dualResult.verifyCount > 0 && (
+              <div style={{marginTop:8,fontSize:12,color:"var(--color-text-muted)"}}>
+                Total verifications: {dualResult.verifyCount} |
+                First: {dualResult.firstVerifiedAt ? new Date(dualResult.firstVerifiedAt).toLocaleString() : "—"} |
+                Last: {dualResult.lastVerifiedAt ? new Date(dualResult.lastVerifiedAt).toLocaleString() : "—"}
+              </div>
+            )}
+            {dualResult.duplicateScans && dualResult.duplicateScans.length > 0 && (
+              <div style={{marginTop:8,fontSize:11,color:"var(--color-danger)"}}>
+                Previous scans: {dualResult.duplicateScans.length} extra scan(s) detected
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {block && (
         <>
           <div className={`card verify-status ${data.valid ? "ok" : "bad"}`}>
@@ -88,10 +158,20 @@ export default function Verify() {
               {block.is_frozen && <span className="status-pill status-critical">Frozen at retail</span>}
               {!data.tokenValid && <span className="status-pill status-warning">Token mismatch</span>}
               {data.valid && data.tokenValid && block.is_frozen && <span className="status-pill status-healthy">Ready for sale</span>}
+              {jar?.duplicateFlag && <span className="status-pill status-critical">⚠️ Duplicate scan detected</span>}
+              {!jar?.sold && block.is_frozen === false && <span className="status-pill status-warning">Not sold yet</span>}
             </div>
             {!data.valid && data.reason && <div className="verify-reason">Reason: {data.reason}</div>}
             {!data.tokenValid && <div className="verify-reason">Scan the QR with ?s= token for full verification (one-time token per block).</div>}
             {data.frozenBlock && <div className="verify-reason">Frozen block in ancestry: {short(data.frozenBlock)}</div>}
+            {jar?.duplicateFlag && (
+              <div className="verify-reason" style={{ color: "var(--color-danger)", fontWeight: 700 }}>
+                ⚠️ DUPLICATE QR SCAN: This jar has been verified {jar.verifyCount} times.
+                First verified: {jar.firstVerifiedAt ? new Date(jar.firstVerifiedAt).toLocaleString() : "—"}.
+                Last verified: {jar.lastVerifiedAt ? new Date(jar.lastVerifiedAt).toLocaleString() : "—"}.
+                Possible counterfeit or reused QR label.
+              </div>
+            )}
           </div>
 
           <div className="verify-layout">

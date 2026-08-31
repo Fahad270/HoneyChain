@@ -9,6 +9,8 @@ const videoRoutes = require("./routes/videoRoutes");
 const diseaseRoutes = require("./routes/diseaseRoutes");
 const productivityRoutes = require("./routes/productivityRoutes");
 const blockchainRoutes = require("./routes/blockchainRoutes");
+const mapRoutes = require("./routes/mapRoutes");
+const rtiRoutes = require("./routes/rtiRoutes");
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use("/api/videos", videoRoutes);
 app.use("/api/disease", diseaseRoutes);
 app.use("/api/productivity", productivityRoutes);
 app.use("/api/ledger", blockchainRoutes);
+app.use("/api/map", mapRoutes);
+app.use("/api/rti", rtiRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`[server] Running on http://localhost:${PORT}`));

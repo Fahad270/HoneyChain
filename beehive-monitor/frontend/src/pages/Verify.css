@@ -53,3 +53,9 @@
 .v-hash { font-size: 11px; color: var(--color-text-muted); font-family: ui-monospace, monospace; }
 .verify-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .verify-help { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.7; color: var(--color-text-muted); }
+
+.dual-verify-card { margin-bottom: 16px; border-color: var(--color-primary-light); background: linear-gradient(0deg, var(--color-primary-light), var(--color-surface)); }
+.dual-form { display: flex; flex-direction: column; gap: 10px; }
+.dual-result { margin-top: 14px; }
+.dual-result.ok { border-color: var(--color-success); background: linear-gradient(0deg, var(--color-success-bg), var(--color-surface)); }
+.dual-result.bad { border-color: var(--color-danger); background: linear-gradient(0deg, var(--color-danger-bg), var(--color-surface)); }

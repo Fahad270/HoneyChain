@@ -17,8 +17,13 @@ const BeekeeperSchema = new mongoose.Schema(
     state: { type: String },
     district: { type: String },
     postalAddress: { type: String },
+    village: { type: String },
     phoneNumber: { type: String, required: true },
     email: { type: String },
+    lat: { type: Number },
+    lng: { type: Number },
+    clusterId: { type: String },
+    pinataCid: { type: String },
 
     // Family / personal
     fatherOrHusbandName: { type: String },
