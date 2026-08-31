@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useRole } from "../context/RoleContext.jsx";
 import "./Navbar.css";
 
 const links = [
@@ -10,6 +11,7 @@ const links = [
 ];
 
 export default function Navbar() {
+  const { role, setRole, ROLE_META } = useRole();
   return (
     <header className="navbar">
       <div className="navbar-inner">
@@ -29,6 +31,22 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+        <div className="role-switch" title="Two tiers from your workflow image">
+          <button
+            className={`role-btn ${role === "beekeeper" ? "active" : ""}`}
+            onClick={() => setRole("beekeeper")}
+            title="Beekeeper — Steps 1–2: Hive & Harvest"
+          >
+            {ROLE_META.beekeeper.badge} Beekeeper
+          </button>
+          <button
+            className={`role-btn ${role === "kvic" ? "active" : ""}`}
+            onClick={() => setRole("kvic")}
+            title="KVIC — Steps 3–8: Collective → Khadi"
+          >
+            {ROLE_META.kvic.badge} KVIC
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -1,3 +1,20 @@
+.role-banner {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 12px 16px; margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  font-size: 12px; line-height: 1.4;
+}
+.role-banner.role-beekeeper { background: var(--color-success-bg); border-color: #C5E6D2; }
+.role-banner.role-kvic { background: var(--color-primary-light); border-color: #C7D8D2; }
+.role-badge {
+  font-weight: 800; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+}
+.role-allowed { margin-left: auto; font-size: 10px; color: var(--color-text-muted); background: var(--color-surface); padding: 4px 8px; border-radius: 999px; border: 1px solid var(--color-border); }
+.role-hint { }
+
 .ledger-page h1 { font-size: 28px; }
 .ledger-kicker {
   font-size: 11px;

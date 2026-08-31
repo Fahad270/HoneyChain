@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
+import { useRole } from "../context/RoleContext.jsx";
 import "./Ledger.css";
 
 const STAGE_LABEL = {
@@ -49,12 +50,29 @@ function shortHash(h) {
 }
 
 export default function Ledger() {
+  const { role } = useRole();
+  const isBeekeeper = role === "beekeeper";
+  const allowedStages = isBeekeeper
+    ? ["honey_extraction"]
+    : ["honey_extraction", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+  const stageOptions = {
+    honey_extraction: "2 — Honey Extraction (Beekeeper)",
+    collection: "3 — Collection (KVIC)",
+    pooled: "3′ — Collective Pool (KVIC, many → one)",
+    transport: "4 — Transport (KVIC)",
+    processing: "5 — Processing & QC (KVIC)",
+    lab_certified: "5b — Lab Certified (KVIC)",
+    packaging: "6 — Packaging & Labeling (KVIC)",
+    distribution: "7 — Distribution (KVIC)",
+    retail: "8 — Retail — Khadi India (KVIC, FREEZE)",
+  };
+
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
-    stage: "honey_extraction",
+    stage: isBeekeeper ? "honey_extraction" : "pooled",
     prev_hash: "",
     prev_hashes: "",
     dataRaw: '{\n  "hive_id": "HIVE-01",\n  "weight_kg": 12,\n  "flower_source": "mustard"\n}',
@@ -78,6 +96,14 @@ export default function Ledger() {
     load();
   }, []);
 
+  // keep stage in sync when role flips
+  useEffect(() => {
+    setForm((f) => {
+      if (!allowedStages.includes(f.stage)) return { ...f, stage: allowedStages[0] };
+      return f;
+    });
+  }, [role]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const filtered = useMemo(() => {
     if (filter === "all") return blocks;
     return blocks.filter((b) => b.stage === filter);
@@ -92,6 +118,10 @@ export default function Ledger() {
   async function handleCreate(e) {
     e.preventDefault();
     setMsg(null);
+    if (!allowedStages.includes(form.stage)) {
+      setMsg({ type: "error", text: `Your role ${role} cannot create ${form.stage}. Switch role in the header.` });
+      return;
+    }
     let data;
     try {
       data = form.dataRaw ? JSON.parse(form.dataRaw) : {};
@@ -133,6 +163,17 @@ export default function Ledger() {
 
   return (
     <div className="page-container ledger-page">
+      {/* Role banner from image */}
+      <div className={`card role-banner role-${role}`}>
+        <span className="role-badge">{role === "beekeeper" ? "🐝 Beekeeper" : "🏛️ KVIC"}</span>
+        <span>
+          {isBeekeeper
+            ? "You manage steps 1–2: colony and extraction. Your image says Beekeepers maintain hives and harvest honey. Collection onward is handled by KVIC network."
+            : "You are KVIC: steps 3–8 — Cooperative/NGO collection, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–2."}
+        </span>
+        <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>
+      </div>
+
       {/* Header */}
       <div className="ledger-head">
         <div>
@@ -141,6 +182,7 @@ export default function Ledger() {
           <p className="dashboard-sub">
             Every hop is a block. First block after registration is your genesis QR — scan it to append the next hop.
             Collective pools many farmer blocks into one (DAG), processor scans, lab scans & certifies, retail freezes.
+            Switch role in header to see who gets what from the workflow image.
           </p>
         </div>
         <div className="ledger-stats">
@@ -305,19 +347,19 @@ export default function Ledger() {
             Scan previous QR → paste hash → pick stage → add data. Collective pools many hashes with “pooled”.
           </p>
 
+          <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 4 }}>
+            {isBeekeeper
+              ? "Beekeeper: you can log extraction only (Step 2). Switch to KVIC to do collection, pooled, transport, processing, lab, packaging, distribution or retail freeze."
+              : "KVIC: you handle the whole KVIC network from collection to freeze. Supporting institutions on your side: Cooperative societies, transport, processing plant, Quality Control Labs, Branding and Khadi outlets."}
+          </div>
+
           <form onSubmit={handleCreate} className="create-form">
             <label className="field">
-              <span>Stage *</span>
+              <span>Stage * — filtered by your role ({role})</span>
               <select value={form.stage} onChange={(e) => setForm((f) => ({ ...f, stage: e.target.value }))}>
-                <option value="honey_extraction">2 — Honey Extraction</option>
-                <option value="collection">3 — Collection (single farmer)</option>
-                <option value="pooled">3′ — Collective Pool (many → one, DAG)</option>
-                <option value="transport">4 — Transport to Processing Plant</option>
-                <option value="processing">5 — Processing & QC (scan prev)</option>
-                <option value="lab_certified">5b — Lab Certified (adds CA)</option>
-                <option value="packaging">6 — Packaging & Labeling</option>
-                <option value="distribution">7 — Distribution</option>
-                <option value="retail">8 — Retail — Khadi India (FREEZE)</option>
+                {allowedStages.map((k) => (
+                  <option key={k} value={k}>{stageOptions[k]}</option>
+                ))}
               </select>
             </label>
 
@@ -355,9 +397,10 @@ export default function Ledger() {
 
             {msg && <div className={`form-msg ${msg.type}`}>{msg.text}</div>}
 
-            <button type="submit" className="btn btn-primary" disabled={creating} style={{ width: "100%", marginTop: 8 }}>
+            <button type="submit" className="btn btn-primary" disabled={creating || !allowedStages.includes(form.stage)} style={{ width: "100%", marginTop: 8 }}>
               {creating ? "Minting…" : form.stage === "pooled" ? "Pool & mint convergent block" : "Mint block"}
             </button>
+            {!allowedStages.includes(form.stage) && <div className="form-msg error">Not allowed for {role}. Switch role in header.</div>}
           </form>
 
           <div className="ledger-help">

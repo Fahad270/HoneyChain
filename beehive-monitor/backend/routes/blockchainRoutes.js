@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { createBlock, getChain, verifyBlock, getBlock } = require("../controllers/blockchainController");
+const { createBlock, getChain, verifyBlock, getBlock, getRoleMap } = require("../controllers/blockchainController");
+
+// who gets what — from workflow image
+router.get("/roles", (req, res) => {
+  res.json({ success: true, data: getRoleMap() });
+});
 
 // create linear or pooled block — pooled when body.prev_hashes array present (stage must be 'pooled')
 router.post("/block", createBlock);

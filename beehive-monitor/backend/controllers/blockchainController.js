@@ -1,6 +1,7 @@
 const LedgerBlock = require("../models/LedgerBlock");
 const Beekeeper = require("../models/Beekeeper");
 const { blockHash, pooledHash, randomSecret } = require("../utils/hash");
+const { getRole, canCreateStage, STAGE_ROLES, ROLE_LABEL } = require("../middleware/auth");
 
 // Stage display meta for UI — matches diagram 1→9
 const STAGE_META = {
@@ -77,6 +78,23 @@ async function createBlock(req, res) {
       return res.status(400).json({ success: false, error: `stage must be one of: ${LedgerBlock.STAGES.join(", ")}` });
     }
 
+    // 2-tier auth — who gets what comes from the workflow image
+    const role = getRole(req);
+    req.userRole = role;
+    if (!canCreateStage(role, stage)) {
+      return res.status(403).json({
+        success: false,
+        error: `Role '${role}' cannot create stage '${stage}'`,
+        allowed_roles: STAGE_ROLES[stage],
+        role_label: ROLE_LABEL[role],
+        hint:
+          role === "beekeeper"
+            ? "Beekeepers: Steps 1–2 only (registration + extraction). For 3 Collection / Pooled, 4 Transport, 5 Processing, Lab, 6 Packaging, 7 Distribution, 8 Retail — switch to KVIC in header (x-role: kvic)."
+            : "KVIC: Steps 3–8 only. Switch to Beekeeper to log a harvest extraction.",
+        stage_roles: STAGE_ROLES,
+      });
+    }
+
     // pooled stage must use prev_hashes, others use prev_hash (linear)
     const isPooled = stage === "pooled";
     let hash, prev_hash = null, prev_hashes = undefined;
@@ -146,10 +164,11 @@ async function createBlock(req, res) {
 // GET /api/ledger/chain — full chain ordered
 async function getChain(req, res) {
   try {
+    const role = getRole(req);
     const blocks = await LedgerBlock.find({}).sort({ createdAt: 1 }).populate("beekeeper", "name village").lean();
-    // enrich with meta
+    // enrich with meta + role hint
     const enriched = blocks.map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
-    res.json({ success: true, data: enriched });
+    res.json({ success: true, data: enriched, meta: { role, role_label: ROLE_LABEL[role], stage_roles: STAGE_ROLES } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -235,4 +254,28 @@ async function mintGenesisForBeekeeper(beekeeperDoc) {
   return block;
 }
 
-module.exports = { createBlock, getChain, verifyBlock, getBlock, mintGenesisForBeekeeper, stageMeta, STAGE_META, verifyChain };
+// who gets what — from workflow image supporting institutions
+function getRoleMap() {
+  return {
+    beekeeper: {
+      label: ROLE_LABEL.beekeeper,
+      steps: "1 Beekeeper Management + 2 Honey Extraction",
+      stages: Object.keys(STAGE_ROLES).filter((s) => STAGE_ROLES[s].includes("beekeeper")),
+      institutions: "The farmer and family at the apiary",
+    },
+    kvic: {
+      label: ROLE_LABEL.kvic,
+      steps: "3 Collection + 3′ Pooled + 4 Transport + 5 Processing&QC + 5b Lab + 6 Packaging + 7 Distribution + 8 Retail freeze",
+      stages: Object.keys(STAGE_ROLES).filter((s) => STAGE_ROLES[s].includes("kvic")),
+      institutions: "KVIC (Nodal) + Cooperatives/NGOs + Quality Control Labs + Branding & Marketing + Retail outlets (Khadi India)",
+    },
+    consumer: {
+      label: "Consumer — Verify only (Step 9)",
+      steps: "9 Consumer — no writes, only verify at Khadi store",
+      stages: [],
+      institutions: "Public verify via QR, no auth",
+    },
+  };
+}
+
+module.exports = { createBlock, getChain, verifyBlock, getBlock, mintGenesisForBeekeeper, stageMeta, STAGE_META, verifyChain, getRoleMap, STAGE_ROLES, ROLE_LABEL };

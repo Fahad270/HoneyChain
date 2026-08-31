@@ -49,7 +49,31 @@
   color: var(--color-primary-dark);
 }
 
+.role-switch {
+  display: flex;
+  gap: 6px;
+  background: rgba(255,255,255,0.08);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.role-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.78);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.role-btn.active {
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+}
+
 @media (max-width: 720px) {
   .navbar-inner { flex-direction: column; gap: 10px; align-items: flex-start; }
   .navbar-links { flex-wrap: wrap; }
+  .role-switch { align-self: stretch; justify-content: center; }
 }
