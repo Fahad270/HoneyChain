@@ -1,0 +1,182 @@
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams, Link } from "react-router-dom";
+import api from "../api.js";
+import { QRCodeSVG } from "qrcode.react";
+import "./Verify.css";
+
+function short(h) {
+  return h ? h.slice(0, 12) + "…" + h.slice(-6) : "";
+}
+
+export default function Verify() {
+  const { hash } = useParams();
+  const [search] = useSearchParams();
+  const token = search.get("s");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [inputHash, setInputHash] = useState(hash || "");
+
+  async function fetchVerify(h, s) {
+    setLoading(true);
+    setError(null);
+    try {
+      const qs = s ? `?s=${encodeURIComponent(s)}` : "";
+      const res = await api.get(`/ledger/verify/${h}${qs}`);
+      setData(res.data.data);
+    } catch (e) {
+      setError(e?.response?.data?.error || "not found or chain not ready. Check backend is running.");
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (hash) fetchVerify(hash, token);
+    else setLoading(false);
+  }, [hash, token]);
+
+  const chain = data?.chain || [];
+  const block = data?.block || null;
+
+  return (
+    <div className="page-container verify-page">
+      <div className="verify-head">
+        <h1>Verify at Khadi Store</h1>
+        <p className="dashboard-sub">Scan QR on jar → lands here. Checks if chain is intact, shows who handled it, and freezes after retail.</p>
+      </div>
+
+      <div className="card verify-search">
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-end", flexWrap: "wrap" }}>
+          <label className="field" style={{ flex: 1, minWidth: 260 }}>
+            <span>Paste hash from QR</span>
+            <input value={inputHash} onChange={(e) => setInputHash(e.target.value)} placeholder="hash …" />
+          </label>
+          <Link className="btn btn-primary" to={`/verify/${inputHash.trim()}${token ? `?s=${token}` : ""}`} onClick={() => inputHash.trim() && fetchVerify(inputHash.trim(), token)}>
+            Verify
+          </Link>
+        </div>
+        {hash && (
+          <div className="verify-meta">
+            Viewing <code>{hash}</code> {token && <span>with token <code>{token}</code></span>}
+          </div>
+        )}
+      </div>
+
+      {loading && <div className="card">Checking ledger…</div>}
+      {error && <div className="card" style={{ borderColor: "var(--color-danger)", color: "var(--color-danger)" }}>{error}</div>}
+
+      {block && (
+        <>
+          <div className={`card verify-status ${data.valid ? "ok" : "bad"}`}>
+            <div className="verify-status-head">
+              <span className={`status-pill ${data.valid ? "status-healthy" : "status-critical"}`}>
+                {data.valid ? "Chain intact" : "Chain broken"}
+              </span>
+              {block.is_frozen && <span className="status-pill status-critical">Frozen at retail</span>}
+              {!data.tokenValid && <span className="status-pill status-warning">Token mismatch</span>}
+              {data.valid && data.tokenValid && block.is_frozen && <span className="status-pill status-healthy">Ready for sale</span>}
+            </div>
+            {!data.valid && data.reason && <div className="verify-reason">Reason: {data.reason}</div>}
+            {!data.tokenValid && <div className="verify-reason">Scan the QR with ?s= token for full verification (one-time token per block).</div>}
+            {data.frozenBlock && <div className="verify-reason">Frozen block in ancestry: {short(data.frozenBlock)}</div>}
+          </div>
+
+          <div className="verify-layout">
+            <div className="card verify-block">
+              <div className="verify-block-head">
+                <div className="vb-icon">{block.stage_meta?.icon || "⬡"}</div>
+                <div>
+                  <div className="vb-stage">{block.stage_meta?.label || block.stage}</div>
+                  <div className="vb-step">Step {block.stage_meta?.step} • {block.stage}</div>
+                </div>
+                <div className="vb-time">{new Date(block.createdAt).toLocaleString()}</div>
+              </div>
+
+              <div className="hash-row">
+                <span className="hash-label">Hash</span>
+                <code className="hash-val">{block.hash}</code>
+              </div>
+              <div className="hash-row">
+                <span className="hash-label">Prev</span>
+                <code className="hash-val small">{block.prev_hash || (block.prev_hashes ? block.prev_hashes.join(", ").slice(0, 60) + "…" : "genesis")}</code>
+              </div>
+              {block.prev_hashes && (
+                <div className="pooled-parents">
+                  <div className="payload-label">Pooled from {block.prev_hashes.length} farmer blocks</div>
+                  <div className="parent-list">
+                    {data.pooledParents?.map((p) => (
+                      <Link key={p.hash} to={`/verify/${p.hash}?s=${p.scan_secret}`} className="parent-chip">
+                        {p.stage} • {short(p.hash)} • {p.data?.hive_id || p.data?.name || "-"}
+                      </Link>
+                    ))}
+                    {data.pooledParents?.length === 0 && block.prev_hashes.map((h) => <code key={h} className="hash-val small">{short(h)}</code>)}
+                  </div>
+                </div>
+              )}
+
+              <div className="block-payload">
+                <div className="payload-label">Block data</div>
+                <pre className="payload-pre">{JSON.stringify(block.data, null, 2)}</pre>
+                {block.beekeeper && (
+                  <pre className="payload-pre">beekeeper: {block.beekeeper.name} — {block.beekeeper.village} ({block.beekeeper.phoneNumber || "-"})</pre>
+                )}
+                {block.collective_name && <pre className="payload-pre">collective: {block.collective_name}</pre>}
+                {block.lab && Object.values(block.lab).some(Boolean) && <pre className="payload-pre">lab: {JSON.stringify(block.lab, null, 2)}</pre>}
+              </div>
+
+              <div className="verify-qr">
+                <div className="qr-box">
+                  <QRCodeSVG value={`${window.location.origin}/verify/${block.hash}?s=${block.scan_secret}`} size={130} />
+                </div>
+                <div className="qr-caption">Present this QR at next hop to append</div>
+              </div>
+            </div>
+
+            <div className="card verify-chain">
+              <h3>Full chain to this jar</h3>
+              <p className="dashboard-sub">From genesis (beekeeper) → pooled collective → processor → lab → frozen retail</p>
+              <div className="v-chain">
+                {chain.map((c, i) => {
+                  if (c.missing) return <div key={c.hash} className="v-item missing">⚠️ Missing {short(c.hash)}</div>;
+                  return (
+                    <Link key={c.hash} to={`/verify/${c.hash}?s=${c.scan_secret}`} className={`v-item ${c.hash === block.hash ? "active" : ""} ${c.is_frozen ? "frozen" : ""}`}>
+                      <div className="v-dot">{c.stage_meta?.icon || i + 1}</div>
+                      <div className="v-body">
+                        <div className="v-label">{c.stage_meta?.label || c.stage}</div>
+                        <div className="v-hash">{short(c.hash)} • {new Date(c.createdAt).toLocaleDateString()}</div>
+                      </div>
+                      {c.is_frozen && <span className="status-pill status-critical">Frozen</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+              <div className="verify-actions">
+                <Link className="btn btn-outline" to="/ledger">
+                  Open full ledger
+                </Link>
+                <Link className="btn btn-primary" to={`/ledger`}>
+                  Go to Khadi Store Ledger
+                </Link>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {!block && !loading && !error && (
+        <div className="card">
+          <h3>How to use at Khadi India</h3>
+          <ol className="verify-help">
+            <li>Collective scans farmer genesis QR → creates <em>pooled</em> block (many → one)</li>
+            <li>Processor scans pooled QR → adds processing block</li>
+            <li>Lab scans → adds lab-certified block (CA number)</li>
+            <li>Retail scans → adds retail block → chain freezes</li>
+            <li>Consumer scans jar QR here — see “Chain intact + Frozen at retail” ✅</li>
+          </ol>
+        </div>
+      )}
+    </div>
+  );
+}

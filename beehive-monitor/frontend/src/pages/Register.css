@@ -184,3 +184,55 @@
 .form-msg { font-size: 13px; font-weight: 600; }
 .form-msg.success { color: var(--color-success); }
 .form-msg.error { color: var(--color-danger); }
+
+/* Genesis ledger card — awesome UI, same theme */
+.genesis-card {
+  margin-top: 10px;
+  background: linear-gradient(0deg, var(--color-surface-2), var(--color-surface));
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.genesis-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--color-border);
+  margin-bottom: 14px;
+}
+.genesis-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800;
+}
+.genesis-title { font-family: var(--font-heading); font-weight: 800; color: var(--color-primary-dark); font-size: 15px; }
+.genesis-sub { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; line-height: 1.4; }
+.genesis-grid {
+  display: grid;
+  grid-template-columns: 1fr 190px;
+  gap: 18px;
+}
+@media (max-width: 720px) { .genesis-grid { grid-template-columns: 1fr; } }
+.genesis-meta {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin-top: 10px; font-size: 12px; color: var(--color-text-muted);
+}
+.genesis-qr {
+  text-align: center;
+  border-left: 1px dashed var(--color-border);
+  padding-left: 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+@media (max-width: 720px) { .genesis-qr { border-left: none; border-top: 1px dashed var(--color-border); padding-left: 0; padding-top: 14px; } }
+.genesis-qr .qr-box { background: #fff; border: 1px solid var(--color-border); border-radius: 12px; padding: 10px; }
+.genesis-qr .qr-caption { font-size: 11px; font-weight: 700; color: var(--color-primary-dark); text-align: center; }
+.genesis-flow { font-size: 10px; color: var(--color-text-muted); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 10px; line-height: 1.4; text-align: center; }
+.genesis-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.genesis-card .hash-row { margin-bottom: 8px; }
+.genesis-card .payload-pre { max-height: 150px; }

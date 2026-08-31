@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../api.js";
+import { QRCodeSVG } from "qrcode.react";
 import "./Register.css";
 
 const CATEGORIES = ["Individual Beekeeper", "Firm", "Society", "Company"];
@@ -47,6 +49,7 @@ export default function Register() {
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState(null); // null | "saving" | "success" | "error"
   const [errorMsg, setErrorMsg] = useState("");
+  const [genesis, setGenesis] = useState(null);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -56,13 +59,15 @@ export default function Register() {
     e.preventDefault();
     setStatus("saving");
     setErrorMsg("");
+    setGenesis(null);
     try {
-      await api.post("/beekeepers/register", {
+      const res = await api.post("/beekeepers/register", {
         ...form,
         category: CATEGORIES[category].toLowerCase().includes("individual")
           ? "individual"
           : CATEGORIES[category].toLowerCase(),
       });
+      setGenesis(res.data.genesis || null);
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -260,6 +265,51 @@ export default function Register() {
                 {status === "saving" ? "Saving..." : "Submit Registration"}
               </button>
             </div>
+
+            {status === "success" && genesis && (
+              <div className="genesis-card">
+                <div className="genesis-head">
+                  <span className="genesis-icon">⬡</span>
+                  <div>
+                    <div className="genesis-title">First block on ledger — GENESIS</div>
+                    <div className="genesis-sub">Step 1 • Beekeeper Registration • Chain starts here • Present this QR to your collective</div>
+                  </div>
+                  <span className="status-pill status-healthy">On-chain</span>
+                </div>
+
+                <div className="genesis-grid">
+                  <div className="genesis-data">
+                    <div className="hash-row">
+                      <span className="hash-label">Block hash</span>
+                      <code className="hash-val">{genesis.hash}</code>
+                    </div>
+                    <div className="hash-row">
+                      <span className="hash-label">Prev</span>
+                      <code className="hash-val small">{genesis.prev_hash || "— genesis (no prev)"}</code>
+                    </div>
+                    <div className="genesis-meta">
+                      <span><strong>{genesis.data?.name || form.name}</strong> • {genesis.data?.village || form.district || "—"}</span>
+                      <span className="badge">{genesis.stage}</span>
+                    </div>
+                    <pre className="payload-pre" style={{ marginTop: 12 }}>{JSON.stringify(genesis.data || {}, null, 2)}</pre>
+                    <div className="genesis-actions">
+                      <Link className="btn btn-primary" to={`/verify/${genesis.hash}?s=${genesis.scan_secret}`}>Verify genesis</Link>
+                      <Link className="btn btn-outline" to="/ledger">Open ledger</Link>
+                    </div>
+                    <div className="scan-hint" style={{ marginTop: 8 }}>scan_secret: <code>{genesis.scan_secret}</code> • QR = {window.location.origin}/verify/{genesis.hash.slice(0, 10)}…?s=…</div>
+                  </div>
+                  <div className="genesis-qr">
+                    <div className="qr-box">
+                      <QRCodeSVG value={`${window.location.origin}/verify/${genesis.hash}?s=${genesis.scan_secret}`} size={148} level="M" />
+                    </div>
+                    <div className="qr-caption">Beekeeper QR — scan to create extraction / pooled batch</div>
+                    <div className="genesis-flow">
+                      <span>→ Collective scans this → pools many farmers → processor scans pooled → lab scans → retail freezes → Khadi verifies</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>
