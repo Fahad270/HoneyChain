@@ -7,6 +7,13 @@ async function createRti(req, res) {
     const qid = (beekeeperId || hash || "").trim();
     if (!qid) return res.status(400).json({ success: false, error: "beekeeperId or genesis hash required" });
     if (!question) return res.status(400).json({ success: false, error: "question required" });
+    // Cap free text so one filing can't bloat the JSON store / DB.
+    if (String(question).length > 2000) {
+      return res.status(400).json({ success: false, error: "question is too long — keep it under 2000 characters." });
+    }
+    if (subject && String(subject).length > 200) {
+      return res.status(400).json({ success: false, error: "subject is too long — keep it under 200 characters." });
+    }
 
     req.params = { ...(req.params || {}), id: qid };
     const fakeRes = {

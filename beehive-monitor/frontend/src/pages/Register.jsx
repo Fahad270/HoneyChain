@@ -332,9 +332,6 @@ export default function Register() {
             <div className="form-footer">
               {status === "success" && <span className="form-msg success">Registered successfully.</span>}
               {status === "error" && <span className="form-msg error">{errorMsg}</span>}
-              {!user && status !== "saving" && (
-                <Link className="btn btn-honey" to="/account">Log in / create account to submit</Link>
-              )}
               <button type="submit" className="btn btn-primary" disabled={status === "saving"}>
                 {status === "saving" ? "Saving..." : "Submit Registration"}
               </button>
@@ -367,7 +364,7 @@ export default function Register() {
                     </div>
                     <pre className="payload-pre" style={{ marginTop: 12 }}>{JSON.stringify(genesis.data || {}, null, 2)}</pre>
                     <div className="genesis-actions">
-                      <Link className="btn btn-primary" to={`/verify/${genesis.hash}?s=${genesis.scan_secret}`}>Verify genesis</Link>
+                      <Link className="btn btn-primary" to={`/verify/${genesis.hash}?s=${encodeURIComponent(genesis.scan_secret || "")}`}>Verify genesis</Link>
                       <Link className="btn btn-outline" to="/ledger">Open ledger</Link>
                       <Link className="btn btn-outline" to={`/twin?id=${genesis.hash}`}>Track my twin →</Link>
                     </div>
@@ -375,7 +372,7 @@ export default function Register() {
                   </div>
                   <div className="genesis-qr">
                     <div className="qr-box">
-                      <QRCodeSVG value={`${window.location.origin}/verify/${genesis.hash}?s=${genesis.scan_secret}`} size={148} level="M" />
+                      <QRCodeSVG value={`${window.location.origin}/verify/${genesis.hash}?s=${encodeURIComponent(genesis.scan_secret || "")}`} size={148} level="M" />
                     </div>
                     <div className="qr-caption">Beekeeper QR — scan to create extraction / pooled batch</div>
                     <div className="genesis-flow">

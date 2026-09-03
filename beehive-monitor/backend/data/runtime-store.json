@@ -441,6 +441,84 @@
   ],
   "rti": [
     {
+      "_id": "5498456ad5402c7ed1290ab4",
+      "beekeeperId": "f8e09841a7d8dda8265ec91d",
+      "beekeeperName": "Mongo Test Farmer",
+      "subject": "t",
+      "question": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "trail": {
+        "beekeeper": {
+          "name": "Mongo Test Farmer",
+          "village": "Mahad",
+          "district": "Raigad",
+          "state": "maharashtra"
+        },
+        "collections": [
+          {
+            "collector": "Raigad Madhu Collective",
+            "quantity_kg": 35,
+            "flower": "karvi",
+            "destination": "KVIC Lab Mumbai",
+            "at": "2026-08-31T18:57:26.866Z",
+            "cid": "bafyb71d22530d75cbd4df19e1c89151b76ce25e6715e33e034ae994"
+          }
+        ],
+        "labs": [],
+        "packaging": [
+          {
+            "institution": null,
+            "jarSerial": "JAR-MONGO-001",
+            "at": "2026-08-31T18:57:40.632Z",
+            "cid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8"
+          }
+        ],
+        "stores": [],
+        "hops": [
+          {
+            "stage": "beekeeper_registration",
+            "label": "Beekeeper Registration",
+            "hash": "47e1902b44a767395f031218aca5477d868c2236b7eaab5a55c6351b1fb15cb7",
+            "cid": "bafyec6c013737e02ec8bb46ad5b94a8d098e307bf4317ca52471445",
+            "at": "2026-08-31T18:57:13.380Z",
+            "data": {
+              "beekeeperId": "f8e09841a7d8dda8265ec91d",
+              "name": "Mongo Test Farmer",
+              "village": "Mahad",
+              "aadhaarHash": "566cb8bbfdb890894bcc4b85bfc9b5fb6f2c4603702bb3bc205ac604662807ee",
+              "aadhaarLast4": "6321",
+              "aadhaarMasked": "XXXX-XXXX-6321",
+              "registeredAt": "2026-08-31T18:57:12.628Z"
+            }
+          },
+          {
+            "stage": "collection",
+            "label": "Collection Phase 1",
+            "hash": "f648a539ca85e4a4d82a24b6ccf030b686ddb9ebfe84538b924212916e73319d",
+            "cid": "bafyb71d22530d75cbd4df19e1c89151b76ce25e6715e33e034ae994",
+            "at": "2026-08-31T18:57:26.866Z",
+            "data": {
+              "destination_lab": "KVIC Lab Mumbai",
+              "quantity_kg": 35,
+              "collector_name": "Raigad Madhu Collective",
+              "flower_type": "karvi"
+            }
+          },
+          {
+            "stage": "packaging",
+            "label": "Packaging",
+            "hash": "7ab91331832680050d4970256dd8f432a48966cc44ada89dabed61b908606251",
+            "cid": "bafy748494c7e9364ab8baa24e524f0eba254f85081b9927cd5c75a8",
+            "at": "2026-08-31T18:57:40.632Z",
+            "data": {
+              "jar_serial": "JAR-MONGO-001",
+              "store_name": "Khadi India - Mumbai"
+            }
+          }
+        ]
+      },
+      "createdAt": "2026-09-03T09:36:00.265Z"
+    },
+    {
       "_id": "4b2519d9b4bb797fda0aa032",
       "beekeeperId": "f8e09841a7d8dda8265ec91d",
       "beekeeperName": "Mongo Test Farmer",
@@ -575,5 +653,17 @@
       "createdAt": "2026-08-31T18:01:18.411Z"
     }
   ],
-  "users": []
+  "users": [
+    {
+      "_id": "b79840abf391f43e28bbe867",
+      "name": "Order Check",
+      "role": "kvic",
+      "passwordHash": "$2b$10$OXEVdfzZaepMhy6agNK6GeghgEl7W.NUaLJ0ijZysuJZUId1CFCly",
+      "phone": "9840000011",
+      "status": "active",
+      "createdAt": "2026-09-03T09:59:19.670Z",
+      "updatedAt": "2026-09-03T09:59:19.671Z",
+      "lastLoginAt": "2026-09-03T09:59:19.682Z"
+    }
+  ]
 }

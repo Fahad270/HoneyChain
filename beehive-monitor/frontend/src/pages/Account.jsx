@@ -172,7 +172,7 @@ export default function Account() {
                 <h3>Assigned centre</h3>
                 {centre ? (
                   <div className="account-linked">
-                    ✓ {centre.name} <span className="small-muted">· {centre.city}, {centre.state}</span>
+                    ✓ {centre.name} <span className="small-muted">· {centre.city}, {centre.state}</span>{" "}
                     {!user.centreVerified && <span className="badge">self-asserted</span>}
                   </div>
                 ) : (

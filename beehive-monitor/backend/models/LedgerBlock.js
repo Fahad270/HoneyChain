@@ -9,10 +9,10 @@ const STAGES = [
   "pooled",                 // 3-collapsed — collective batches N farmer blocks converge (DAG)
   "transport",              // 4 — truck to processing plant
   "processing",             // 5 — filtered/clarified/pasteurized + QA tester scans prev QR
+  "lab_certified",          // 5b — lab adds his block by scanning (CA, cert hash) — can interleave before retail
   "packaging",              // 6 — food-grade pack + label (FSSAI, batch no, nutrition)
   "distribution",           // 7 — marketing & distribution to outlets
   "retail",                 // 8 — Khadi India / outlet — freeze point
-  "lab_certified",          // 5b — lab adds his block by scanning (CA, cert hash) — can interleave before retail
 ];
 
 const LedgerBlockSchema = new mongoose.Schema(

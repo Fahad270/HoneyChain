@@ -1,5 +1,7 @@
-// Two tier auth: beekeeper vs kvic
-// Determined from header x-role (beekeeper | kvic). No JWT for MVP — matches image institutions.
+// Two-tier auth: beekeeper vs kvic. Role comes ONLY from a verified login JWT
+// (authenticate/optionalAuth set req.authUser). The `x-role` header / `?role=`
+// query survive purely as a display hint for public reads and grant nothing —
+// every write route requires `authenticate`.
 // From Honey Workflow supporting institutions:
 // - BEEKEEPER tier: steps 1 Beekeeper Management + 2 Honey Extraction (owns hive, harvest)
 // - KVIC tier: steps 3 Collection (Cooperative/NGO/Trader) + 4 Transport + 5 Processing & QC

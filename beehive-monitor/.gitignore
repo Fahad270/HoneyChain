@@ -2,3 +2,6 @@ node_modules/
 .env
 dist/
 .DS_Store
+# Local-only generated chain registry key (see CHAIN_REGISTRY_KEY in
+# backend/.env.example). Never commit — environments must not share it.
+backend/data/registry-key.txt

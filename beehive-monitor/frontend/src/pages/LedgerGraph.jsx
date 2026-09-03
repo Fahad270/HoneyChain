@@ -108,7 +108,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
         <div>
           <div className="graph-title">{title}</div>
           <div className="graph-sub">
-            {blocks.length} block{blocks.length === 1 ? "" : "s"} · columns are workflow stages 1 → 8 ·
+            {blocks.length} block{blocks.length === 1 ? "" : "s"} · one column per stage, left (hive) to right (Khadi shelf) ·
             converging lines are collective pools · <span className="graph-frozen-key">red = frozen at retail</span>
           </div>
         </div>

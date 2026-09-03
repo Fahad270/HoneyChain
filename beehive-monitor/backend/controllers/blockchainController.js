@@ -10,13 +10,13 @@ const STAGE_META = {
   beekeeper_registration: { label: "Beekeeper Registration", step: 1, desc: "Beekeeper enrolled — record pinned (Pinata / Mongo) and appended", icon: "🐝" },
   honey_extraction:        { label: "Honey Extraction", step: 2, desc: "Farmer harvests honey — hive, weight, flower source", icon: "🍯" },
   collection:             { label: "Collection Phase 1", step: 3, desc: "Collector, quantity, flower type, destination lab / smart van", icon: "🤝" },
-  pooled:                 { label: "Collective Pool", step: 2, desc: "Optional many-farmer collection lot", icon: "🔗" },
-  transport:              { label: "Transport", step: 3, desc: "Truck to processing plant", icon: "🚚" },
-  processing:             { label: "Processing & QC", step: 4, desc: "Filtered / clarified / pasteurized + QA tester scans prev QR", icon: "🧪" },
-  lab_certified:          { label: "Lab Report", step: 4, desc: "KVIC / lab form + moisture/purity — QR appended", icon: "🔬" },
-  packaging:              { label: "Packaging", step: 5, desc: "Khadi village institutions print & stick jar QR (public key)", icon: "🏷️" },
-  distribution:           { label: "Distribution", step: 6, desc: "Which lot went to which Khadi / KVIC store", icon: "📦" },
-  retail:                 { label: "Retail sale", step: 7, desc: "Bill issues one-time private key; chain freezes", icon: "🏪" },
+  pooled:                 { label: "Collective Pool", step: 3, desc: "Optional many-farmer collection lot", icon: "🔗" },
+  transport:              { label: "Transport", step: 4, desc: "Truck to processing plant", icon: "🚚" },
+  processing:             { label: "Processing & QC", step: 5, desc: "Filtered / clarified / pasteurized + QA tester scans prev QR", icon: "🧪" },
+  lab_certified:          { label: "Lab Report", step: 5, desc: "KVIC / lab form + moisture/purity — QR appended", icon: "🔬" },
+  packaging:              { label: "Packaging", step: 6, desc: "Khadi village institutions print & stick jar QR (public key)", icon: "🏷️" },
+  distribution:           { label: "Distribution", step: 7, desc: "Which lot went to which Khadi / KVIC store", icon: "📦" },
+  retail:                 { label: "Retail sale", step: 8, desc: "Bill issues one-time private key; chain freezes", icon: "🏪" },
 };
 
 function stageMeta(stage) {

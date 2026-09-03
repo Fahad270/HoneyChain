@@ -156,9 +156,9 @@ export default function FarmerTwin(){
               {current && (
                 <div className="twin-qr">
                   <div className="qr-box">
-                    <QRCodeSVG value={`${window.location.origin}/verify/${current.hash}?s=${current.scan_secret}`} size={110} />
+                    <QRCodeSVG value={`${window.location.origin}/verify/${current.hash}?s=${encodeURIComponent(current.scan_secret || "")}`} size={110} />
                   </div>
-                  <Link className="btn btn-outline" to={`/verify/${current.hash}?s=${current.scan_secret}`} style={{marginTop:8}}>Verify jar</Link>
+                  <Link className="btn btn-outline" to={`/verify/${current.hash}?s=${encodeURIComponent(current.scan_secret || "")}`} style={{marginTop:8}}>Verify jar</Link>
                 </div>
               )}
             </div>

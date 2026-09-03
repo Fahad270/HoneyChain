@@ -22,7 +22,8 @@ export default function App() {
           <Route path="/learn" element={<Learn />} />
           <Route path="/diagnose" element={<DiseaseDetection />} />
           <Route path="/ledger" element={<Ledger />} />
-          <Route path="/graph" element={<Graph />} />          <Route path="/verify/:hash" element={<Verify />} />
+          <Route path="/graph" element={<Graph />} />
+          <Route path="/verify/:hash" element={<Verify />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/twin" element={<FarmerTwin />} />
           <Route path="/track" element={<FarmerTwin />} />

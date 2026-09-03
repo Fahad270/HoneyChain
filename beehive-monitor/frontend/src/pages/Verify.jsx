@@ -227,7 +227,7 @@ export default function Verify() {
 
               <div className="verify-qr">
                 <div className="qr-box">
-                  <QRCodeSVG value={`${window.location.origin}/verify/${block.hash}${block.scan_secret ? `?s=${block.scan_secret}` : token ? `?s=${token}` : ""}`} size={130} />
+                  <QRCodeSVG value={`${window.location.origin}/verify/${block.hash}${block.scan_secret ? `?s=${encodeURIComponent(block.scan_secret)}` : token ? `?s=${encodeURIComponent(token)}` : ""}`} size={130} />
                 </div>
                 <div className="qr-caption">Present this QR at next hop to append</div>
               </div>
