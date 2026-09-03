@@ -30,7 +30,7 @@ export default function Dashboard() {
 
   const counts = useMemo(() => {
     const c = { healthy: 0, warning: 0, critical: 0 };
-    hives.forEach((h) => c[h.status]++);
+    hives.forEach((h) => { if (c[h.status] !== undefined) c[h.status]++; });
     return c;
   }, [hives]);
 
@@ -38,7 +38,7 @@ export default function Dashboard() {
     () =>
       hives
         .filter((h) => h.status !== "healthy")
-        .flatMap((h) => h.flags.map((f) => ({ hive: h, text: f })))
+        .flatMap((h) => (Array.isArray(h.flags) ? h.flags : []).map((f) => ({ hive: h, text: f })))
         .sort((a) => (a.hive.status === "critical" ? -1 : 1)),
     [hives]
   );
@@ -52,8 +52,9 @@ export default function Dashboard() {
     <div className="page-container">
       <div className="dashboard-topbar">
         <div>
+          <div className="kicker">Live apiary · Mock telemetry</div>
           <h1>Apiary Overview</h1>
-          <p className="dashboard-sub">{hives.length} hives · ideal brood temperature is 35°C</p>
+          <p className="dashboard-sub">{hives.length} hives · ideal brood temperature is 35°C · tap a comb to inspect</p>
         </div>
         <div className="stat-row">
           <Stat label="Healthy" value={counts.healthy} color="var(--color-success)" />
@@ -153,10 +154,10 @@ export default function Dashboard() {
 
             <div className="chart-label">24h brood temp &amp; humidity</div>
             <ResponsiveContainer width="100%" height={150}>
-              <LineChart data={selected.tempHistory} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+              <LineChart data={selected.tempHistory} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke="#E1DFD3" vertical={false} />
                 <XAxis dataKey="t" tick={{ fontSize: 10 }} interval={3} tickLine={false} />
-                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={30} />
+                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={42} domain={["dataMin - 1", "dataMax + 1"]} />
                 <Tooltip />
                 <Line type="monotone" dataKey="temp" stroke="#E3A23D" strokeWidth={2} dot={false} name="Temp °C" />
                 <Line type="monotone" dataKey="hum" stroke="#1F5D50" strokeWidth={2} dot={false} name="Humidity %" />
@@ -165,7 +166,7 @@ export default function Dashboard() {
 
             <div className="chart-label">7-day weight (kg)</div>
             <ResponsiveContainer width="100%" height={120}>
-              <AreaChart data={selected.weightHistory} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+              <AreaChart data={selected.weightHistory} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#2F8558" stopOpacity={0.4} />
@@ -174,18 +175,18 @@ export default function Dashboard() {
                 </defs>
                 <CartesianGrid stroke="#E1DFD3" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10 }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={30} domain={["dataMin - 1", "dataMax + 1"]} />
+                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={42} domain={["dataMin - 1", "dataMax + 1"]} />
                 <Tooltip />
                 <Area type="monotone" dataKey="weight" stroke="#2F8558" strokeWidth={2} fill="url(#wfill)" />
               </AreaChart>
             </ResponsiveContainer>
 
             <div className="chart-label">Notes</div>
-            {selected.flags.length === 0 ? (
+            {(selected.flags || []).length === 0 ? (
               <p className="empty">All readings within normal range.</p>
             ) : (
               <ul className="flag-list">
-                {selected.flags.map((f, i) => <li key={i}>{f}</li>)}
+                {(selected.flags || []).map((f, i) => <li key={i}>{f}</li>)}
               </ul>
             )}
           </div>

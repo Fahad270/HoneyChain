@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
+import AadhaarKyc from "./AadhaarKyc.jsx";
+import { useRole } from "../context/RoleContext.jsx";
 import "./Register.css";
 
 const CATEGORIES = ["Individual Beekeeper", "Firm", "Society", "Company"];
@@ -29,6 +31,7 @@ const emptyForm = {
   postalAddress: "",
   phoneNumber: "",
   email: "",
+  clusterId: "",
   fatherOrHusbandName: "",
   caste: "",
   noOfBeeColonies: "",
@@ -44,6 +47,7 @@ const emptyForm = {
 };
 
 export default function Register() {
+  const { user, authChecked } = useRole();
   const [category, setCategory] = useState(0);
   const [activeSection, setActiveSection] = useState("basic");
   const [form, setForm] = useState(emptyForm);
@@ -51,6 +55,8 @@ export default function Register() {
   const [errorMsg, setErrorMsg] = useState("");
   const [genesis, setGenesis] = useState(null);
   const [clusters, setClusters] = useState([]);
+  const [kycOpen, setKycOpen] = useState(false);
+  const [kycInfo, setKycInfo] = useState(null); // { masked, verifiedAt, matchCount, accountName }
 
   useEffect(() => {
     api.get("/map/geo").then((r) => {
@@ -62,20 +68,36 @@ export default function Register() {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  // Aadhaar-linked autofill from the KYC panel — only known form keys.
+  function applyKycPrefill(prefill) {
+    setForm((f) => {
+      const next = { ...f };
+      for (const k of Object.keys(emptyForm)) {
+        if (prefill[k] !== undefined && prefill[k] !== null) next[k] = prefill[k];
+      }
+      return next;
+    });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!user) {
+      setStatus("error");
+      setErrorMsg("Log in first — registration mints your genesis block, so it needs a beekeeper or KVIC account.");
+      return;
+    }
     setStatus("saving");
     setErrorMsg("");
     setGenesis(null);
     try {
-      const res = await api.post("/beekeepers/register", {
-        ...form,
-        category: CATEGORIES[category].toLowerCase().includes("individual")
-          ? "individual"
-          : CATEGORIES[category].toLowerCase(),
-      });
-      const payload = res.data.data;
-      const genesisBlock = payload?.genesis || res.data.genesis || null;
+      const categoryValue = CATEGORIES[category].toLowerCase().includes("individual")
+        ? "individual"
+        : CATEGORIES[category].toLowerCase();
+      const payload = { ...form, category: categoryValue };
+      if (!payload.clusterId) delete payload.clusterId;
+      const res = await api.post("/beekeepers/register", payload);
+      const body = res.data.data;
+      const genesisBlock = body?.genesis || res.data.genesis || null;
       setGenesis(genesisBlock);
       setStatus("success");
     } catch (err) {
@@ -84,12 +106,23 @@ export default function Register() {
     }
   }
 
+  // Registration mints a genesis block — a private, logged-in act.
+  // Logged-out visitors go to Account (login/signup) instead. Wait for the
+  // persisted-session check first so returning users don't flash-redirect.
+  if (authChecked && !user) {
+    return <Navigate to="/account" replace />;
+  }
+  if (!authChecked) {
+    return <div className="page-container">Loading…</div>;
+  }
+
   return (
     <div className="register-page">
       <div className="register-banner">
         <div className="register-banner-inner">
-          <div className="register-banner-tag">National Bee Board · NBHM</div>
-          <h1>Beekeeper Registration</h1>
+          <div className="register-banner-tag">National Bee Board · NBHM · HoneyChain</div>
+          <h1>Beekeeper <em>Registration</em></h1>
+          <p className="register-banner-sub">Enroll your apiary — your first ledger block (genesis QR) is minted instantly. Present it to your collective to start the farm-to-Khadi journey.</p>
         </div>
       </div>
 
@@ -98,6 +131,7 @@ export default function Register() {
           {CATEGORIES.map((cat, i) => (
             <button
               key={cat}
+              type="button"
               className={"category-tab" + (i === category ? " active" : "")}
               onClick={() => setCategory(i)}
             >
@@ -112,6 +146,7 @@ export default function Register() {
             {SIDE_SECTIONS.map((s) => (
               <button
                 key={s.key}
+                type="button"
                 disabled={!s.enabled}
                 className={
                   "sidebar-item" +
@@ -129,7 +164,7 @@ export default function Register() {
           <form className="register-form card" onSubmit={handleSubmit}>
             <div className="form-header">
               <label className="field">
-                <span>Aadhaar No</span>
+                <span>Aadhaar No {kycInfo && <span className="kyc-verified-pill">✓ {kycInfo.masked}</span>}</span>
                 <input
                   value={form.aadhaarNo}
                   onChange={(e) => update("aadhaarNo", e.target.value)}
@@ -137,10 +172,28 @@ export default function Register() {
                   required
                 />
               </label>
-              <button type="button" className="btn btn-outline">
+              <button type="button" className="btn btn-outline" onClick={() => setKycOpen(true)}>
                 Get Aadhaar Info
               </button>
             </div>
+            {kycInfo && (
+              <div className="form-msg success" style={{ fontSize: 12 }}>
+                ✓ Aadhaar verified {kycInfo.verifiedAt ? `· ${new Date(kycInfo.verifiedAt).toLocaleString()}` : ""} ·
+                autofilled from {kycInfo.accountName || "linked account"} · {kycInfo.matchCount} linked account(s) in our database.
+              </div>
+            )}
+            {kycOpen && (
+              <AadhaarKyc
+                initialAadhaar={form.aadhaarNo}
+                onClose={() => setKycOpen(false)}
+                onVerified={({ prefill, masked, verifiedAt, matchCount, accountName }) => {
+                  applyKycPrefill(prefill);
+                  setKycInfo({ masked, verifiedAt, matchCount, accountName });
+                  setKycOpen(false);
+                  setStatus(null);
+                }}
+              />
+            )}
 
             <div className="section-banner">
               Aadhaar Details <span>(Change not allowed here — update Aadhaar for changes)</span>
@@ -279,6 +332,9 @@ export default function Register() {
             <div className="form-footer">
               {status === "success" && <span className="form-msg success">Registered successfully.</span>}
               {status === "error" && <span className="form-msg error">{errorMsg}</span>}
+              {!user && status !== "saving" && (
+                <Link className="btn btn-honey" to="/account">Log in / create account to submit</Link>
+              )}
               <button type="submit" className="btn btn-primary" disabled={status === "saving"}>
                 {status === "saving" ? "Saving..." : "Submit Registration"}
               </button>

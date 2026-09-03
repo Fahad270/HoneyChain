@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
+import LedgerGraph from "./LedgerGraph.jsx";
 import "./Ledger.css";
 
 const STAGE_LABEL = {
   beekeeper_registration: "Beekeeper Registration",
+  honey_extraction: "Honey Extraction",
   collection: "Collection Phase 1",
   pooled: "Collective Pool",
   transport: "Transport",
@@ -19,6 +21,7 @@ const STAGE_LABEL = {
 
 const STAGE_ICON = {
   beekeeper_registration: "🐝",
+  honey_extraction: "🍯",
   collection: "🤝",
   pooled: "🔗",
   transport: "🚚",
@@ -31,6 +34,7 @@ const STAGE_ICON = {
 
 const WORKFLOW_STEPS = [
   { key: "beekeeper_registration", label: "Beekeeper", num: 1 },
+  { key: "honey_extraction", label: "Extraction", num: 2 },
   { key: "collection", label: "Collection", num: 3 },
   { key: "pooled", label: "Collective", num: 3 },
   { key: "transport", label: "Transport", num: 4 },
@@ -47,12 +51,18 @@ function shortHash(h) {
 }
 
 export default function Ledger() {
-  const { role } = useRole();
+  const { role, user } = useRole();
+  const navigate = useNavigate();
   const isBeekeeper = role === "beekeeper";
+  const isKvic = role === "kvic";
+  // mirrors backend middleware/auth.js STAGE_ROLES — enforced by JWT server-side
   const allowedStages = isBeekeeper
-    ? ["collection", "pooled"]
-    : ["collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+    ? ["honey_extraction"]
+    : isKvic
+      ? ["collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"]
+      : [];
   const stageOptions = {
+    honey_extraction: "2 — Honey Extraction (Beekeeper harvest)",
     collection: "3 — Collection (KVIC)",
     pooled: "3′ — Collective Pool (KVIC, many → one)",
     transport: "4 — Transport (KVIC)",
@@ -66,41 +76,64 @@ export default function Ledger() {
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [scope, setScope] = useState("mine"); // mine (personal, logged in) | all (full chain)
+  const [scopeInfo, setScopeInfo] = useState(null);
+  const [scopeError, setScopeError] = useState("");
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
-    stage: isBeekeeper ? "collection" : "pooled",
+    stage: "honey_extraction",
     prev_hash: "",
     prev_hashes: "",
     dataRaw: JSON.stringify({
-      quantity_kg: 25,
-      flower_type: "mustard",
-      collector_name: "Raigad Madhu Collective",
-      collector_org: "Cooperative Society",
-      collector_phone: "9876500101",
-      destination_lab: "KVIC Lab Pune",
+      hive_id: "HIVE-01",
+      weight_kg: 12,
+      flower_source: "mustard",
+      harvest_date: new Date().toISOString().slice(0, 10),
     }, null, 2),
     collective_name: "",
   });
   const [msg, setMsg] = useState(null);
 
-  async function load() {
+  async function load(nextScope) {
+    const s = nextScope || scope;
     setLoading(true);
+    setScopeError("");
     try {
-      const res = await api.get("/ledger/chain");
-      setBlocks(res.data.data || []);
-    } catch {
-      setBlocks([]);
+      if (s === "mine" && user) {
+        const res = await api.get("/ledger/mine");
+        setBlocks(res.data.data.blocks || []);
+        setScopeInfo(res.data.data.scope || null);
+      } else {
+        const res = await api.get("/ledger/chain");
+        setBlocks(res.data.data || []);
+        setScopeInfo(null);
+      }
+    } catch (err) {
+      if (s === "mine" && err?.response?.status === 404) {
+        setBlocks([]);
+        setScopeInfo(null);
+        setScopeError(err?.response?.data?.error || "Nothing linked yet.");
+      } else {
+        setBlocks([]);
+      }
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    load();
-  }, []);
+    load(user ? "mine" : "all");
+    setScope(user ? "mine" : "all");
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // keep stage in sync when role flips
+  function switchScope(s) {
+    setScope(s);
+    load(s);
+  }
+
+  // keep stage in sync when the account tier resolves
   useEffect(() => {
+    if (!allowedStages.length) return;
     setForm((f) => {
       if (!allowedStages.includes(f.stage)) return { ...f, stage: allowedStages[0] };
       return f;
@@ -121,8 +154,12 @@ export default function Ledger() {
   async function handleCreate(e) {
     e.preventDefault();
     setMsg(null);
+    if (!user) {
+      setMsg({ type: "error", text: "Log in first — minting needs a beekeeper or KVIC account." });
+      return;
+    }
     if (!allowedStages.includes(form.stage)) {
-      setMsg({ type: "error", text: `Your role ${role} cannot create ${form.stage}. Switch role in the header.` });
+      setMsg({ type: "error", text: `Your ${role} account cannot create ${form.stage}.` });
       return;
     }
     let data;
@@ -167,25 +204,27 @@ export default function Ledger() {
   return (
     <div className="page-container ledger-page">
       {/* Role banner from image */}
-      <div className={`card role-banner role-${role}`}>
-        <span className="role-badge">{role === "beekeeper" ? "🐝 Beekeeper" : "🏛️ KVIC"}</span>
+      <div className={`card role-banner role-${role || "none"}`}>
+        <span className="role-badge">{isBeekeeper ? "🐝 Beekeeper" : isKvic ? "🏛️ KVIC" : "👁️ Public view"}</span>
         <span>
           {isBeekeeper
-              ? "You manage steps 1–3: registration, collection and pooled batches. Your image says Beekeepers maintain hives and harvest honey. Collection onward is handled by KVIC network."
-              : "You are KVIC: steps 3–8 — Cooperative/NGO collection, pooled batches, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–3."}
+              ? "You manage steps 1–2: registration + honey harvest. Paste your genesis QR hash, log weight / hive / flower — your collective then pools it onward. Collection, transport, processing, lab, packaging, distribution and retail freeze are handled by the KVIC network."
+              : isKvic
+                ? "You are KVIC: steps 3–8 — Cooperative/NGO collection, pooled batches, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–2 (registration + extraction)."
+                : "You are browsing the chain read-only. Beekeepers own steps 1–2 (registration + harvest), KVIC runs steps 3–8 through retail freeze — log in with the matching account to append blocks."}
         </span>
-        <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>
+        {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
       </div>
 
       {/* Header */}
       <div className="ledger-head">
         <div>
           <div className="ledger-kicker">Honey Workflow 1 → 9 • Live on ledger</div>
-          <h1>Honey Ledger</h1>
+          <h1>Honey <span style={{ background: "var(--color-honey-gradient)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>Ledger</span></h1>
           <p className="dashboard-sub">
             Every hop is a block. First block after registration is your genesis QR — scan it to append the next hop.
             Collective pools many farmer blocks into one (DAG), processor scans, lab scans & certifies, retail freezes.
-            Switch role in header to see who gets what from the workflow image.
+            Browsing is public; appending needs a logged-in beekeeper or KVIC account.
           </p>
         </div>
         <div className="ledger-stats">
@@ -198,12 +237,53 @@ export default function Ledger() {
             <div className="ledger-stat-label">Frozen</div>
           </div>
           <div className="ledger-stat">
-            <div className="ledger-stat-num" style={{ fontSize: 11, wordBreak: "break-all", maxWidth: 140 }}>
-              {tip ? shortHash(tip.hash) : "—"}
+            <div className="ledger-stat-num ledger-stat-tip" title={tip ? tip.hash : ""}>
+              {tip ? `${tip.hash.slice(0, 10)}…` : "—"}
             </div>
             <div className="ledger-stat-label">Tip</div>
           </div>
         </div>
+      </div>
+
+      {/* Personal scope — tied to the login, not a switch */}
+      {user && (
+        <div className="scope-bar">
+          <div className="ledger-filters">
+            <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => switchScope("mine")}>
+              {isBeekeeper ? "🍯 My honey" : "🏛️ My lots"}
+            </button>
+            <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => switchScope("all")}>
+              Full chain
+            </button>
+          </div>
+          <span className="scope-note">
+            {scope === "mine"
+              ? scopeInfo?.type === "beekeeper"
+                ? `Tied to ${scopeInfo.beekeeper?.name || "your profile"} — your blocks plus every hop downstream.`
+                : scopeInfo?.type === "officer"
+                  ? `Lots you minted${scopeInfo.centre ? ` · ${scopeInfo.centre.name}` : ""} — plus where they travelled.`
+                  : "Your personal view."
+              : "Every block on the public chain."}
+          </span>
+        </div>
+      )}
+      {scopeError && (
+        <div className="card" style={{ borderColor: "#E8C46A", marginBottom: 16 }}>
+          <span className="dashboard-sub">{scopeError} </span>
+          {isBeekeeper && <Link to="/account">Link your profile on the Account page →</Link>}
+          {!isBeekeeper && <span className="dashboard-sub">Mint your first block below — it will appear here.</span>}
+        </div>
+      )}
+
+      {/* The graph — evocative, elucidatory: stages as lanes, pools converging.
+          Always the whole scope (filtering would snap its edges). */}
+      <LedgerGraph
+        blocks={blocks}
+        title={scope === "mine" && user ? (isBeekeeper ? "My honey's journey" : "Lots I touched") : "The living chain"}
+        onSelect={(b) => navigate(b.scan_secret ? `/verify/${b.hash}?s=${encodeURIComponent(b.scan_secret)}` : `/verify/${b.hash}`)}
+      />
+      <div style={{ textAlign: "right", margin: "-10px 2px 16px" }}>
+        <Link className="qr-link" to="/graph">Open full graph explorer →</Link>
       </div>
 
       {/* Workflow progress bar — diagram 1→9 */}
@@ -287,7 +367,7 @@ export default function Ledger() {
                     <div className="hash-row">
                       <span className="hash-label">Hash</span>
                       <code className="hash-val">{b.hash}</code>
-                      <button className="copy-btn" onClick={() => navigator.clipboard.writeText(b.hash)} title="Copy">⎘</button>
+                      <button className="copy-btn" onClick={async () => { try { await navigator.clipboard.writeText(b.hash); } catch { const ta = document.createElement("textarea"); ta.value = b.hash; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); } }} title="Copy">⎘</button>
                     </div>
                     <div className="hash-row">
                       <span className="hash-label">Prev</span>
@@ -343,16 +423,30 @@ export default function Ledger() {
           })}
         </div>
 
-        {/* Create panel */}
+        {/* Create panel — login-gated */}
         <div className="ledger-create card">
           <h3>Append next block</h3>
+          {!user ? (
+            <>
+              <p className="dashboard-sub" style={{ marginBottom: 12 }}>
+                The chain is public to read, but appending needs an account — so every block is tied to a real beekeeper or KVIC staffer.
+              </p>
+              <Link className="btn btn-honey" to="/account" style={{ width: "100%", textAlign: "center" }}>
+                Log in / create account to mint
+              </Link>
+              <div className="field-hint" style={{ marginTop: 12 }}>
+                Beekeeper accounts mint <code>honey_extraction</code> · KVIC accounts mint collection → retail freeze.
+              </div>
+            </>
+          ) : (
+          <>
           <p className="dashboard-sub" style={{ marginBottom: 12 }}>
             Scan previous QR → paste hash → pick stage → add data. Collective pools many hashes with “pooled”.
           </p>
 
           <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 4 }}>
             {isBeekeeper
-              ? "Beekeeper: you can log collection and pooled batches (Steps 3). Switch to KVIC to do transport, processing, lab, packaging, distribution or retail freeze."
+              ? "Beekeeper: log your harvest as Honey Extraction (Step 2) with your genesis hash as prev. Collection onward needs a KVIC account."
               : "KVIC: you handle the whole KVIC network from collection to freeze. Supporting institutions on your side: Cooperative societies, transport, processing plant, Quality Control Labs, Branding and Khadi outlets."}
           </div>
 
@@ -389,7 +483,10 @@ export default function Ledger() {
             </label>
 
             <div className="field-hint">
-              Examples: collection →{" "}
+              Examples: extraction (beekeeper) →{" "}
+              <code>{`{"hive_id":"HIVE-01","weight_kg":12,"flower_source":"mustard"}`}</code>
+              <br />
+              collection →{" "}
               <code>{`{"quantity_kg":12,"flower_type":"mustard","collector_name":"Raigad Madhu Collective","destination_lab":"KVIC Lab Pune"}`}</code>
               <br />
               processing → <code>{`{"filtered":true,"pasteurized":true,"moisture":"18%","fssai":"ok"}`}</code>
@@ -403,8 +500,10 @@ export default function Ledger() {
             <button type="submit" className="btn btn-primary" disabled={creating || !allowedStages.includes(form.stage)} style={{ width: "100%", marginTop: 8 }}>
               {creating ? "Minting…" : form.stage === "pooled" ? "Pool & mint convergent block" : "Mint block"}
             </button>
-            {!allowedStages.includes(form.stage) && <div className="form-msg error">Not allowed for {role}. Switch role in header.</div>}
+            {!allowedStages.includes(form.stage) && <div className="form-msg error">Not allowed for your {role} account.</div>}
           </form>
+          </>
+          )}
 
           <div className="ledger-help">
             <h4>How the chain follows your diagram</h4>

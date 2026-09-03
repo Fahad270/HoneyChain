@@ -1,6 +1,6 @@
 # Madhu Setu — Beekeeper Monitoring Platform
 
-React (Vite) + Express + MongoDB Atlas — 6-page platform for beekeeper onboarding, hive telemetry, skill videos, AI disease/yield, **and Honey Ledger blockchain** (farmer → collective → processor → lab → Khadi retailer, freeze at retail).
+React (Vite) + Express + MongoDB Atlas — 10-page platform for beekeeper onboarding, hive telemetry, skill videos, AI disease/yield, **Honey Ledger blockchain** (farmer → collective → processor → lab → Khadi retailer, freeze at retail), **two-tier accounts** (beekeeper | KVIC), **Aadhaar-linked KYC + DigiLocker**, and a **real-world KVIC directory** (47 published offices).
 
 > **Status:** Hive telemetry mocked (`backend/data/mockHives.js:84`), beekeeper registrations + **Honey Ledger** persisted in MongoDB. Ledger follows your 9-step workflow diagram — first block auto-minted on registration, shows in awesome ledger UI without breaking the current theme.
 
@@ -11,10 +11,13 @@ React (Vite) + Express + MongoDB Atlas — 6-page platform for beekeeper onboard
 | Layer | Choice | Why |
 |---|---|---|
 | **Frontend** | React 18 + Vite 5 + react-router-dom 6 + axios + recharts + qrcode.react 4 | Fast HMR, routing, lightweight charts, client-side QR SVG |
-| **Backend** | Express 4 + Mongoose 8 + multer + dotenv | Minimal REST, schema validation, memory-upload for vision |
-| **DB** | MongoDB Atlas (via `backend/config/db.js:3`) | `Beekeeper` + `LedgerBlock` collections; indexed on `hash`/`prev_hash` |
+| **Backend** | Express 4 + Mongoose 8 + multer + dotenv + bcryptjs + jsonwebtoken | Minimal REST, schema validation, memory-upload for vision, password hashing, JWT sessions |
+| **DB** | MongoDB Atlas (via `backend/config/db.js:3`) | `Beekeeper` + `LedgerBlock` + `User` + `JarRecord` + `RtiRequest` collections; indexed on `hash`/`prev_hash`/`aadhaarDigits` |
 | **Chain** | SHA256 hash chain + DAG (`backend/utils/hash.js:3`) — no coin, no node | `blockHash(prev\|stage\|canonical(data))` at `hash.js:12`; `pooledHash(sorted(prevHashes)\|stage\|data)` at `hash.js:20` — mirrors `beekeeper/app.py:283` |
-| **AI** | Anthropic Claude Sonnet (`claude-sonnet-5`) via `backend/controllers/diseaseController.js:42` | No labeled dataset — JSON prompt at `diseaseController.js:6` |
+| **Auth** | Two-tier JWT (`backend/controllers/authController.js`, `middleware/auth.js`) | `beekeeper` (steps 1–2) vs `kvic` (steps 3–8); bcrypt cost 10, 7-day tokens; role comes ONLY from login — no role switch exists |
+| **KYC** | Offline Aadhaar Verhoeff (`utils/aadhaar.js`) + demo OTP + DigiLocker OAuth (`controllers/kycController.js`) | Typo-proof numbers, OTP-gated linked-profile fetch, eAadhaar pull when `DIGILOCKER_*` set |
+| **Directory** | Real KVIC offices (`backend/data/kvicDirectory.js`, 47 entries) | Published addresses (PMEGP directory, kvic.gov.in, nbb.gov.in) with per-entry sources; city-approx pins |
+| **AI** | Anthropic Claude Sonnet (`ANTHROPIC_MODEL`, default `claude-sonnet-4-5`) via `backend/controllers/diseaseController.js` | No labeled dataset — JSON prompt at `diseaseController.js:6` |
 | **Styling** | Plain CSS, `:root` tokens in `frontend/src/index.css` | Zero framework, ledger cards reuse same tokens — theme untouched |
 
 ---
@@ -28,7 +31,12 @@ cd backend
 npm install
 # create .env:
 # MONGODB_URI=mongodb+srv://...
+# JWT_SECRET=long-random-string      # signs login tokens (dev fallback warns)
 # ANTHROPIC_API_KEY=sk-ant-...   # only for POST /api/disease/detect
+# ANTHROPIC_MODEL=claude-sonnet-4-5
+# ALLOW_DEMO_OTP=true            # return demo OTP in API (no SMS gateway yet)
+# STRICT_AADHAAR=false           # true → reject bad-checksum Aadhaar at register
+# DIGILOCKER_CLIENT_ID/SECRET/REDIRECT_URI  # partner creds; else demo mode
 # PORT=5000                      # optional
 npm run dev
 # health → http://localhost:5000/api/health  { ok: true }
@@ -160,8 +168,23 @@ All `{ success, data?, error? }` unless noted.
 | `POST` | `/api/ledger/block` | `blockchainController.js:33` | `{ stage, prev_hash?, prev_hashes? (if pooled), data:{}, collective_name?, lab?, qa?, beekeeperId? }` | `{ data: block, meta:{ verify_url, stage_meta } }` — hash computed as `blockHash` or `pooledHash`; `is_frozen=true` if `stage=retail`; rejects child of frozen |
 | `POST` | `/api/ledger/pool` | `blockchainRoutes.js:9` | alias to `/block` with `stage=pooled` | same — needs `prev_hashes.length≥2` |
 | `GET` | `/api/ledger/chain` | `blockchainController.js:104` | — | `LedgerBlock[]` sorted `createdAt`, each with `stage_meta` |
+| `GET` | `/api/ledger/mine` | `blockchainController.js` (Bearer JWT) | — | Personal ledger: beekeeper tier → claimed profile's full journey (blocks + downstream); kvic tier → minted blocks + onward journeys + centre |
 | `GET` | `/api/ledger/block/:hash` | `blockchainController.js:128` | — | single block + `stage_meta` |
 | `GET` | `/api/ledger/verify/:hash?s=secret` | `blockchainController.js:121` | query `?s=scan_secret` optional | `{ block, tokenValid, pooledParents[], chain: LedgerBlock[], valid, reason, frozenBlock }` — `valid` false if missing parent/cycle/frozen-child, `tokenValid` false if `?s` mismatches |
+| `POST` | `/api/auth/register` | `authController.js` | `{ name, phone?, email?, password(8+), role: beekeeper\|kvic, orgName?, designation?, assignedCentreId?, beekeeperId? }` | `{ data: { user, token } }` — bcrypt hash, JWT 7d; centre must exist; beekeeper link needs OTP-verified profile + matching phone |
+| `POST` | `/api/auth/login` | `authController.js` | `{ login (phone\|email), password }` | `{ data: { user, token } }` — 401 on wrong id/password |
+| `GET` | `/api/auth/me` | `authController.js` | Bearer JWT | `{ data: { user, beekeeper?, centre? } }` |
+| `POST` | `/api/auth/claim-beekeeper` | `authController.js` | Bearer + `{ beekeeperId, verifiedAt }` | Binds OTP-verified profile to a beekeeper-tier account (phone must match) |
+| `POST` | `/api/auth/claim-centre` | `authController.js` | Bearer (kvic) + `{ centreId }` | Self-asserted centre attach (`centreVerified: false`) |
+| `GET` | `/api/auth/centres/:id/staff` | `authController.js` | — | Public roster: names + org/designation only, no contacts |
+| `GET` | `/api/kyc/aadhaar/check?no=` | `kycController.js` | 12-digit number | Offline Verhoeff verdict + masked linked-account hints (no PII) |
+| `POST` | `/api/kyc/aadhaar/otp` | `kycController.js` | `{ aadhaarNo }` (rate-limited) | Demo OTP + masked phones; 404 when no linked accounts |
+| `POST` | `/api/kyc/aadhaar/verify` | `kycController.js` | `{ aadhaarNo, otp }` (rate-limited, 5 tries) | Full linked profile: accounts + blocks + jars + RTI + form prefill |
+| `GET` | `/api/kyc/digilocker/auth-url?beekeeperId=` | `kycController.js` | — | Real OAuth URL when `DIGILOCKER_*` set, else demo-mode steps |
+| `GET` | `/api/kyc/digilocker/callback?code=&state=` | `kycController.js` | DigiLocker redirect | Token exchange → profile + issued docs → links `digilockerId` + doc refs |
+| `GET` | `/api/kyc/digilocker/docs?beekeeperId=` | `kycController.js` | — | Stored DigiLocker refs for an account |
+| `GET` | `/api/map/geo` | `mapController.js` | — | `{ centres, clusters, unclustered }` — clusters merge live registered farmers |
+| `GET` | `/api/map/kvic-centres` | `mapController.js` | — | Real directory + per-centre clusters served + claimed staff + sources |
 
 ### Hash
 
@@ -179,13 +202,18 @@ pooledHash(hashes, stage, data) = SHA256(sorted(hashes).join("|") + "|" + stage 
 | Route | File | What it does |
 |---|---|---|
 | `/` | `Register.jsx:44` | Category tabs + ~22 inputs → `POST /api/beekeepers/register`; **on success shows awesome genesis card** inside same `.register-form` — gold-bordered `genesis-card` with `hash`/`prev`/`data` pretty-print, `QRCodeSVG` for `verify/<hash>?s=secret`, `scan_secret` hint, flow note `→ collective scans this → pooled → processor → lab → retail freezes → Khadi verifies`, buttons `Verify genesis` + `Open ledger`. Theme untouched — uses `card`, `hash-val`, `qr-box`, `genesis-*` that reuse `--color-accent`/`--color-primary-light`. |
-| `/ledger` | `Ledger.jsx:12` | **Awesome ledger UI** — header stats (blocks/frozen/tip), `workflow-bar` (steps 1→9, 3′ dashed for pooled, green dot if stage has block), filter chips (All + 10 stages), main column: chain of `block-card`s (each with `GENESIS` gold banner if first block, `status-pill` DAG/frozen, `hash/prev` with copy, `pooled` shows multiple prev hashes, `payload-pre` data/lab/qa, `Use as prev` + `Verify`, right-side `qr-box` with `QRCodeSVG`). Right sticky `ledger-create` card: stage picker (2/3/3′/4/5/5b/6/7/8 FREEZE), prev hash input (or pooled textarea for many→one), collective_name, JSON data textarea, hint examples, `Mint block`/`Pool & mint`. All colors from `:root` (`card`, `btn-primary`, `status-pill`, `badge`, `payload-pre`). |
+| `/ledger` | `Ledger.jsx` + `LedgerGraph.jsx` | Evocative DAG graph (stage lanes, converging pool edges, click→verify) for public + personal scopes; **My honey / My lots** toggle when logged in (from `/ledger/mine`); mint form is login-gated (private) |
+| `/graph` | `Graph.jsx` + `LedgerGraph.jsx` | Full-page graph explorer: scope toggle, hash search (scrolls to node), per-stage dim filters, selected-node detail card with Verify action |
+| `/` | `Register.jsx` | Private — logged-out visitors redirect to `/account` (registration mints genesis, so it needs an account) |
 | `/verify/:hash` | `Verify.jsx:7` | **Khadi store verify** — paste hash + `?s=` token input; status card green (`Chain intact`) / red (`broken`) + frozen/token pills; left card: stage icon, hash/prev, pooled parents as chips linking to their verify, data/pre + lab, QR; right card: `Full chain to this jar` vertical timeline (`v-item` dots) with active/frozen styles, `Open full ledger` + `Go to Khadi Store Ledger` buttons; bottom help shows `Collective → Processor → Lab → Retail freeze → Consumer verify` flow. |
 | `/dashboard` | `Dashboard.jsx:11` | Hex-grid hives + recharts |
 | `/learn` | `Learn.jsx:11` | Video language toggle |
 | `/diagnose` | `DiseaseDetection.jsx:7` | Vision + productivity panels |
+| `/twin`, `/track` | `FarmerTwin.jsx` | Digital twin: paste genesis/jar hash or pick beekeeper → journey timeline, pipeline, QR, RTI filing |
+| `/map` | `Map.jsx` | India clusters + **47 real KVIC/Khadi/bee-institute pins** (city-approx) with published addresses, source badges, cluster links, claimed-staff rosters, centre picker |
+| `/account` | `Account.jsx` | Two-tier login/signup (beekeeper | KVIC + real centre select), profile + beekeeper-profile claim via Aadhaar OTP proof + centre claim |
 
-`Navbar.jsx:4` now 5 links — `Ledger` added between Dashboard/ Learn.
+`Navbar.jsx` — 7 links + static tier pill (account tier only) + account chip / Log in. There is deliberately no role switch: logged-out users read everything and write nothing.
 
 ---
 
@@ -244,7 +272,12 @@ Ledger already real — backed by `LedgerBlock` collection. When ESP32 pipeline 
 | File | Var | Need | Used |
 |---|---|---|---|
 | `backend/.env` | `MONGODB_URI` | Yes | `db.js:4` — registration + ledger |
+| `backend/.env` | `JWT_SECRET` | Yes (prod) | `middleware/auth.js` + `authController.js` — login tokens; dev fallback warns |
 | `backend/.env` | `ANTHROPIC_API_KEY` | Only disease | `diseaseController.js:24` |
+| `backend/.env` | `ANTHROPIC_MODEL` | No (`claude-sonnet-4-5`) | `diseaseController.js` |
+| `backend/.env` | `ALLOW_DEMO_OTP` | No (`true`) | `kycController.js` — return demo OTP vs real SMS gateway |
+| `backend/.env` | `STRICT_AADHAAR` | No (`false`) | `beekeeperController.js` — reject bad-checksum Aadhaar |
+| `backend/.env` | `DIGILOCKER_CLIENT_ID/SECRET/REDIRECT_URI` | Only eKYC | `kycController.js` — real OAuth vs demo mode |
 | `backend/.env` | `PORT` | No (5000) | `server.js:27` |
 | `frontend/.env` | `VITE_API_BASE_URL` | No (→ `http://localhost:5000/api`) | `api.js:4` |
 
@@ -253,6 +286,10 @@ Ledger already real — backed by `LedgerBlock` collection. When ESP32 pipeline 
 ## Notes
 
 - Hash = `SHA256(prev|stage|canonical(data))`, pooled = `SHA256(sorted(prevs)|stage|canonical(data))` — same idea as `beekeeper/app.py:283` but with explicit `stage` so two stages with same data hash differently. Changing Anthropic model only affects `diseaseController.js:42`.
+- **Two tiers are server-enforced**: `POST /ledger/block|/pool|/sale`, `POST /beekeepers/register`, `POST /map/farmers` all require `authenticate` (401 without JWT); the JWT role then flows through `getRole()`. Every minted block is stamped `createdBy { userId, name, role, centreId }` — the basis of personal ledgers (`GET /ledger/mine`). `claim-beekeeper` needs the Aadhaar-OTP stamp + phone match; centre claims stay `centreVerified: false` until a centre admin confirms (no admin tier yet — that's the honest next step, not a silent auto-verify). Public without login: chain/twin/verify reads, dual-key sale check, KYC, map, RTI filing. The Register form itself is private (`/` redirects to `/account` when logged out).
+- **Aadhaar privacy**: full numbers never logged/listed; `check` shows masked names only; OTPs are sha256-hashed in memory with 5-min TTL + 5-attempt cap + rate limits. Demo OTP is returned in-band only while `ALLOW_DEMO_OTP=true`.
+- **Directory honesty**: every centre carries `source` + `verified` (`official` vs `directory`); pins are city-level (`coordApprox`), street addresses authoritative. Mock cluster farmers remain mock — only the offices are real.
 - Productivity stays formula-based (`productivityController.js:1`) — explainable.
 - All CSS plain, ledger reuses `card`, `status-pill`, `hash-val`, `qr-box`, `btn` — no new theme.
 - Retail freeze is app-level (`is_frozen` flag) — for real immutability add `tx_hash` column and anchor `hash` to Polygon/Fabric later without frontend change (same `block.hash`).
+- Production hardening still open (deliberately out of scope): lock CORS origins (currently open), add helmet-style headers, move OTP + rate-limit stores to Redis for multi-replica, replace demo OTP with UIDAI-licensed/SMS sender, add a centre-admin approval step for `centreVerified`, and rotate `JWT_SECRET` into a secret manager.

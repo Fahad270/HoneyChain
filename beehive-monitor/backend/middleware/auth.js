@@ -9,6 +9,7 @@
 
 const STAGE_ROLES = {
   beekeeper_registration: ["beekeeper", "kvic"],
+  honey_extraction: ["beekeeper"],
   collection: ["kvic"],
   pooled: ["kvic"],
   transport: ["kvic"],
@@ -25,10 +26,15 @@ const ROLE_LABEL = {
 };
 
 function getRole(req) {
+  // Logged-in account role wins (set by authenticate/optionalAuth).
+  if (req.authUser && (req.authUser.role === "beekeeper" || req.authUser.role === "kvic")) {
+    return req.authUser.role;
+  }
+  // No-login fallback for PUBLIC reads (role map labels, chain meta only).
+  // All writes require a JWT — self-declared headers grant nothing.
   const raw =
     req.headers["x-role"] ||
     req.headers["x-auth-role"] ||
-    (req.headers.authorization && req.headers.authorization.startsWith("Bearer ") ? req.headers.authorization.slice(7) : null) ||
     req.query.role ||
     "";
   const role = String(raw || "").trim().toLowerCase();
@@ -54,8 +60,8 @@ function requireRole(...allowed) {
         success: false,
         error: `Role ${role} not allowed. Need one of: ${allowed.join(", ")}`,
         hint: role === "beekeeper"
-          ? "Beekeepers can only add extraction. Switch to KVIC in the header to do collection, pooling, processing, lab and retail."
-          : "KVIC can add steps 3–8. Switch to Beekeeper to log a harvest.",
+          ? "Beekeepers can only add extraction. Log in with a KVIC account to do collection, pooling, processing, lab and retail."
+          : "KVIC can add steps 3–8. Log in with a beekeeper account to log a harvest.",
         role,
         stage_roles: STAGE_ROLES,
       });
@@ -64,4 +70,63 @@ function requireRole(...allowed) {
   };
 }
 
-module.exports = { STAGE_ROLES, ROLE_LABEL, getRole, canCreateStage, requireRole };
+// ---- JWT account auth (two-tier login) ----
+
+function jwtSecret() {
+  return (process.env.JWT_SECRET || "").trim() || "dev-only-insecure-honeychain-secret-change-me";
+}
+
+// Authenticate a Bearer JWT from /api/auth/login|register.
+// Attaches req.authUser = { sub, role }. Missing/invalid token -> 401.
+function authenticate(req, res, next) {
+  try {
+    const header = String(req.headers.authorization || "");
+    const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+    if (!token) {
+      return res.status(401).json({ success: false, error: "Login required — send Authorization: Bearer <token>." });
+    }
+    let payload;
+    try {
+      payload = require("jsonwebtoken").verify(token, jwtSecret());
+    } catch {
+      return res.status(401).json({ success: false, error: "Session expired or invalid — log in again." });
+    }
+    if (!payload?.sub || !["beekeeper", "kvic"].includes(payload?.role)) {
+      return res.status(401).json({ success: false, error: "Session expired or invalid — log in again." });
+    }
+    req.authUser = { sub: String(payload.sub), role: payload.role };
+    next();
+  } catch {
+    return res.status(401).json({ success: false, error: "Login required." });
+  }
+}
+
+// Optional auth: attaches req.authUser when a valid Bearer token is present,
+// otherwise continues anonymously (demo mode keeps working).
+function optionalAuth(req, _res, next) {
+  try {
+    const header = String(req.headers.authorization || "");
+    const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+    if (!token) return next();
+    const payload = require("jsonwebtoken").verify(token, jwtSecret());
+    if (payload?.sub && ["beekeeper", "kvic"].includes(payload?.role)) {
+      req.authUser = { sub: String(payload.sub), role: payload.role };
+    }
+  } catch {}
+  next();
+}
+
+// Account-role gate (JWT-based, unlike requireRole's demo-header semantics).
+function requireAccountRole(...roles) {
+  return (req, res, next) => {
+    if (!req.authUser) {
+      return res.status(401).json({ success: false, error: "Login required." });
+    }
+    if (!roles.includes(req.authUser.role)) {
+      return res.status(403).json({ success: false, error: `This needs a ${roles.join(" or ")} account.` });
+    }
+    next();
+  };
+}
+
+module.exports = { STAGE_ROLES, ROLE_LABEL, getRole, canCreateStage, requireRole, authenticate, optionalAuth, requireAccountRole };

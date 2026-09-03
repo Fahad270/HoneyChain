@@ -8,7 +8,8 @@ const { getRegistryKey, issuePrivateKey, commitPrivateKey, jarSerial } = require
 
 const STAGE_META = {
   beekeeper_registration: { label: "Beekeeper Registration", step: 1, desc: "Beekeeper enrolled — record pinned (Pinata / Mongo) and appended", icon: "🐝" },
-  collection:             { label: "Collection Phase 1", step: 2, desc: "Collector, quantity, flower type, destination lab / smart van", icon: "🤝" },
+  honey_extraction:        { label: "Honey Extraction", step: 2, desc: "Farmer harvests honey — hive, weight, flower source", icon: "🍯" },
+  collection:             { label: "Collection Phase 1", step: 3, desc: "Collector, quantity, flower type, destination lab / smart van", icon: "🤝" },
   pooled:                 { label: "Collective Pool", step: 2, desc: "Optional many-farmer collection lot", icon: "🔗" },
   transport:              { label: "Transport", step: 3, desc: "Truck to processing plant", icon: "🚚" },
   processing:             { label: "Processing & QC", step: 4, desc: "Filtered / clarified / pasteurized + QA tester scans prev QR", icon: "🧪" },
@@ -68,6 +69,8 @@ async function verifyChain(targetHash, maxDepth = 500) {
       for (const p of parents) {
         if (!foundSet.has(p)) { valid = false; reason = `pooled missing parent ${p.slice(0, 10)}…`; }
       }
+      const frozenPooled = found.find((b) => b.is_frozen);
+      if (frozenPooled) { valid = false; reason = `child of frozen block ${frozenPooled.hash.slice(0, 10)}… — chain should be frozen at retail`; }
       const first = parents[0];
       if (!foundSet.has(first)) {
         chain.push({ hash: first, missing: true, stage: "missing" });
@@ -84,6 +87,125 @@ function redactSecret(block) {
   if (!block || block.missing) return block;
   const { scan_secret, ...rest } = block;
   return rest;
+}
+
+// Stamp a new block with its minter (for personal ledgers). Reads the
+// account behind req.authUser; never throws — worst case createdBy is null.
+async function authorStamp(req) {
+  try {
+    const sub = req.authUser && req.authUser.sub;
+    if (!sub) return null;
+    const u = await store.findUserById(sub);
+    if (!u) return null;
+    return {
+      userId: u._id,
+      name: u.name || null,
+      role: u.role || null,
+      centreId: u.assignedCentreId || null,
+      orgName: u.orgName || null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function attributionMatch(b, beekeeperId) {
+  const ref = b.beekeeper && typeof b.beekeeper === "object" ? b.beekeeper._id : b.beekeeper;
+  return String(ref || "") === String(beekeeperId) || String(b.data?.beekeeperId || "") === String(beekeeperId);
+}
+
+// BFS forward from seed hashes through the children map — the shared engine
+// behind getTwin, the KYC linked profile and GET /mine.
+function journeyFromSeeds(all, seeds) {
+  const childrenMap = new Map();
+  for (const b of all) {
+    const parents = b.prev_hashes && b.prev_hashes.length ? b.prev_hashes : b.prev_hash ? [b.prev_hash] : [];
+    for (const p of parents) {
+      if (!childrenMap.has(p)) childrenMap.set(p, []);
+      childrenMap.get(p).push(b);
+    }
+  }
+  const visited = new Set(seeds);
+  const queue = [...seeds];
+  while (queue.length) {
+    for (const kid of childrenMap.get(queue.shift()) || []) {
+      if (!visited.has(kid.hash)) {
+        visited.add(kid.hash);
+        queue.push(kid.hash);
+      }
+    }
+  }
+  return all
+    .filter((b) => visited.has(b.hash))
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+}
+
+// GET /api/ledger/mine — personal ledger for the logged-in account.
+// - beekeeper tier: needs a claimed beekeeper profile → its full journey
+//   (attributed blocks + every downstream hop, same as the twin).
+// - kvic tier: blocks this officer minted + their onward journeys
+//   ("lots I touched, and where they went").
+async function getMine(req, res) {
+  try {
+    const me = await store.findUserById(req.authUser.sub);
+    if (!me) return res.status(404).json({ success: false, error: "Account not found." });
+    const all = await store.findBlocks({});
+
+    if (me.role === "beekeeper") {
+      if (!me.beekeeperId) {
+        return res.status(404).json({
+          success: false,
+          error: "No beekeeper profile linked yet — verify via Get Aadhaar Info, then link it on the Account page.",
+        });
+      }
+      const beekeeperDoc = await store.findBeekeeperById(me.beekeeperId);
+      const seeds = all.filter((b) => attributionMatch(b, me.beekeeperId)).map((b) => b.hash);
+      const journey = journeyFromSeeds(all, seeds).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
+      return res.json({
+        success: true,
+        data: {
+          scope: {
+            type: "beekeeper",
+            beekeeper: beekeeperDoc ? { _id: beekeeperDoc._id, name: beekeeperDoc.name, village: beekeeperDoc.village, state: beekeeperDoc.state } : null,
+          },
+          blocks: journey,
+          stats: {
+            blocks: journey.length,
+            currentStage: journey.length ? journey[journey.length - 1].stage : null,
+            isFrozen: Boolean(journey.length && journey[journey.length - 1].is_frozen),
+          },
+        },
+      });
+    }
+
+    // kvic officer
+    const mine = all.filter((b) => String(b.createdBy?.userId || "") === String(me._id));
+    const seeds = mine.map((b) => b.hash);
+    const journey = journeyFromSeeds(all, seeds).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
+    const centre = me.assignedCentreId
+      ? require("../data/kvicDirectory").KVIC_CENTRES.find((c) => c.id === me.assignedCentreId) || null
+      : null;
+    return res.json({
+      success: true,
+      data: {
+        scope: {
+          type: "officer",
+          officer: { name: me.name, designation: me.designation || "", orgName: me.orgName || "" },
+          centre: centre ? { id: centre.id, name: centre.name, city: centre.city, state: centre.state } : null,
+          minted: mine.length,
+        },
+        blocks: journey,
+        stats: {
+          blocks: journey.length,
+          minted: mine.length,
+          currentStage: journey.length ? journey[journey.length - 1].stage : null,
+          isFrozen: Boolean(journey.length && journey[journey.length - 1].is_frozen),
+        },
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 }
 
 // POST /api/ledger/block — linear block (most stages)
@@ -106,8 +228,8 @@ async function createBlock(req, res) {
         role_label: ROLE_LABEL[role],
         hint:
           role === "beekeeper"
-            ? "Beekeepers: Steps 1–2 only (registration + extraction). For 3 Collection / Pooled, 4 Transport, 5 Processing, Lab, 6 Packaging, 7 Distribution, 8 Retail — switch to KVIC in header (x-role: kvic)."
-            : "KVIC: Steps 3–8 only. Switch to Beekeeper to log a harvest extraction.",
+            ? "Beekeepers: Steps 1–2 only (registration + extraction). For 3 Collection / Pooled, 4 Transport, 5 Processing, Lab, 6 Packaging, 7 Distribution, 8 Retail — log in with a KVIC account."
+            : "KVIC: Steps 3–8 only. Log in with a beekeeper account to log a harvest extraction.",
         stage_roles: STAGE_ROLES,
       });
     }
@@ -151,14 +273,21 @@ async function createBlock(req, res) {
     const scan_secret = randomSecret(8);
     const is_frozen = stage === "retail";
     let serial = null;
+    // normalize data first so jar_serial is always committed into the hash + stored payload
+    let blockData = (data && typeof data === "object" && !Array.isArray(data)) ? { ...data } : {};
     if (stage === "packaging") {
-      serial = (data && data.jar_serial) || jarSerial();
+      serial = blockData.jar_serial || jarSerial();
       const existingJar = await store.findJarBySerial(serial);
       if (existingJar) {
         return res.status(409).json({ success: false, error: `duplicate jar serial ${serial} — each QR jar must be unique` });
       }
-      if (data) data.jar_serial = serial;
-      hash = isPooled ? pooledHash(prev_hashes, stage, data || {}) : blockHash(prev_hash, stage, data || {});
+      blockData.jar_serial = serial;
+      hash = isPooled ? pooledHash(prev_hashes, stage, blockData) : blockHash(prev_hash, stage, blockData);
+    } else if (isPooled) {
+      // hash already computed from data||{} — recompute from normalized object for determinism
+      hash = pooledHash(prev_hashes, stage, blockData);
+    } else {
+      hash = blockHash(prev_hash, stage, blockData);
     }
 
     const pin = await pinJson(`ledger-${stage}-${hash.slice(0, 12)}`, {
@@ -166,7 +295,7 @@ async function createBlock(req, res) {
       prev_hash,
       prev_hashes,
       stage,
-      data: data || {},
+      data: blockData,
       lab: lab || null,
       qa: qa || null,
       registryKey: getRegistryKey(),
@@ -177,7 +306,7 @@ async function createBlock(req, res) {
       prev_hash,
       prev_hashes,
       stage,
-      data: data || {},
+      data: blockData,
       beekeeper: beekeeperRef,
       collective_name: collective_name || null,
       scan_secret,
@@ -190,6 +319,7 @@ async function createBlock(req, res) {
       publicKey: hash,
       jarSerial: serial,
       registryKey: getRegistryKey(),
+      createdBy: await authorStamp(req),
     });
 
     if (stage === "packaging" && serial) {
@@ -358,15 +488,6 @@ async function getTwin(req, res) {
     if (!all.length) return res.status(404).json({ success: false, error: "ledger empty" });
 
     const byHash = new Map(all.map((b) => [b.hash, b]));
-    // children map: parent hash -> [child block]
-    const childrenMap = new Map();
-    for (const b of all) {
-      const parents = b.prev_hashes && b.prev_hashes.length ? b.prev_hashes : b.prev_hash ? [b.prev_hash] : [];
-      for (const p of parents) {
-        if (!childrenMap.has(p)) childrenMap.set(p, []);
-        childrenMap.get(p).push(b);
-      }
-    }
 
     let startHashes = [];
     let beekeeperDoc = null;
@@ -416,27 +537,14 @@ async function getTwin(req, res) {
       return res.status(404).json({ success: false, error: "no blocks found for id/hash: " + rawId });
     }
 
-    // BFS forward from startHashes
-    const visited = new Set(startHashes);
-    const queue = [...startHashes];
-    while (queue.length) {
-      const h = queue.shift();
-      const kids = childrenMap.get(h) || [];
-      for (const kid of kids) {
-        if (!visited.has(kid.hash)) {
-          visited.add(kid.hash);
-          queue.push(kid.hash);
-        }
-      }
-    }
-
-    const journey = all.filter((b) => visited.has(b.hash)).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    // BFS forward from startHashes (shared journey engine)
+    const journey = journeyFromSeeds(all, startHashes);
     const enriched = journey.map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
     const current = enriched.length ? enriched[enriched.length - 1] : null;
     const progress = buildProgress(enriched);
 
     // aggregate honey stats from data
-    const totalWeight = enriched.reduce((sum, b) => sum + (Number(b.data?.weight_kg) || Number(b.data?.weight) || 0), 0);
+    const totalWeight = enriched.reduce((sum, b) => sum + (Number(b.data?.weight_kg) || Number(b.data?.weight) || Number(b.data?.quantity_kg) || 0), 0);
     const hives = [...new Set(enriched.map((b) => b.data?.hive_id).filter(Boolean))];
 
     res.json({
@@ -458,7 +566,7 @@ async function getTwin(req, res) {
 }
 
 function buildProgress(journey) {
-  const order = ["beekeeper_registration", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
+  const order = ["beekeeper_registration", "honey_extraction", "collection", "pooled", "transport", "processing", "lab_certified", "packaging", "distribution", "retail"];
   const has = new Set(journey.map((b) => b.stage));
   const currentStage = journey.length ? journey[journey.length - 1].stage : null;
   const steps = order.map((stage) => {
@@ -724,6 +832,8 @@ module.exports = {
   STAGE_ROLES,
   ROLE_LABEL,
   getTwin,
+  getMine,
+  journeyFromSeeds,
   buildProgress,
   issueSale,
   dualVerify,

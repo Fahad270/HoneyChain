@@ -30,6 +30,17 @@ const LedgerBlockSchema = new mongoose.Schema(
     beekeeper: { type: mongoose.Schema.Types.ObjectId, ref: "Beekeeper", default: null },
     collective_name: { type: String, default: null },
 
+    // who minted it — the logged-in account. Powers personal ledgers
+    // ("my blocks" for officers, attribution for farmers). Pre-auth blocks
+    // have createdBy: null.
+    createdBy: {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+      name: { type: String, default: null },
+      role: { type: String, enum: ["beekeeper", "kvic"], default: null },
+      centreId: { type: String, default: null },
+      orgName: { type: String, default: null },
+    },
+
     // one-time scan token like app.py scan_secret — QR = /verify/<hash>?s=<secret>
     scan_secret: { type: String, required: true },
 

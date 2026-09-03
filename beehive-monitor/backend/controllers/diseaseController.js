@@ -27,9 +27,13 @@ async function detectDisease(req, res) {
         error: "ANTHROPIC_API_KEY is not set in backend/.env",
       });
     }
-
-    const base64Image = req.file.buffer.toString("base64");
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
     const mediaType = req.file.mimetype || "image/jpeg";
+    if (!allowedTypes.has(mediaType)) {
+      return res.status(400).json({ success: false, error: `Unsupported image type ${mediaType}. Use JPEG, PNG, GIF or WebP.` });
+    }
+    const base64Image = req.file.buffer.toString("base64");
+    const model = (process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5").trim();
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -39,7 +43,7 @@ async function detectDisease(req, res) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-5",
+        model,
         max_tokens: 500,
         messages: [
           {

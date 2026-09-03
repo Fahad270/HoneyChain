@@ -1,0 +1,57 @@
+.graph-page { animation: rise 0.5s var(--ease-spring) both; }
+.graph-page h1 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.graph-controls { margin: 20px 0; overflow: hidden; }
+.graph-controls::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+}
+.graph-controls-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.graph-search { display: flex; gap: 8px; flex: 1; min-width: 240px; max-width: 420px; margin-left: auto; }
+.graph-search-input {
+  flex: 1;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  background: #FFFDF7;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  min-width: 0;
+}
+.graph-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-glow);
+}
+.graph-stage-filters { margin-top: 12px; }
+
+.graph-detail { overflow: hidden; }
+.graph-detail::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+}
+.graph-detail-head { display: flex; gap: 13px; align-items: flex-start; margin-bottom: 14px; }
+.graph-detail-icon {
+  width: 48px; height: 48px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, var(--color-primary-light), #FFF3D4);
+  border: 1px solid var(--color-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.graph-detail-title { font-weight: 800; font-family: var(--font-heading); font-size: 16px; color: var(--color-primary-dark); }
+.graph-detail-sub { font-size: 12px; color: var(--color-text-muted); margin-top: 3px; }
+.graph-detail-head .status-pill { margin-left: auto; flex-shrink: 0; }
+.graph-detail-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }

@@ -27,6 +27,7 @@ export default function Learn() {
     <div className="page-container">
       <div className="learn-head">
         <div>
+          <div className="kicker">NBHM upskilling · 3 languages</div>
           <h1>Skill Building</h1>
           <p className="dashboard-sub">
             Short lessons from NBHM's upskilling initiative — watch in whichever language works for you.

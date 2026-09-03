@@ -57,7 +57,15 @@ export default function Verify() {
   useEffect(() => {
     if (hash) fetchVerify(hash, token);
     else setLoading(false);
-  }, [hash, token]);
+  }, [hash, token]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // keep inputs in sync when navigating between verify links (pooled parents / chain timeline)
+  useEffect(() => {
+    if (hash) {
+      setInputHash(hash);
+      setDualPublicKey(hash);
+    }
+  }, [hash]);
 
   const chain = data?.chain || [];
   const block = data?.block || null;
@@ -83,7 +91,7 @@ export default function Verify() {
               if (!h) return;
               const target = token ? `/verify/${h}?s=${encodeURIComponent(token)}` : `/verify/${h}`;
               navigate(target);
-              fetchVerify(h, token);
+              // navigation triggers useEffect fetch — no direct fetch here to avoid double call
             }}
             disabled={!inputHash.trim()}
           >

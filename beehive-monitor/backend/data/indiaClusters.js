@@ -1,25 +1,10 @@
 // Public, approximate locations of KVIC / Khadi / allied centres (not an official GIS dump).
 // Clusters sit in known honey belts around those nodal offices.
+// NOTE: KVIC_CENTRES now lives in kvicDirectory.js — real published addresses
+// (PMEGP office directory, kvic.gov.in, nbb.gov.in) with per-entry sources.
+// Centre `id`s are stable: honey-belt clusters reference them via kvicId.
 
-const KVIC_CENTRES = [
-  { id: "kvic-mumbai", name: "KVIC Central Office — Mumbai", kind: "kvic", city: "Mumbai", state: "Maharashtra", lat: 19.1076, lng: 72.8365, address: "Gramodaya, 3 Irla Road, Vile Parle (W)" },
-  { id: "kvic-delhi", name: "KVIC State Office — Delhi", kind: "kvic", city: "New Delhi", state: "Delhi", lat: 28.628, lng: 77.2167, address: "Khadi Gramodyog Bhawan, Connaught Place" },
-  { id: "kvic-kolkata", name: "KVIC State Office — Kolkata", kind: "kvic", city: "Kolkata", state: "West Bengal", lat: 22.5726, lng: 88.3639, address: "State Office, Kolkata" },
-  { id: "kvic-chennai", name: "KVIC State Office — Chennai", kind: "kvic", city: "Chennai", state: "Tamil Nadu", lat: 13.0827, lng: 80.2707, address: "State Office, Chennai" },
-  { id: "kvic-bengaluru", name: "KVIC State Office — Bengaluru", kind: "kvic", city: "Bengaluru", state: "Karnataka", lat: 12.9716, lng: 77.5946, address: "State Office, Bengaluru" },
-  { id: "kvic-ahmedabad", name: "KVIC State Office — Ahmedabad", kind: "kvic", city: "Ahmedabad", state: "Gujarat", lat: 23.0225, lng: 72.5714, address: "State Office, Ahmedabad" },
-  { id: "kvic-lucknow", name: "KVIC State Office — Lucknow", kind: "kvic", city: "Lucknow", state: "Uttar Pradesh", lat: 26.8467, lng: 80.9462, address: "State Office, Lucknow" },
-  { id: "kvic-bhopal", name: "KVIC State Office — Bhopal", kind: "kvic", city: "Bhopal", state: "Madhya Pradesh", lat: 23.2599, lng: 77.4126, address: "State Office, Bhopal" },
-  { id: "kvic-hyderabad", name: "KVIC State Office — Hyderabad", kind: "kvic", city: "Hyderabad", state: "Telangana", lat: 17.385, lng: 78.4867, address: "State Office, Hyderabad" },
-  { id: "kvic-guwahati", name: "KVIC State Office — Guwahati", kind: "kvic", city: "Guwahati", state: "Assam", lat: 26.1445, lng: 91.7362, address: "State Office, Guwahati" },
-  { id: "kvic-jaipur", name: "KVIC State Office — Jaipur", kind: "kvic", city: "Jaipur", state: "Rajasthan", lat: 26.9124, lng: 75.7873, address: "State Office, Jaipur" },
-  { id: "kvic-bhubaneswar", name: "KVIC State Office — Bhubaneswar", kind: "kvic", city: "Bhubaneswar", state: "Odisha", lat: 20.2961, lng: 85.8245, address: "State Office, Bhubaneswar" },
-  { id: "kvic-chandigarh", name: "KVIC State Office — Chandigarh", kind: "kvic", city: "Chandigarh", state: "Chandigarh", lat: 30.7333, lng: 76.7794, address: "State Office, Chandigarh" },
-  { id: "kvic-trivandrum", name: "KVIC State Office — Thiruvananthapuram", kind: "kvic", city: "Thiruvananthapuram", state: "Kerala", lat: 8.5241, lng: 76.9366, address: "State Office, Kerala" },
-  { id: "kvic-dehradun", name: "KVIC State Office — Dehradun", kind: "kvic", city: "Dehradun", state: "Uttarakhand", lat: 30.3165, lng: 78.0322, address: "State Office, Dehradun" },
-  { id: "nbb-pune", name: "National Bee Board / allied — Pune belt", kind: "gov", city: "Pune", state: "Maharashtra", lat: 18.5204, lng: 73.8567, address: "Beekeeping development (nodal)" },
-  { id: "khadi-imphal", name: "Khadi & Village Industries — Imphal", kind: "khadi", city: "Imphal", state: "Manipur", lat: 24.817, lng: 93.9368, address: "State Khadi centre" },
-];
+const { KVIC_CENTRES } = require("./kvicDirectory");
 
 const CLUSTERS = [
   {

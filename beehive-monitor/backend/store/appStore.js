@@ -4,9 +4,10 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 
 const FILE = path.join(__dirname, "../data/runtime-store.json");
+const { normalizeAadhaar } = require("../utils/aadhaar");
 
 function empty() {
-  return { beekeepers: [], blocks: [], jars: [], rti: [] };
+  return { beekeepers: [], blocks: [], jars: [], rti: [], users: [] };
 }
 
 function readFile() {
@@ -68,6 +69,24 @@ async function findBeekeeperById(id) {
     }
   }
   return readFile().beekeepers.find((b) => String(b._id) === String(id)) || null;
+}
+
+// Aadhaar-linked account resolution — EVERY beekeeper record sharing these
+// 12 digits. Matches the backfilled aadhaarDigits first, then normalizes the
+// raw aadhaarNo on the fly for legacy rows.
+async function findBeekeepersByAadhaar(digits) {
+  const d = normalizeAadhaar(digits);
+  if (!d) return [];
+  if (dbReady()) {
+    const Beekeeper = require("../models/Beekeeper");
+    const direct = await Beekeeper.find({ aadhaarDigits: d }).lean();
+    if (direct.length) return direct.map(toLean);
+    const all = await Beekeeper.find().select("+aadhaarNo").lean();
+    return all.filter((b) => normalizeAadhaar(b.aadhaarNo) === d).map(toLean);
+  }
+  return readFile().beekeepers.filter(
+    (b) => String(b.aadhaarDigits || "") === d || normalizeAadhaar(b.aadhaarNo) === d
+  );
 }
 
 async function createBlock(payload) {
@@ -141,11 +160,17 @@ async function findJarByHash(hash) {
 }
 
 async function upsertJar(payload) {
+  if (!payload || !payload.jarSerial) {
+    const err = new Error("jarSerial required");
+    err.code = 400;
+    throw err;
+  }
   if (dbReady()) {
     const JarRecord = require("../models/JarRecord");
+    const { _id, __v, createdAt, ...safe } = payload;
     const doc = await JarRecord.findOneAndUpdate(
       { jarSerial: payload.jarSerial },
-      payload,
+      { $set: safe },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
     return toLean(doc);
@@ -183,11 +208,150 @@ async function listRti(beekeeperId) {
   return rows;
 }
 
+async function updateBeekeeper(id, patch) {
+  const safe = { ...patch };
+  delete safe._id;
+  delete safe.__v;
+  delete safe.createdAt;
+  if (dbReady()) {
+    const Beekeeper = require("../models/Beekeeper");
+    try {
+      return toLean(await Beekeeper.findByIdAndUpdate(id, { $set: safe }, { new: true }).lean());
+    } catch {
+      return null;
+    }
+  }
+  const data = readFile();
+  const idx = data.beekeepers.findIndex((b) => String(b._id) === String(id));
+  if (idx < 0) return null;
+  data.beekeepers[idx] = { ...data.beekeepers[idx], ...safe, updatedAt: new Date().toISOString() };
+  writeFile(data);
+  return data.beekeepers[idx];
+}
+
+// ---- Two-tier accounts ----
+function stripHash(u) {
+  if (!u) return u;
+  const { passwordHash, __v, ...safe } = u;
+  return safe;
+}
+
+async function createUser(payload) {
+  if (dbReady()) {
+    const User = require("../models/User");
+    return stripHash(toLean(await User.create(payload)));
+  }
+  const data = readFile();
+  const dup = data.users.find(
+    (u) =>
+      (payload.phone && u.phone && String(u.phone) === String(payload.phone)) ||
+      (payload.email && u.email && String(u.email).toLowerCase() === String(payload.email).toLowerCase())
+  );
+  if (dup) {
+    const err = new Error("An account with this phone/email already exists.");
+    err.code = 11000;
+    throw err;
+  }
+  const row = { _id: newId(), ...payload, status: "active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  data.users.unshift(row);
+  writeFile(data);
+  return stripHash(row);
+}
+
+async function findUserById(id, { withHash = false } = {}) {
+  if (!id) return null;
+  let u = null;
+  if (dbReady()) {
+    const User = require("../models/User");
+    try {
+      u = toLean(await User.findById(id).lean());
+    } catch {
+      return null;
+    }
+  } else {
+    u = readFile().users.find((x) => String(x._id) === String(id)) || null;
+  }
+  return withHash ? u : stripHash(u);
+}
+
+async function findUserByLogin(login) {
+  const v = String(login || "").trim();
+  if (!v) return null;
+  const isEmail = v.includes("@");
+  const norm = isEmail ? v.toLowerCase() : v.replace(/\D/g, "").replace(/^91(\d{10})$/, "$1").replace(/^0(\d{10})$/, "$1");
+  if (dbReady()) {
+    const User = require("../models/User");
+    const q = isEmail ? { email: norm } : { phone: norm };
+    return toLean(await User.findOne(q).lean());
+  }
+  const users = readFile().users;
+  return (
+    users.find((u) =>
+      isEmail
+        ? String(u.email || "").toLowerCase() === norm
+        : String(u.phone || "").replace(/\D/g, "") === norm || String(u.phone || "") === norm
+    ) || null
+  );
+}
+
+async function listUsersByCentre(centreId) {
+  if (!centreId) return [];
+  if (dbReady()) {
+    const User = require("../models/User");
+    return (await User.find({ assignedCentreId: String(centreId), status: "active" }).sort({ createdAt: -1 }).lean()).map(stripHash);
+  }
+  return readFile().users
+    .filter((u) => String(u.assignedCentreId || "") === String(centreId) && u.status !== "suspended")
+    .map(stripHash);
+}
+
+async function updateUser(id, patch) {
+  const safe = { ...patch };
+  delete safe._id;
+  delete safe.__v;
+  delete safe.createdAt;
+  delete safe.passwordHash; // password changes go through changePassword
+  delete safe.role; // roles never change silently
+  if (dbReady()) {
+    const User = require("../models/User");
+    try {
+      return stripHash(toLean(await User.findByIdAndUpdate(id, { $set: safe }, { new: true }).lean()));
+    } catch {
+      return null;
+    }
+  }
+  const data = readFile();
+  const idx = data.users.findIndex((u) => String(u._id) === String(id));
+  if (idx < 0) return null;
+  data.users[idx] = { ...data.users[idx], ...safe, updatedAt: new Date().toISOString() };
+  writeFile(data);
+  return stripHash(data.users[idx]);
+}
+
+async function touchLogin(id) {
+  const at = new Date().toISOString();
+  if (dbReady()) {
+    const User = require("../models/User");
+    try {
+      await User.findByIdAndUpdate(id, { $set: { lastLoginAt: at } });
+    } catch {}
+    return;
+  }
+  const data = readFile();
+  const u = data.users.find((x) => String(x._id) === String(id));
+  if (u) {
+    u.lastLoginAt = at;
+    writeFile(data);
+  }
+}
+
 module.exports = {
   dbReady,
   createBeekeeper,
+  updateBeekeeper,
   listBeekeepers,
   findBeekeeperById,
+  findBeekeepersByAadhaar,
   createBlock,
   findBlockByHash,
   findBlocks,
@@ -197,4 +361,10 @@ module.exports = {
   upsertJar,
   createRti,
   listRti,
+  createUser,
+  findUserById,
+  findUserByLogin,
+  listUsersByCentre,
+  updateUser,
+  touchLogin,
 };

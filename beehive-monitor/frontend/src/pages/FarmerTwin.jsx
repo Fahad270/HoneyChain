@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import "./FarmerTwin.css";
 
-const STAGE_ORDER = ["beekeeper_registration","collection","pooled","transport","processing","lab_certified","packaging","distribution","retail"];
+const STAGE_ORDER = ["beekeeper_registration","honey_extraction","collection","pooled","transport","processing","lab_certified","packaging","distribution","retail"];
 
 function short(h){ return h ? h.slice(0,10)+"…"+h.slice(-6) : ""; }
 
@@ -31,7 +31,7 @@ export default function FarmerTwin(){
   useEffect(()=>{
     const q = searchParams.get("id") || searchParams.get("hash");
     if(q) track(q);
-  },[]);
+  },[searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function track(id){
     const q = (id || selId || hashInput || "").trim();
@@ -81,8 +81,10 @@ export default function FarmerTwin(){
           </p>
         </div>
         <div className="twin-role-hint">
-          <span className={`role-pill ${role}`}>{role==="beekeeper"?"🐝 Beekeeper view":"🏛️ KVIC view"}</span>
-          <span className="small-muted">Switch in header if you need to log a stage.</span>
+          {role
+            ? <span className={`role-pill ${role}`}>{role === "beekeeper" ? "🐝 Beekeeper view" : "🏛️ KVIC view"}</span>
+            : <span className="role-pill">👁️ Public view</span>}
+          <span className="small-muted">{role ? "Tier from your login." : "Log in to log stages; tracking is public."}</span>
         </div>
       </div>
 
