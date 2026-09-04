@@ -5,8 +5,6 @@ import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import "./FarmerTwin.css";
 
-const STAGE_ORDER = ["beekeeper_registration","honey_extraction","collection","pooled","transport","processing","lab_certified","packaging","distribution","retail"];
-
 function short(h){ return h ? h.slice(0,10)+"…"+h.slice(-6) : ""; }
 
 export default function FarmerTwin(){

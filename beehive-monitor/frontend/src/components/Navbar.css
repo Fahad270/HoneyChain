@@ -130,30 +130,7 @@
   border-color: rgba(255,255,255,0.3);
 }
 
-.role-switch {
-  position: relative;
-  display: flex;
-  gap: 2px;
-  background: rgba(255,255,255,0.07);
-  padding: 4px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  flex-shrink: 0;
-  isolation: isolate;
-}
-.role-thumb {
-  position: absolute;
-  top: 4px; bottom: 4px;
-  width: calc(50% - 4px);
-  border-radius: 999px;
-  background: linear-gradient(135deg, #FFD97A, #F2B33D);
-  box-shadow: 0 2px 12px rgba(242,179,61,0.5);
-  transition: transform 0.3s var(--ease-spring);
-  z-index: 0;
-}
-.role-thumb.beekeeper { left: 4px; transform: translateX(0); }
-.role-thumb.kvic { left: 4px; transform: translateX(100%); }
-/* Static tier pill — the switch is gone; tier comes from the login token. */
+/* Static tier pill — tier comes from the login token, there is no switch. */
 .tier-pill {
   display: inline-flex;
   align-items: center;
@@ -169,23 +146,6 @@
   border: 1px solid rgba(255,255,255,0.3);
   box-shadow: 0 4px 16px rgba(242,179,61,0.4);
 }
-.role-btn {
-  position: relative;
-  z-index: 1;
-  padding: 7px 11px;
-  border-radius: 999px;
-  border: none;
-  background: transparent;
-  color: rgba(255,248,230,0.65);
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  white-space: nowrap;
-}
-.role-btn.active { color: #2A1E04; }
-.role-btn:disabled { cursor: not-allowed; }
-
 .account-chip {
   display: flex;
   align-items: center;
@@ -241,7 +201,6 @@
   }
   .navbar-link { padding: 12px 16px; font-size: 14px; }
   .nav-toggle { display: flex; }
-  .role-switch { margin-left: 0; }
 }
 
 @media (max-width: 640px) {

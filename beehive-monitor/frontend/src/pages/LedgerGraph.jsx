@@ -1,35 +1,30 @@
 import { useMemo } from "react";
+import { STAGE_ORDER, STAGE_SHORT, STAGE_ICON } from "../stages.js";
 import "./LedgerGraph.css";
 
-// Erudite DAG of the ledger: one lane-column per workflow stage, one node per
+// DAG of the ledger: one lane-column per workflow stage, one node per
 // block, bezier edges for every prev link (pooled lots visibly converge).
 // Works on any block set: full chain (public) or a personal scope (mine).
+// Order, labels and icons come from stages.js; only node colors live here.
 
-const GRAPH_ORDER = [
-  "beekeeper_registration",
-  "honey_extraction",
-  "collection",
-  "pooled",
-  "transport",
-  "processing",
-  "lab_certified",
-  "packaging",
-  "distribution",
-  "retail",
-];
-
-const STAGE_STYLE = {
-  beekeeper_registration: { icon: "🐝", label: "Beekeeper", fill: "#E4EFE8", stroke: "#14503F", text: "#0C2E25" },
-  honey_extraction: { icon: "🍯", label: "Extraction", fill: "#E9F6ED", stroke: "#1E7A4C", text: "#14532D" },
-  collection: { icon: "🤝", label: "Collection", fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  pooled: { icon: "🔗", label: "Collective", fill: "#FFF3D4", stroke: "#B87F22", text: "#5C3F06", dashed: true },
-  transport: { icon: "🚚", label: "Transport", fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  processing: { icon: "🧪", label: "Processing", fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  lab_certified: { icon: "🔬", label: "Lab", fill: "#EFE7FB", stroke: "#6D3BC7", text: "#3E2273" },
-  packaging: { icon: "🏷️", label: "Packaging", fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  distribution: { icon: "📦", label: "Distribution", fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  retail: { icon: "🏪", label: "Retail", fill: "#FBEAE8", stroke: "#C0453B", text: "#8A231C" },
+// Node colors per stage (order/labels/icons shared via stages.js).
+const STAGE_COLORS = {
+  beekeeper_registration: { fill: "#E4EFE8", stroke: "#14503F", text: "#0C2E25" },
+  honey_extraction: { fill: "#E9F6ED", stroke: "#1E7A4C", text: "#14532D" },
+  collection: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
+  pooled: { fill: "#FFF3D4", stroke: "#B87F22", text: "#5C3F06", dashed: true },
+  transport: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
+  processing: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
+  lab_certified: { fill: "#EFE7FB", stroke: "#6D3BC7", text: "#3E2273" },
+  packaging: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
+  distribution: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
+  retail: { fill: "#FBEAE8", stroke: "#C0453B", text: "#8A231C" },
 };
+
+function stageStyle(stage) {
+  const c = STAGE_COLORS[stage] || { fill: "#fff", stroke: "#999", text: "#333" };
+  return { ...c, icon: STAGE_ICON[stage] || "⬡", label: STAGE_SHORT[stage] || stage };
+}
 
 const NODE_W = 148;
 const NODE_H = 64;
@@ -47,8 +42,8 @@ function parentsOf(b) {
 export default function LedgerGraph({ blocks = [], selected = null, onSelect = null, title = "The living chain", dimStages = null }) {
   const layout = useMemo(() => {
     const colOf = (stage) => {
-      const i = GRAPH_ORDER.indexOf(stage);
-      return i < 0 ? GRAPH_ORDER.length - 1 : i;
+      const i = STAGE_ORDER.indexOf(stage);
+      return i < 0 ? STAGE_ORDER.length - 1 : i;
     };
     const byHash = new Map(blocks.map((b) => [b.hash, b]));
     const sorted = [...blocks].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -77,7 +72,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
         if (from && to) edges.push({ from, to, child: b.hash });
       }
     }
-    const width = PAD_X * 2 + GRAPH_ORDER.length * NODE_W + (GRAPH_ORDER.length - 1) * GAP_X;
+    const width = PAD_X * 2 + STAGE_ORDER.length * NODE_W + (STAGE_ORDER.length - 1) * GAP_X;
     const height = PAD_TOP + 14 + (maxLane + 1) * (NODE_H + GAP_Y);
     return { pos, edges, width, height, byHash };
   }, [blocks]);
@@ -128,7 +123,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
           role="img"
           aria-label="Ledger chain graph"
         >
-          {GRAPH_ORDER.map((s, i) => (
+          {STAGE_ORDER.map((s, i) => (
             <g key={s}>
               <line
                 x1={PAD_X + i * (NODE_W + GAP_X) + NODE_W / 2}
@@ -143,7 +138,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
                 textAnchor="middle"
                 className="graph-col-label"
               >
-                {(STAGE_STYLE[s]?.label || s).toUpperCase()}
+                {(STAGE_SHORT[s] || s).toUpperCase()}
               </text>
             </g>
           ))}
@@ -152,7 +147,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
           ))}
           {blocks.map((b) => {
             const p = layout.pos.get(b.hash);
-            const st = STAGE_STYLE[b.stage] || { icon: "⬡", fill: "#fff", stroke: "#999", text: "#333" };
+            const st = stageStyle(b.stage);
             const isSel = selected === b.hash;
             const dimmed = dimStages && !dimStages.has(b.stage);
             return (

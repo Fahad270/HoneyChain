@@ -51,31 +51,20 @@ async function getGeo(req, res) {
 // plus live linkage: honey-belt clusters served + claimed KVIC-tier staff.
 async function getKvicCentres(req, res) {
   try {
-    const [staffByCentre, clusters] = await Promise.all([
-      (async () => {
-        const map = {};
-        // N centres, one query each would be N round-trips; instead pull users
-        // once via per-centre lookups only in JSON mode — fine at this scale.
-        // (Mongo mode: single aggregation would be nicer; kept simple + honest.)
-        for (const c of KVIC_CENTRES) {
-          const staff = (await store.listUsersByCentre(c.id).catch(() => [])).filter((u) => u.role === "kvic");
-          if (staff.length) {
-            map[c.id] = staff.map((u) => ({
-              name: u.name,
-              orgName: u.orgName || "",
-              designation: u.designation || "",
-              centreVerified: Boolean(u.centreVerified),
-            }));
-          }
-        }
-        return map;
-      })(),
-      Promise.resolve(CLUSTERS.map((c) => ({ id: c.id, name: c.name, state: c.state, kvicId: c.kvicId }))),
-    ]);
+    // One small lookup per centre; fine at 47 centres on either store.
+    const staffLists = await Promise.all(
+      KVIC_CENTRES.map((c) => store.listUsersByCentre(c.id).catch(() => []))
+    );
+    const staffByCentre = {};
+    for (let i = 0; i < KVIC_CENTRES.length; i++) {
+      const staff = staffLists[i]
+        .filter((u) => u.role === "kvic")
+        .map((u) => ({ name: u.name, orgName: u.orgName || "", designation: u.designation || "", centreVerified: Boolean(u.centreVerified) }));
+      if (staff.length) staffByCentre[KVIC_CENTRES[i].id] = staff;
+    }
     const byCentre = {};
-    for (const c of clusters) {
-      if (!byCentre[c.kvicId]) byCentre[c.kvicId] = [];
-      byCentre[c.kvicId].push(c);
+    for (const c of CLUSTERS) {
+      (byCentre[c.kvicId] = byCentre[c.kvicId] || []).push({ id: c.id, name: c.name, state: c.state, kvicId: c.kvicId });
     }
     res.json({
       success: true,

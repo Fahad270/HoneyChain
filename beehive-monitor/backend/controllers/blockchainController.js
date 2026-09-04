@@ -834,6 +834,7 @@ module.exports = {
   getTwin,
   getMine,
   journeyFromSeeds,
+  attributionMatch,
   buildProgress,
   issueSale,
   dualVerify,

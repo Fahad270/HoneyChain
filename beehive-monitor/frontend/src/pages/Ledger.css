@@ -222,7 +222,6 @@
 @media (max-width: 1040px) { .ledger-layout { grid-template-columns: 1fr; } }
 
 .ledger-chain { position: relative; display: flex; flex-direction: column; gap: 20px; }
-.chain-rail { display: none; }
 
 .block-card { position: relative; overflow: hidden; }
 .block-card::before {

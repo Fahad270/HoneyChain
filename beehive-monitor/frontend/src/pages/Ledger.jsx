@@ -4,46 +4,8 @@ import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import LedgerGraph from "./LedgerGraph.jsx";
+import { STAGE_LABEL, STAGE_ICON, WORKFLOW_STEPS } from "../stages.js";
 import "./Ledger.css";
-
-const STAGE_LABEL = {
-  beekeeper_registration: "Beekeeper Registration",
-  honey_extraction: "Honey Extraction",
-  collection: "Collection Phase 1",
-  pooled: "Collective Pool",
-  transport: "Transport",
-  processing: "Processing & QC",
-  lab_certified: "Lab Report",
-  packaging: "Packaging & Labeling",
-  distribution: "Distribution",
-  retail: "Retail — Khadi India",
-};
-
-const STAGE_ICON = {
-  beekeeper_registration: "🐝",
-  honey_extraction: "🍯",
-  collection: "🤝",
-  pooled: "🔗",
-  transport: "🚚",
-  processing: "🧪",
-  lab_certified: "🔬",
-  packaging: "🏷️",
-  distribution: "📦",
-  retail: "🏪",
-};
-
-const WORKFLOW_STEPS = [
-  { key: "beekeeper_registration", label: "Beekeeper", num: 1 },
-  { key: "honey_extraction", label: "Extraction", num: 2 },
-  { key: "collection", label: "Collection", num: 3 },
-  { key: "pooled", label: "Collective", num: 3 },
-  { key: "transport", label: "Transport", num: 4 },
-  { key: "processing", label: "Processing", num: 5 },
-  { key: "lab_certified", label: "Lab", num: 5 },
-  { key: "packaging", label: "Packaging", num: 6 },
-  { key: "distribution", label: "Distribution", num: 7 },
-  { key: "retail", label: "Retail", num: 8 },
-];
 
 function shortHash(h) {
   if (!h) return "genesis";
@@ -330,10 +292,6 @@ export default function Ledger() {
               No blocks yet. Register a beekeeper — first block appears here automatically.
             </div>
           )}
-
-          <div className="chain-rail" aria-hidden>
-            <div className="rail-line" />
-          </div>
 
           {filtered.map((b, idx) => {
             const isGenesis = !b.prev_hash && (!b.prev_hashes || b.prev_hashes.length === 0);

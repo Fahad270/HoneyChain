@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const FILE = path.join(__dirname, "../data/runtime-store.json");
 const { normalizeAadhaar } = require("../utils/aadhaar");
+const { normalizePhone } = require("../models/User");
 
 function empty() {
   return { beekeepers: [], blocks: [], jars: [], rti: [], users: [] };
@@ -278,7 +279,7 @@ async function findUserByLogin(login) {
   const v = String(login || "").trim();
   if (!v) return null;
   const isEmail = v.includes("@");
-  const norm = isEmail ? v.toLowerCase() : v.replace(/\D/g, "").replace(/^91(\d{10})$/, "$1").replace(/^0(\d{10})$/, "$1");
+  const norm = isEmail ? v.toLowerCase() : normalizePhone(v);
   if (dbReady()) {
     const User = require("../models/User");
     const q = isEmail ? { email: norm } : { phone: norm };
@@ -289,7 +290,7 @@ async function findUserByLogin(login) {
     users.find((u) =>
       isEmail
         ? String(u.email || "").toLowerCase() === norm
-        : String(u.phone || "").replace(/\D/g, "") === norm || String(u.phone || "") === norm
+        : normalizePhone(u.phone) === norm
     ) || null
   );
 }

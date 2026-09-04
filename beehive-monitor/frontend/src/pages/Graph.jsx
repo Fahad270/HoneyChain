@@ -3,20 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { useRole } from "../context/RoleContext.jsx";
 import LedgerGraph from "./LedgerGraph.jsx";
+import { STAGE_SHORT as STAGE_LABEL, STAGE_ICON } from "../stages.js";
 import "./Graph.css";
-
-const STAGE_LABEL = {
-  beekeeper_registration: "Beekeeper",
-  honey_extraction: "Extraction",
-  collection: "Collection",
-  pooled: "Collective",
-  transport: "Transport",
-  processing: "Processing",
-  lab_certified: "Lab",
-  packaging: "Packaging",
-  distribution: "Distribution",
-  retail: "Retail",
-};
 
 export default function Graph() {
   const { user, role } = useRole();
@@ -162,7 +150,7 @@ export default function Graph() {
         <div className="card graph-detail">
           <div className="graph-detail-head">
             <span className="graph-detail-icon" aria-hidden>
-              {{ beekeeper_registration: "🐝", honey_extraction: "🍯", collection: "🤝", pooled: "🔗", transport: "🚚", processing: "🧪", lab_certified: "🔬", packaging: "🏷️", distribution: "📦", retail: "🏪" }[selectedBlock.stage] || "⬡"}
+              {STAGE_ICON[selectedBlock.stage] || "⬡"}
             </span>
             <div>
               <div className="graph-detail-title">{STAGE_LABEL[selectedBlock.stage] || selectedBlock.stage}</div>

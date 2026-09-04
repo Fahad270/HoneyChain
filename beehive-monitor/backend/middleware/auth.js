@@ -118,17 +118,4 @@ function optionalAuth(req, _res, next) {
   next();
 }
 
-// Account-role gate (JWT-based, unlike requireRole's demo-header semantics).
-function requireAccountRole(...roles) {
-  return (req, res, next) => {
-    if (!req.authUser) {
-      return res.status(401).json({ success: false, error: "Login required." });
-    }
-    if (!roles.includes(req.authUser.role)) {
-      return res.status(403).json({ success: false, error: `This needs a ${roles.join(" or ")} account.` });
-    }
-    next();
-  };
-}
-
-module.exports = { STAGE_ROLES, ROLE_LABEL, getRole, canCreateStage, requireRole, authenticate, optionalAuth, requireAccountRole };
+module.exports = { STAGE_ROLES, ROLE_LABEL, getRole, canCreateStage, requireRole, authenticate, optionalAuth };

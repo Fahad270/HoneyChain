@@ -26,7 +26,7 @@
 const crypto = require("crypto");
 const store = require("../store/appStore");
 const { validateAadhaar, maskAadhaar, last4, maskName } = require("../utils/aadhaar");
-const { stageMeta } = require("./blockchainController");
+const { stageMeta, journeyFromSeeds, attributionMatch } = require("./blockchainController");
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
@@ -131,42 +131,18 @@ async function requestOtp(req, res) {
 
 // Build the unified linked profile: all records + blocks + jars + RTI + prefill.
 //
-// Blocks are resolved exactly like the farmer digital twin (see
-// blockchainController.getTwin): start from directly-attributed blocks, then
-// BFS forward through the children map — so pooled collective lots,
-// processing, lab, packaging and retail hops downstream of the farmer's honey
+// Blocks resolve exactly like the farmer digital twin: directly-attributed
+// blocks as seeds, then journeyFromSeeds forward — so pooled lots,
+// processing, lab, packaging and retail downstream of the farmer's honey
 // are all included, not just blocks that carry his beekeeper id.
 async function buildLinkedProfile(digits) {
   const beekeepers = await store.findBeekeepersByAadhaar(digits);
   const allBlocks = await store.findBlocks({});
-  const children = new Map();
-  for (const b of allBlocks) {
-    const parents = b.prev_hashes && b.prev_hashes.length ? b.prev_hashes : b.prev_hash ? [b.prev_hash] : [];
-    for (const p of parents) {
-      if (!children.has(p)) children.set(p, []);
-      children.get(p).push(b);
-    }
-  }
   const accounts = [];
   for (const bk of beekeepers) {
     const id = String(bk._id);
-    const seeds = allBlocks.filter((b) => {
-      const ref = b.beekeeper && typeof b.beekeeper === "object" ? b.beekeeper._id : b.beekeeper;
-      return String(ref || "") === id || String(b.data?.beekeeperId || "") === id;
-    });
-    const seen = new Set(seeds.map((b) => b.hash));
-    const queue = [...seen];
-    while (queue.length) {
-      for (const kid of children.get(queue.shift()) || []) {
-        if (!seen.has(kid.hash)) {
-          seen.add(kid.hash);
-          queue.push(kid.hash);
-        }
-      }
-    }
-    const blocks = allBlocks
-      .filter((b) => seen.has(b.hash))
-      .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+    const seeds = allBlocks.filter((b) => attributionMatch(b, id)).map((b) => b.hash);
+    const blocks = journeyFromSeeds(allBlocks, seeds);
     const current = blocks.length ? blocks[blocks.length - 1] : null;
     const totalWeight = blocks.reduce(
       (s, b) => s + (Number(b.data?.weight_kg) || Number(b.data?.weight) || Number(b.data?.quantity_kg) || 0),
