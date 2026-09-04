@@ -653,17 +653,5 @@
       "createdAt": "2026-08-31T18:01:18.411Z"
     }
   ],
-  "users": [
-    {
-      "_id": "b79840abf391f43e28bbe867",
-      "name": "Order Check",
-      "role": "kvic",
-      "passwordHash": "$2b$10$OXEVdfzZaepMhy6agNK6GeghgEl7W.NUaLJ0ijZysuJZUId1CFCly",
-      "phone": "9840000011",
-      "status": "active",
-      "createdAt": "2026-09-03T09:59:19.670Z",
-      "updatedAt": "2026-09-03T09:59:19.671Z",
-      "lastLoginAt": "2026-09-03T09:59:19.682Z"
-    }
-  ]
+  "users": []
 }
