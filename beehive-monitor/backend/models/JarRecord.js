@@ -8,8 +8,14 @@ const JarRecordSchema = new mongoose.Schema(
     ipfsCid: { type: String, default: null },
     packagingHash: { type: String, default: null },
     sold: { type: Boolean, default: false },
-    billNo: { type: String, default: null },
+    channel: { type: String, enum: ["offline", "online"], default: "offline" },
+    platform: { type: String, default: null }, // "ekhadiindia.com" or "Khadi Gramodyog Bhavan"
+    orderId: { type: String, default: null }, // e-commerce order ID (e.g., "EK-2026-9810")
+    customerContact: { type: String, default: null }, // Masked phone/email for e-commerce dispatch
+    dispatchTrackingNo: { type: String, default: null }, // Postal/Courier tracking
+    billNo: { type: String, default: null }, // Physical cashier bill number
     storeName: { type: String, default: null },
+    offlineStoreId: { type: String, default: null }, // from kvicDirectory (e.g. kgb-delhi)
     privateKeyCommit: { type: String, default: null },
     verifyCount: { type: Number, default: 0 },
     lastVerifiedAt: { type: Date, default: null },

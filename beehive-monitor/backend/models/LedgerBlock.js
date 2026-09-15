@@ -9,10 +9,10 @@ const STAGES = [
   "pooled",                 // 3-collapsed — collective batches N farmer blocks converge (DAG)
   "transport",              // 4 — truck to processing plant
   "processing",             // 5 — filtered/clarified/pasteurized + QA tester scans prev QR
-  "lab_certified",          // 5b — lab adds his block by scanning (CA, cert hash) — can interleave before retail
-  "packaging",              // 6 — food-grade pack + label (FSSAI, batch no, nutrition)
-  "distribution",           // 7 — marketing & distribution to outlets
-  "retail",                 // 8 — Khadi India / outlet — freeze point
+  "lab_certified",          // 5b — lab adds his block by scanning (CA, cert hash) — CBRTI Pune purity attestation
+  "packaging",              // 6 — food-grade pack + label (FSSAI, batch no, nutrition, mass-balance check)
+  "distribution",           // 7 — marketing & distribution to outlets (Khadi Bhavans / ekhadiindia warehouses)
+  "retail",                 // 8 — Khadi India / outlet / e-commerce dispatch — freeze point
 ];
 
 const LedgerBlockSchema = new mongoose.Schema(
@@ -31,8 +31,6 @@ const LedgerBlockSchema = new mongoose.Schema(
     collective_name: { type: String, default: null },
 
     // who minted it — the logged-in account. Powers personal ledgers
-    // ("my blocks" for officers, attribution for farmers). Pre-auth blocks
-    // have createdBy: null.
     createdBy: {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
       name: { type: String, default: null },
@@ -55,13 +53,18 @@ const LedgerBlockSchema = new mongoose.Schema(
     registryKey: { type: String, default: null },
 
     // workflow-friendly extras that mirror diagram labels
-    // lab cert fields (when stage === 'lab_certified')
+    // lab cert fields (when stage === 'lab_certified') - CBRTI Pune testing standards
     lab: {
       ca_number: String,
       cert_hash: String,
       tester_name: String,
-      moisture: String,
+      cbrti_centre: { type: String, default: "cbrti-pune" },
+      moisture: String, // limit <= 20%
       purity: String,
+      c4_sugar_test: String, // EA-IRMS isotopic ratio
+      c3_rice_syrup_test: String, // TMR/SMR markers
+      hmf_level: String, // <= 80 mg/kg
+      pollen_profile: String, // Melissopalynological botanical origin
       antibiotic_residue: String,
       notes: String,
     },
@@ -71,6 +74,13 @@ const LedgerBlockSchema = new mongoose.Schema(
       pasteurized: Boolean,
       purity_test: String,
       remarks: String,
+    },
+    // Strict Mass-Balance Verification token (stops syrup dilution volume fraud)
+    mass_balance: {
+      input_weight_kg: Number,
+      output_weight_kg: Number,
+      variance_pct: Number,
+      verified: Boolean,
     },
   },
   { timestamps: true }
