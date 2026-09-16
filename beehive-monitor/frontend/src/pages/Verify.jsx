@@ -223,6 +223,39 @@ export default function Verify() {
             )}
           </div>
 
+          {/* Innovation 3: Farmer Direct Benefit Transfer (DBT) Fair Procurement Guarantee */}
+          {(data.escrow || block.beekeeper) && (
+            <div className="card" style={{ borderColor: "#854d0e", background: "linear-gradient(to right, rgba(234,179,8,0.06), rgba(22,163,74,0.04))", marginBottom: 18 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 24 }}>🌾</span>
+                  <div>
+                    <h4 style={{ margin: 0, color: "#854d0e" }}>KVIC Honey Mission • Direct Benefit Transfer (DBT) Guarantee</h4>
+                    <div style={{ fontSize: 12, color: "var(--color-text-muted)" }}>
+                      Beekeeper paid official Minimum Support Price (₹225/kg) via NPCI e-RUPI / Aadhaar-linked DBT. Zero middleman cuts.
+                    </div>
+                  </div>
+                </div>
+                <span className="badge" style={{ background: data.escrow?.status === "DISBURSED_DBT" ? "rgba(22,163,74,0.2)" : "rgba(234,179,8,0.2)", color: data.escrow?.status === "DISBURSED_DBT" ? "#15803d" : "#854d0e", fontWeight: 700 }}>
+                  {data.escrow?.status === "DISBURSED_DBT" ? "✅ DBT Disbursed (e-RUPI)" : "🔒 Escrow Protected at MSP"}
+                </span>
+              </div>
+              {data.escrow && (
+                <div style={{ marginTop: 10, fontSize: 12, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 8, padding: "8px 10px", background: "rgba(255,255,255,0.7)", borderRadius: 6 }}>
+                  <div><strong>Beekeeper:</strong> {data.escrow.beekeeperName} ({data.escrow.village})</div>
+                  <div><strong>Aadhaar Masked:</strong> <code>{data.escrow.aadhaarMasked}</code></div>
+                  <div><strong>Procurement Rate:</strong> ₹{data.escrow.mspRatePerKgInr || 225}/kg (MSP)</div>
+                  <div><strong>Settlement Amount:</strong> ₹{data.escrow.totalAmountInr}</div>
+                  {data.escrow.disbursement?.eRupiVoucherRef && (
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <strong>e-RUPI Voucher Ref:</strong> <code>{data.escrow.disbursement.eRupiVoucherRef}</code> | <strong>Txn:</strong> <code>{data.escrow.disbursement.transactionRef}</code>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* CBRTI Pune Apex Purity Certificate Badge */}
           {labBlock && (
             <div className="card" style={{ borderColor: "#16a34a", background: "linear-gradient(to right, rgba(22,163,74,0.06), rgba(232,149,10,0.04))", marginBottom: 18 }}>
