@@ -8,7 +8,7 @@ const { normalizeAadhaar } = require("../utils/aadhaar");
 const { normalizePhone } = require("../models/User");
 
 function empty() {
-  return { beekeepers: [], blocks: [], jars: [], rti: [], users: [] };
+  return { beekeepers: [], blocks: [], jars: [], rti: [], users: [], escrows: [] };
 }
 
 function readFile() {
@@ -72,9 +72,6 @@ async function findBeekeeperById(id) {
   return readFile().beekeepers.find((b) => String(b._id) === String(id)) || null;
 }
 
-// Aadhaar-linked account resolution — EVERY beekeeper record sharing these
-// 12 digits. Matches the backfilled aadhaarDigits first, then normalizes the
-// raw aadhaarNo on the fly for legacy rows.
 async function findBeekeepersByAadhaar(digits) {
   const d = normalizeAadhaar(digits);
   if (!d) return [];
@@ -153,6 +150,7 @@ async function findJarBySerial(serial) {
 }
 
 async function findJarByHash(hash) {
+  if (!hash) return null;
   if (dbReady()) {
     const JarRecord = require("../models/JarRecord");
     return toLean(await JarRecord.findOne({ hash }).lean());
@@ -184,6 +182,95 @@ async function upsertJar(payload) {
   else data.jars.push(row);
   writeFile(data);
   return row;
+}
+
+// ---- Direct Benefit Transfer (DBT) Smart Escrow Store ----
+async function createEscrow(payload) {
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    const doc = await DbtEscrow.create(payload);
+    return toLean(doc);
+  }
+  const data = readFile();
+  data.escrows = data.escrows || [];
+  const row = {
+    _id: newId(),
+    ...payload,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  data.escrows.unshift(row);
+  writeFile(data);
+  return row;
+}
+
+async function findEscrowByLot(lotHash) {
+  if (!lotHash) return null;
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    return toLean(await DbtEscrow.findOne({ $or: [{ lotHash }, { extractionHash: lotHash }, { collectionHash: lotHash }] }).lean());
+  }
+  const rows = readFile().escrows || [];
+  return rows.find((e) => e.lotHash === lotHash || e.extractionHash === lotHash || e.collectionHash === lotHash) || null;
+}
+
+async function findEscrowById(id) {
+  if (!id) return null;
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    return toLean(await DbtEscrow.findOne({ $or: [{ _id: id }, { escrowId: id }] }).lean());
+  }
+  const rows = readFile().escrows || [];
+  return rows.find((e) => String(e._id) === String(id) || e.escrowId === id) || null;
+}
+
+async function findEscrowsByBeekeeper(beekeeperId) {
+  if (!beekeeperId) return [];
+  const idStr = String(beekeeperId);
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    return (await DbtEscrow.find({ beekeeper: beekeeperId }).sort({ createdAt: -1 }).lean()).map(toLean);
+  }
+  const rows = readFile().escrows || [];
+  return rows.filter((e) => String(e.beekeeper || "") === idStr);
+}
+
+async function listEscrows() {
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    return (await DbtEscrow.find().sort({ createdAt: -1 }).lean()).map(toLean);
+  }
+  return (readFile().escrows || []).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+
+async function updateEscrow(idOrLot, patch) {
+  const safe = { ...patch };
+  delete safe._id;
+  delete safe.__v;
+  delete safe.createdAt;
+  if (dbReady()) {
+    const DbtEscrow = require("../models/DbtEscrow");
+    try {
+      return toLean(
+        await DbtEscrow.findOneAndUpdate(
+          { $or: [{ _id: idOrLot }, { escrowId: idOrLot }, { lotHash: idOrLot }] },
+          { $set: safe },
+          { new: true }
+        ).lean()
+      );
+    } catch {
+      return null;
+    }
+  }
+  const data = readFile();
+  data.escrows = data.escrows || [];
+  const idx = data.escrows.findIndex(
+    (e) => String(e._id) === String(idOrLot) || e.escrowId === idOrLot || e.lotHash === idOrLot
+  );
+  if (idx < 0) return null;
+  data.escrows[idx] = { ...data.escrows[idx], ...safe, updatedAt: new Date().toISOString() };
+  writeFile(data);
+  return data.escrows[idx];
 }
 
 async function createRti(payload) {
@@ -230,7 +317,6 @@ async function updateBeekeeper(id, patch) {
   return data.beekeepers[idx];
 }
 
-// ---- Two-tier accounts ----
 function stripHash(u) {
   if (!u) return u;
   const { passwordHash, __v, ...safe } = u;
@@ -311,8 +397,8 @@ async function updateUser(id, patch) {
   delete safe._id;
   delete safe.__v;
   delete safe.createdAt;
-  delete safe.passwordHash; // password changes go through changePassword
-  delete safe.role; // roles never change silently
+  delete safe.passwordHash;
+  delete safe.role;
   if (dbReady()) {
     const User = require("../models/User");
     try {
@@ -360,6 +446,12 @@ module.exports = {
   findJarBySerial,
   findJarByHash,
   upsertJar,
+  createEscrow,
+  findEscrowByLot,
+  findEscrowById,
+  findEscrowsByBeekeeper,
+  listEscrows,
+  updateEscrow,
   createRti,
   listRti,
   createUser,

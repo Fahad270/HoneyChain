@@ -184,6 +184,85 @@ export default function FarmerTwin(){
             </div>
           </div>
 
+          {/* Innovation 3: Automated Direct Benefit Transfer (DBT) & Smart Escrow Payouts */}
+          <div className="card dbt-escrow-card" style={{ borderColor: "#ca8a04", background: "linear-gradient(to right, rgba(234,179,8,0.06), rgba(22,163,74,0.04))", marginBottom: 18 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 24 }}>💰</span>
+                  <h3 style={{ margin: 0, color: "#854d0e" }}>KVIC Honey Mission • Direct Benefit Transfer (DBT) Smart Escrow</h3>
+                </div>
+                <p className="dashboard-sub" style={{ margin: "4px 0 0" }}>
+                  Autonomous smart settlement on-chain: procurement funds locked at KVIC MSP (₹225/kg) and released directly to your Aadhaar/e-RUPI account upon CBRTI Pune lab attestation.
+                </p>
+              </div>
+              <span className="badge" style={{ background: "rgba(22,163,74,0.15)", color: "#15803d", fontWeight: 700, padding: "6px 12px", borderRadius: 8 }}>
+                NPCI e-RUPI / Aadhaar-Linked DBT
+              </span>
+            </div>
+
+            {/* Financial stats summary */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10, marginBottom: 14 }}>
+              <div style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)" }}>
+                <div style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Harvest Volume Tracked</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--color-primary-dark)" }}>{data.stats?.totalWeight || 15} kg</div>
+              </div>
+              <div style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)" }}>
+                <div style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Official KVIC MSP Rate</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "#15803d" }}>₹225 / kg</div>
+              </div>
+              <div style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)" }}>
+                <div style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Guaranteed Lot Value</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "#854d0e" }}>₹{Math.round((data.stats?.totalWeight || 15) * 225)}</div>
+              </div>
+              <div style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)" }}>
+                <div style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Settlement Status</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: (data.escrows && data.escrows.some(e => e.status === "DISBURSED_DBT")) ? "#15803d" : "#ca8a04" }}>
+                  {(data.escrows && data.escrows.some(e => e.status === "DISBURSED_DBT"))
+                    ? "✅ Disbursed to Bank (e-RUPI)"
+                    : (data.escrows && data.escrows.some(e => e.status === "COLLECTED_PENDING_LAB"))
+                      ? "🔬 Lab Testing in Progress"
+                      : "🔒 Escrow Locked at Harvest"}
+                </div>
+              </div>
+            </div>
+
+            {/* Escrow lot items */}
+            {data.escrows && data.escrows.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {data.escrows.map((esc) => (
+                  <div key={esc.escrowId || esc._id} style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", fontSize: 13 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
+                      <div>
+                        <strong>Escrow Ref:</strong> <code>{esc.escrowId}</code> • <strong>Lot:</strong> <code>{short(esc.lotHash)}</code>
+                      </div>
+                      <span className={`status-pill ${esc.status === "DISBURSED_DBT" ? "status-healthy" : esc.status === "QUALITY_REJECTED" ? "status-critical" : "status-warning"}`}>
+                        {esc.status === "DISBURSED_DBT" ? "✅ Payout Disbursed" : esc.status === "COLLECTED_PENDING_LAB" ? "📦 Collected by MHPU" : esc.status === "QUALITY_REJECTED" ? "⚠️ Quality Rejection" : "🔒 Locked in Escrow"}
+                      </span>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8, color: "var(--color-text-muted)" }}>
+                      <div>Weight: <strong>{esc.lotWeightKg} kg</strong> @ ₹{esc.mspRatePerKgInr}/kg</div>
+                      <div>Total Settlement: <strong style={{ color: "#15803d" }}>₹{esc.totalAmountInr}</strong></div>
+                      <div>Aadhaar Destination: <code>{esc.aadhaarMasked || "XXXX-XXXX-9999"}</code></div>
+                      {esc.disbursement?.eRupiVoucherRef && (
+                        <div>e-RUPI Voucher: <code>{esc.disbursement.eRupiVoucherRef}</code></div>
+                      )}
+                    </div>
+                    {esc.cbrtiReport?.passed && (
+                      <div style={{ marginTop: 8, fontSize: 12, color: "#15803d" }}>
+                        ✓ Central Bee Research & Training Institute (CBRTI), Pune certified: Moisture {esc.cbrtiReport.moisture || "≤20%"} • C3/C4 Negative. Smart contract unlocked payment automatically.
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", fontSize: 13, color: "var(--color-text-muted)" }}>
+                🔒 <strong>Smart Escrow Contract Ready:</strong> When you log a Honey Extraction or KVIC collection van records your batch, a dedicated escrow deposit will be minted here at the official KVIC MSP (₹225/kg).
+              </div>
+            )}
+          </div>
+
           {/* RTI — Right to Information */}
           <div className="card rti-card">
             <h3 style={{marginBottom:8}}>📋 Right to Information (RTI)</h3>

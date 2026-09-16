@@ -5,6 +5,7 @@ const { getRole, canCreateStage, STAGE_ROLES, ROLE_LABEL } = require("../middlew
 const store = require("../store/appStore");
 const { pinJson } = require("../services/pinata");
 const { getRegistryKey, issuePrivateKey, commitPrivateKey, jarSerial } = require("../services/chainKeys");
+const { syncEscrowFromBlock } = require("./escrowController");
 
 const STAGE_META = {
   beekeeper_registration: { label: "Beekeeper Registration", step: 1, desc: "Beekeeper enrolled under KVIC Honey Mission — record pinned and genesis block auto-minted", icon: "🐝" },
@@ -423,6 +424,14 @@ async function createBlock(req, res) {
       createdBy: await authorStamp(req),
     });
 
+    // Innovation 3: Synchronize KVIC Honey Mission DBT Smart Escrow
+    let escrowRecord = null;
+    try {
+      escrowRecord = await syncEscrowFromBlock(block);
+    } catch (e) {
+      console.warn("Notice: DBT Escrow sync:", e.message);
+    }
+
     if (stage === "packaging" && serial) {
       await store.upsertJar({
         jarSerial: serial,
@@ -487,6 +496,7 @@ async function verifyBlock(req, res) {
     }
 
     const jar = await store.findJarByHash(hash);
+    const escrow = (await store.findEscrowByLot(hash)) || (block.prev_hash ? await store.findEscrowByLot(block.prev_hash) : null);
     const blockWithMeta = { ...block, stage_meta: stageMeta(block.stage) };
     const blockForClient = tokenValid ? blockWithMeta : redactSecret(blockWithMeta);
     const pooledForClient = pooledParents.map((p) => redactSecret({ ...p, stage_meta: stageMeta(p.stage) }));
@@ -522,6 +532,7 @@ async function verifyBlock(req, res) {
           needsPrivateKey: !!(jar && jar.sold),
           channel: jar?.channel || "offline",
         },
+        escrow: escrow || null,
       },
     });
   } catch (err) {
@@ -641,10 +652,16 @@ async function getTwin(req, res) {
     const totalWeight = enriched.reduce((sum, b) => sum + (Number(b.data?.weight_kg) || Number(b.data?.weight) || Number(b.data?.quantity_kg) || 0), 0);
     const hives = [...new Set(enriched.map((b) => b.data?.hive_id).filter(Boolean))];
 
+    let beekeeperEscrows = [];
+    if (beekeeperDoc?._id) {
+      beekeeperEscrows = await store.findEscrowsByBeekeeper(beekeeperDoc._id);
+    }
+
     res.json({
       success: true,
       data: {
         beekeeper: beekeeperDoc,
+        escrows: beekeeperEscrows,
         query: rawId,
         startHashes,
         journey: enriched,
