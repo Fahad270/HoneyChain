@@ -1,0 +1,140 @@
+/* compat.css — structural classes introduced by the post-main UI revamp,
+   backfilled here in the PRE-revamp (mundane) theme: flat surfaces,
+   old palette tokens, Poppins/Inter only. No gradients. */
+
+.kicker, .ledger-kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+.kicker::before, .ledger-kicker::before{
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.section-title{
+  font-family: var(--font-heading);
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 0.95;
+  color: var(--color-primary-dark);
+}
+.section-title em{
+  font-style: normal;
+  color: var(--color-primary-dark);
+}
+.section-title .amp, h1 .amp, .map-page h1 .amp{
+  font-family: var(--font-heading);
+  font-weight: 800;
+}
+
+.btn-honey{
+  background: var(--color-accent);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.btn-honey:hover{ transform: translateY(-1px); filter: brightness(1.04); }
+
+.brand-hex{
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: var(--color-accent);
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+}
+.brand-name{
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  color: #FFF8E6;
+}
+.brand-name::after{
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+.brand-sub{
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-top: 4px;
+  opacity: 0.9;
+}
+.brand-text{ display: flex; flex-direction: column; line-height: 1; }
+.btn-account{ padding: 8px 14px; font-size: 12.5px; flex-shrink: 0; }
+.nav-ico{ font-size: 13px; opacity: 0.85; }
+.navbar-glow{ display: none; }
+.account-chip{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-accent);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 3px 3px 3px 14px;
+  flex-shrink: 0;
+}
+.account-logout{
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(42, 30, 4, 0.14);
+  color: #2A1E04;
+  font-size: 14px;
+  font-weight: 900;
+}
+.account-logout:hover{ background: rgba(42, 30, 4, 0.28); }
+.account-name-link{
+  color: #2A1E04;
+  font-weight: 800;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scope-bar{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.scope-note{ font-size: 12.5px; color: var(--color-text-muted); }
+.ledger-stat-tip{
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 12px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-dot.training{ background: #0d9488; }
+.form-msg.hint{ color: var(--color-text-muted); font-weight: 500; }
