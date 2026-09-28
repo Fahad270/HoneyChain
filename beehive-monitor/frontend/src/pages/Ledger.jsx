@@ -182,7 +182,7 @@ export default function Ledger() {
       <div className="ledger-head">
         <div>
           <div className="ledger-kicker">Honey Workflow 1 → 9 • Live on ledger</div>
-          <h1>Honey <span style={{ background: "var(--color-honey-gradient)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>Ledger</span></h1>
+          <h1>Honey Ledger</h1>
           <p className="dashboard-sub">
             Every hop is a block. First block after registration is your genesis QR — scan it to append the next hop.
             Collective pools many farmer blocks into one (DAG), processor scans, lab scans & certifies, retail freezes.
