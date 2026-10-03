@@ -15,6 +15,7 @@ async function connectDB() {
     console.log("[db] Connected to MongoDB Atlas");
   } catch (err) {
     console.error("[db] Failed to connect to MongoDB:", err.message);
+    console.warn("[db] Falling back to local JSON store — registration & ledger still work.");
   }
 }
 

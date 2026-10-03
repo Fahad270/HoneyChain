@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, Navigate } from "react-router-dom";
 import api from "../api.js";
+import { QRCodeSVG } from "qrcode.react";
+import AadhaarKyc from "./AadhaarKyc.jsx";
+import { useRole } from "../context/RoleContext.jsx";
 import "./Register.css";
 
 const CATEGORIES = ["Individual Beekeeper", "Firm", "Society", "Company"];
@@ -27,6 +31,7 @@ const emptyForm = {
   postalAddress: "",
   phoneNumber: "",
   email: "",
+  clusterId: "",
   fatherOrHusbandName: "",
   caste: "",
   noOfBeeColonies: "",
@@ -42,27 +47,58 @@ const emptyForm = {
 };
 
 export default function Register() {
+  const { user, authChecked } = useRole();
   const [category, setCategory] = useState(0);
   const [activeSection, setActiveSection] = useState("basic");
   const [form, setForm] = useState(emptyForm);
-  const [status, setStatus] = useState(null); // null | "saving" | "success" | "error"
+  const [status, setStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [genesis, setGenesis] = useState(null);
+  const [clusters, setClusters] = useState([]);
+  const [kycOpen, setKycOpen] = useState(false);
+  const [kycInfo, setKycInfo] = useState(null); // { masked, verifiedAt, matchCount, accountName }
+
+  useEffect(() => {
+    api.get("/map/geo").then((r) => {
+      setClusters(r.data.data?.clusters || []);
+    }).catch(() => {});
+  }, []);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  // Aadhaar-linked autofill from the KYC panel — only known form keys.
+  function applyKycPrefill(prefill) {
+    setForm((f) => {
+      const next = { ...f };
+      for (const k of Object.keys(emptyForm)) {
+        if (prefill[k] !== undefined && prefill[k] !== null) next[k] = prefill[k];
+      }
+      return next;
+    });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!user) {
+      setStatus("error");
+      setErrorMsg("Log in first — registration mints your genesis block, so it needs a beekeeper or KVIC account.");
+      return;
+    }
     setStatus("saving");
     setErrorMsg("");
+    setGenesis(null);
     try {
-      await api.post("/beekeepers/register", {
-        ...form,
-        category: CATEGORIES[category].toLowerCase().includes("individual")
-          ? "individual"
-          : CATEGORIES[category].toLowerCase(),
-      });
+      const categoryValue = CATEGORIES[category].toLowerCase().includes("individual")
+        ? "individual"
+        : CATEGORIES[category].toLowerCase();
+      const payload = { ...form, category: categoryValue };
+      if (!payload.clusterId) delete payload.clusterId;
+      const res = await api.post("/beekeepers/register", payload);
+      const body = res.data.data;
+      const genesisBlock = body?.genesis || res.data.genesis || null;
+      setGenesis(genesisBlock);
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -70,12 +106,23 @@ export default function Register() {
     }
   }
 
+  // Registration mints a genesis block — a private, logged-in act.
+  // Logged-out visitors go to Account (login/signup) instead. Wait for the
+  // persisted-session check first so returning users don't flash-redirect.
+  if (authChecked && !user) {
+    return <Navigate to="/account" replace />;
+  }
+  if (!authChecked) {
+    return <div className="page-container">Loading…</div>;
+  }
+
   return (
     <div className="register-page">
       <div className="register-banner">
         <div className="register-banner-inner">
-          <div className="register-banner-tag">National Bee Board · NBHM</div>
-          <h1>Beekeeper Registration</h1>
+          <div className="register-banner-tag">National Bee Board · NBHM · HoneyChain</div>
+          <h1>Beekeeper <em>Registration</em></h1>
+          <p className="register-banner-sub">Enroll your apiary — your first ledger block (genesis QR) is minted instantly. Present it to your collective to start the farm-to-Khadi journey.</p>
         </div>
       </div>
 
@@ -84,6 +131,7 @@ export default function Register() {
           {CATEGORIES.map((cat, i) => (
             <button
               key={cat}
+              type="button"
               className={"category-tab" + (i === category ? " active" : "")}
               onClick={() => setCategory(i)}
             >
@@ -98,6 +146,7 @@ export default function Register() {
             {SIDE_SECTIONS.map((s) => (
               <button
                 key={s.key}
+                type="button"
                 disabled={!s.enabled}
                 className={
                   "sidebar-item" +
@@ -115,7 +164,7 @@ export default function Register() {
           <form className="register-form card" onSubmit={handleSubmit}>
             <div className="form-header">
               <label className="field">
-                <span>Aadhaar No</span>
+                <span>Aadhaar No {kycInfo && <span className="kyc-verified-pill">✓ {kycInfo.masked}</span>}</span>
                 <input
                   value={form.aadhaarNo}
                   onChange={(e) => update("aadhaarNo", e.target.value)}
@@ -123,10 +172,28 @@ export default function Register() {
                   required
                 />
               </label>
-              <button type="button" className="btn btn-outline">
+              <button type="button" className="btn btn-outline" onClick={() => setKycOpen(true)}>
                 Get Aadhaar Info
               </button>
             </div>
+            {kycInfo && (
+              <div className="form-msg success" style={{ fontSize: 12 }}>
+                ✓ Aadhaar verified {kycInfo.verifiedAt ? `· ${new Date(kycInfo.verifiedAt).toLocaleString()}` : ""} ·
+                autofilled from {kycInfo.accountName || "linked account"} · {kycInfo.matchCount} linked account(s) in our database.
+              </div>
+            )}
+            {kycOpen && (
+              <AadhaarKyc
+                initialAadhaar={form.aadhaarNo}
+                onClose={() => setKycOpen(false)}
+                onVerified={({ prefill, masked, verifiedAt, matchCount, accountName }) => {
+                  applyKycPrefill(prefill);
+                  setKycInfo({ masked, verifiedAt, matchCount, accountName });
+                  setKycOpen(false);
+                  setStatus(null);
+                }}
+              />
+            )}
 
             <div className="section-banner">
               Aadhaar Details <span>(Change not allowed here — update Aadhaar for changes)</span>
@@ -162,6 +229,15 @@ export default function Register() {
                   <option value="karnataka">Karnataka</option>
                   <option value="gujarat">Gujarat</option>
                   <option value="uttar pradesh">Uttar Pradesh</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Join Cluster (optional)</span>
+                <select value={form.clusterId || ""} onChange={(e) => update("clusterId", e.target.value || undefined)}>
+                  <option value="">— None —</option>
+                  {clusters.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name} — {c.state}</option>
+                  ))}
                 </select>
               </label>
               <label className="field">
@@ -260,6 +336,52 @@ export default function Register() {
                 {status === "saving" ? "Saving..." : "Submit Registration"}
               </button>
             </div>
+
+            {status === "success" && genesis && (
+              <div className="genesis-card">
+                <div className="genesis-head">
+                  <span className="genesis-icon">⬡</span>
+                  <div>
+                    <div className="genesis-title">First block on ledger — GENESIS</div>
+                    <div className="genesis-sub">Step 1 • Beekeeper Registration • Chain starts here • Present this QR to your collective</div>
+                  </div>
+                  <span className="status-pill status-healthy">On-chain</span>
+                </div>
+
+                <div className="genesis-grid">
+                  <div className="genesis-data">
+                    <div className="hash-row">
+                      <span className="hash-label">Block hash</span>
+                      <code className="hash-val">{genesis.hash}</code>
+                    </div>
+                    <div className="hash-row">
+                      <span className="hash-label">Prev</span>
+                      <code className="hash-val small">{genesis.prev_hash || "— genesis (no prev)"}</code>
+                    </div>
+                    <div className="genesis-meta">
+                      <span><strong>{genesis.data?.name || form.name}</strong> • {genesis.data?.village || form.district || "—"}</span>
+                      <span className="badge">{genesis.stage}</span>
+                    </div>
+                    <pre className="payload-pre" style={{ marginTop: 12 }}>{JSON.stringify(genesis.data || {}, null, 2)}</pre>
+                    <div className="genesis-actions">
+                      <Link className="btn btn-primary" to={`/verify/${genesis.hash}?s=${encodeURIComponent(genesis.scan_secret || "")}`}>Verify genesis</Link>
+                      <Link className="btn btn-outline" to="/ledger">Open ledger</Link>
+                      <Link className="btn btn-outline" to={`/twin?id=${genesis.hash}`}>Track my twin →</Link>
+                    </div>
+                    <div className="scan-hint" style={{ marginTop: 8 }}>scan_secret: <code>{genesis.scan_secret}</code> • QR = {window.location.origin}/verify/{genesis.hash.slice(0, 10)}…?s=…</div>
+                  </div>
+                  <div className="genesis-qr">
+                    <div className="qr-box">
+                      <QRCodeSVG value={`${window.location.origin}/verify/${genesis.hash}?s=${encodeURIComponent(genesis.scan_secret || "")}`} size={148} level="M" />
+                    </div>
+                    <div className="qr-caption">Beekeeper QR — scan to create extraction / pooled batch</div>
+                    <div className="genesis-flow">
+                      <span>→ Collective scans this → pools many farmers → processor scans pooled → lab scans → retail freezes → Khadi verifies</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>

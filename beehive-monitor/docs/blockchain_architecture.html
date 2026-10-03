@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HoneyChain — Blockchain Architecture & Dual-Key Verification Diagram</title>
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --accent-gold: #f59e0b;
+      --accent-amber: #d97706;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-purple: #8b5cf6;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --code-bg: #090d13;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    .container { max-width: 1300px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(13, 17, 23, 0.8) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+    .badge.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .badge.cyan { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+    .badge.emerald { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .diagram-board {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    /* 4-Layer Architecture Box Grid */
+    .arch-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .layer-card {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+    }
+
+    .layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+
+    .layer-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .layer-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .layer-components {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .component-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .component-box:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-gold);
+    }
+
+    .component-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .component-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Workflow Pipeline Timeline */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .pipeline-step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 18px;
+      align-items: center;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .pipeline-step:hover {
+      border-color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.03);
+    }
+
+    .step-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--accent-gold);
+      border-radius: 12px;
+      font-weight: bold;
+      color: var(--accent-gold);
+      text-align: center;
+    }
+
+    .step-badge .num { font-size: 1.2rem; }
+    .step-badge .icon { font-size: 1.4rem; }
+
+    .step-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .step-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .step-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .step-actors {
+      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      font-family: var(--font-mono);
+    }
+
+    .step-hash-formula {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: #93c5fd;
+      border-left: 3px solid var(--accent-cyan);
+      margin-top: 4px;
+      overflow-x: auto;
+    }
+
+    .step-details {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .dual-key-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .dual-key-card {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .dual-key-card.highlight {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+    }
+
+    .code-snippet {
+      background: #05070a;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span>🍯</span> HoneyChain: Blockchain Traceability & Smart Beekeeping</h1>
+      <p class="subtitle">
+        Architecture Blueprint & Cryptographic Verification Specification for Problem Statement ID #26021 (KVIC Honey Mission)
+      </p>
+      <div class="badge-bar">
+        <span class="badge gold">Hybrid Hash DAG + EVM Registry</span>
+        <span class="badge cyan">Dual-Key Anti-Counterfeit (QR + Bill)</span>
+        <span class="badge emerald">IPFS Decentralized Content Pinning</span>
+        <span class="badge">Retail Freeze Immutability</span>
+        <span class="badge">KVIC 2-Tier Role RBAC</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview', this)">1. Architecture Stack</button>
+      <button class="tab-btn" onclick="switchTab('pipeline', this)">2. 9-Stage Workflow & DAG Pooling</button>
+      <button class="tab-btn" onclick="switchTab('dualkey', this)">3. Dual-Key Anti-Counterfeit Engine</button>
+      <button class="tab-btn" onclick="switchTab('smartcontract', this)">4. Smart Contract (Solidity / EVM)</button>
+      <button class="tab-btn" onclick="switchTab('datamodel', this)">5. Cryptographic Data Models</button>
+    </div>
+
+    <!-- TAB 1: ARCHITECTURE STACK -->
+    <div id="overview" class="tab-content active">
+      <div class="diagram-board">
+        <div class="arch-stack">
+
+          <!-- Layer 1: Client & Stakeholders -->
+          <div class="layer-card" style="border-left: 4px solid var(--accent-gold);">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span>👥</span> Layer 1: Stakeholders & Interaction Interfaces
+              </div>
+              <span class="layer-tag" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold);">Client / IoT</span>
+            </div>
+            <div class="layer-components">
+              <div class="component-box">
+                <div class="component-name">Rural Beekeepers</div>
+                <div class="component-desc">Aadhaar KYC registered. Logs hive harvest extraction via mobile web app. Receives genesis QR token.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">KVIC Field Officers & Vans</div>
+                <div class="component-desc">Collects harvest, pools batches via DAG, verifies moisture with mobile refractometer, issues collection blocks.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">Processing Plants & QC Labs</div>
+                <div class="component-desc">Appends filtration & pasteurization parameters, lab certificate hashes (C3/C4 test, moisture &le; 20%, FSSAI CA).</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">Khadi India Retail Stores</div>
+                <div class="component-desc">Scans packaging QR, freezes chain at retail, issues one-time bill private key printed on purchase receipt.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">End Consumers</div>
+                <div class="component-desc">Scans jar QR code + inputs bill private key for instant zero-trust cryptographic authenticity validation.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 2: API & Application Engine -->
+          <div class="layer-card" style="border-left: 4px solid var(--accent-cyan);">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span>⚡</span> Layer 2: Express Engine & Verification Controllers
+              </div>
+              <span class="layer-tag" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">Node.js / Express</span>
+            </div>
+            <div class="layer-components">
+              <div class="component-box">
+                <div class="component-name">Role-Based JWT Gateway</div>
+                <div class="component-desc">Enforces 2-tier authorization: <code>beekeeper</code> (Stages 1-2 only) vs <code>kvic</code> (Stages 3-8 only). Prevents privilege escalation.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">DAG Pooling & Hashing Engine</div>
+                <div class="component-desc"><code>blockHash()</code> for linear hops, <code>pooledHash()</code> for multi-farmer lot convergence. Canonical JSON serialization.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">verifyChain() Walk Engine</div>
+                <div class="component-desc">Reverse topological walk (maxDepth 500), checks SHA256 integrity, detects cycles, and enforces retail freeze lock.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">Farmer Digital Twin (BFS Engine)</div>
+                <div class="component-desc">Forward BFS traversal from seed extraction block across the DAG children map to show beekeepers where their honey ended up.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 3: Persistence & Decentralized Storage -->
+          <div class="layer-card" style="border-left: 4px solid var(--accent-emerald);">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span>🗄️</span> Layer 3: Hybrid Database & Decentralized Storage
+              </div>
+              <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">Storage & IPFS</span>
+            </div>
+            <div class="layer-components">
+              <div class="component-box">
+                <div class="component-name">MongoDB Atlas (Off-chain Store)</div>
+                <div class="component-desc">Collections: <code>LedgerBlock</code> (indexed hashes & DAG pointers), <code>JarRecord</code> (serial, commit, scan counts), <code>Beekeeper</code>.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">IPFS / Pinata Gateway</div>
+                <div class="component-desc">Every block payload pinned to decentralized IPFS storage. Yields immutable <code>ipfsCid</code> linked inside smart contract and MongoDB.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">Runtime JSON Fallback Store</div>
+                <div class="component-desc">Resilient zero-downtime fallback for off-grid operations when remote MongoDB Atlas connection is interrupted.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 4: Smart Contract & Blockchain Settlement -->
+          <div class="layer-card" style="border-left: 4px solid var(--accent-purple);">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span>⛓️</span> Layer 4: On-Chain EVM Smart Contract Layer
+              </div>
+              <span class="layer-tag" style="background: rgba(139, 92, 246, 0.15); color: var(--accent-purple);">Solidity 0.8.20+</span>
+            </div>
+            <div class="layer-components">
+              <div class="component-box">
+                <div class="component-name">HoneyChainRegistry.sol</div>
+                <div class="component-desc">Deployed on EVM (Polygon / Besu / Remix). Stores immutable batch mappings: <code>publicKey &rarr; Batch(cid, prevHash, commit)</code>.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">issuePurchase() Method</div>
+                <div class="component-desc">Stores <code>keccak256(privateKey)</code> commit on-chain upon retail checkout. Prevents reusing the same commit across jars.</div>
+              </div>
+              <div class="component-box">
+                <div class="component-name">verify() Dual-Key Execution</div>
+                <div class="component-desc">Atomic verification: checks commit match, increments <code>verifyCount</code>. Emits <code>DualVerified</code> event. Flags clones on scan > 1.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PIPELINE & DAG POOLING -->
+    <div id="pipeline" class="tab-content">
+      <div class="diagram-board">
+        <h2 style="color: var(--accent-gold); margin-bottom: 16px;">The 9-Stage Honey Journey & DAG Batch Convergence</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">
+          Each stage represents a verifiable hop. Linear hops link via <code>prev_hash</code>. When KVIC centers pool honey from multiple farmers, a <strong>Convergent Directed Acyclic Graph (DAG)</strong> merges multiple parent hashes into a single lot hash.
+        </p>
+
+        <div class="pipeline">
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">01</span>
+              <span class="icon">🐝</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Beekeeper Registration (Genesis Block)</span>
+                <span class="step-actors">Actor: Beekeeper</span>
+              </div>
+              <div class="step-details">Farmer enrolled with Aadhaar Verhoeff KYC verification. System auto-mints genesis block with <code>prev_hash = null</code>.</div>
+              <div class="step-hash-formula">hash = SHA256(null | "beekeeper_registration" | canonical({ beekeeperId, village, aadhaarHash }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">02</span>
+              <span class="icon">🍯</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Honey Extraction</span>
+                <span class="step-actors">Actor: Beekeeper</span>
+              </div>
+              <div class="step-details">Honey harvested at apiary. Records hive ID, extraction weight (kg), floral nectar source, and moisture estimate.</div>
+              <div class="step-hash-formula">hash = SHA256(genesisHash | "honey_extraction" | canonical({ hive_id, weight_kg, flower_source }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step" style="border: 1px solid var(--accent-gold);">
+            <div class="step-badge" style="background: rgba(245, 158, 11, 0.2);">
+              <span class="num">03</span>
+              <span class="icon">🔗</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Collection & Pooled Convergence (DAG Merge)</span>
+                <span class="step-actors">Actor: KVIC Field Officer / Cooperative</span>
+              </div>
+              <div class="step-details">
+                <strong>Convergent DAG:</strong> Multiple farmer extraction hashes [H1, H2, H3, ... HN] are aggregated into a single cooperative bulk lot. Preserves individual farmer provenance.
+              </div>
+              <div class="step-hash-formula" style="border-left-color: var(--accent-gold); color: var(--accent-gold);">
+                pooledHash = SHA256(sorted([H1, H2, H3, ...]).join("|") | "pooled" | canonical({ collective_name, total_weight_kg }))
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">04</span>
+              <span class="icon">🚚</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Bulk Transport</span>
+                <span class="step-actors">Actor: Transporter / Logistics</span>
+              </div>
+              <div class="step-details">Truck shipment from village cluster collection point to central KVIC processing plant. Logs vehicle number, transit temperature, dispatch timestamp.</div>
+              <div class="step-hash-formula">hash = SHA256(pooledHash | "transport" | canonical({ truck_no, origin_cluster, destination_facility }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">05</span>
+              <span class="icon">🧪</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Processing & Quality Assurance</span>
+                <span class="step-actors">Actor: Processing Facility QA</span>
+              </div>
+              <div class="step-details">Controlled heating (&le;45&deg;C to preserve diastase/enzymes), double filtration, settling. QA officer signs off filtration and purity checks.</div>
+              <div class="step-hash-formula">hash = SHA256(transportHash | "processing" | canonical({ filtered: true, pasteurized: false, qa_officer }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step" style="border-left: 4px solid var(--accent-cyan);">
+            <div class="step-badge" style="background: rgba(6, 182, 212, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan);">
+              <span class="num">5B</span>
+              <span class="icon">🔬</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Accredited Laboratory Certification</span>
+                <span class="step-actors">Actor: KVIC / NABL Testing Lab</span>
+              </div>
+              <div class="step-details">Chemical & isotopic profiling: moisture &le; 20%, C3/C4 sugar syrup adulteration tests, HMF activity, Agmark / FSSAI CA certification hash.</div>
+              <div class="step-hash-formula">hash = SHA256(processingHash | "lab_certified" | canonical({ ca_number, moisture: "18.2%", cert_hash }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">06</span>
+              <span class="icon">🏷️</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Packaging & Labeling (Jar QR Minting)</span>
+                <span class="step-actors">Actor: Packaging Unit</span>
+              </div>
+              <div class="step-details">Bottling in food-grade glass jars. Unique <code>jarSerial</code> generated (e.g. <code>JAR-9A4B-3C2D</code>). Jar QR code is printed with the block hash as the <strong>Public Key</strong>.</div>
+              <div class="step-hash-formula">hash = SHA256(labHash | "packaging" | canonical({ jar_serial: "JAR-...", batch_size }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-badge">
+              <span class="num">07</span>
+              <span class="icon">📦</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Distribution</span>
+                <span class="step-actors">Actor: Distributor</span>
+              </div>
+              <div class="step-details">Dispatch manifest assigning specific jar lots to designated Khadi Bhavan and KVIC retail outlets across Indian cities.</div>
+              <div class="step-hash-formula">hash = SHA256(packagingHash | "distribution" | canonical({ dest_store: "Khadi Bhavan Connaught Place", city }))</div>
+            </div>
+          </div>
+
+          <div class="pipeline-step" style="border: 1px solid var(--accent-rose);">
+            <div class="step-badge" style="background: rgba(244, 63, 94, 0.15); border-color: var(--accent-rose); color: var(--accent-rose);">
+              <span class="num">08</span>
+              <span class="icon">🔒</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Retail Sale & Cryptographic Freeze (is_frozen = true)</span>
+                <span class="step-actors">Actor: Khadi Retail POS</span>
+              </div>
+              <div class="step-details">
+                <strong>Chain Freeze:</strong> POS cashier logs sale bill. The ledger marks <code>is_frozen = true</code>; any subsequent attempt to append child blocks is rejected. Generates single-use Bill Private Key.
+              </div>
+              <div class="step-hash-formula" style="border-left-color: var(--accent-rose); color: var(--accent-rose);">
+                hash = SHA256(distHash | "retail" | canonical({ store_name, bill_no, is_frozen: true }))
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-step" style="border: 1px solid var(--accent-emerald);">
+            <div class="step-badge" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent-emerald); color: var(--accent-emerald);">
+              <span class="num">09</span>
+              <span class="icon">✅</span>
+            </div>
+            <div class="step-body">
+              <div class="step-top">
+                <span class="step-name">Consumer Dual-Key Authentication</span>
+                <span class="step-actors">Actor: Buyer / Consumer</span>
+              </div>
+              <div class="step-details">Consumer scans Jar QR (Public Key) + enters Bill Secret (Private Key). Smart contract verifies commitment match and ensures this is the 1st valid verification.</div>
+              <div class="step-hash-formula" style="border-left-color: var(--accent-emerald); color: var(--accent-emerald);">
+                commitment = SHA256(privateKey.toLowerCase() | publicKey | registryKey) == jar.privateKeyCommit
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DUAL KEY ANTI-COUNTERFEIT -->
+    <div id="dualkey" class="tab-content">
+      <div class="diagram-board">
+        <h2 style="color: var(--accent-gold); margin-bottom: 12px;">Solving the QR Code Cloning Vulnerability: Dual-Key Cryptography</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">
+          Standard blockchain supply chains rely on simple static QR codes on packaging. Counterfeiters exploit this by purchasing one genuine jar, photocopying its QR code onto 1,000 bottles of cheap rice syrup, and selling them. HoneyChain eliminates this vulnerability through an asymmetric commitment scheme.
+        </p>
+
+        <div class="dual-key-grid">
+
+          <div class="dual-key-card">
+            <h3 style="color: var(--accent-rose); margin-bottom: 8px;">❌ The Vulnerability: Static QR Cloning</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
+              When a consumer scans a standard QR code, they see a valid blockchain explorer with genuine lab reports. However, the system cannot distinguish between the authentic jar and 999 cloned bottles sporting the identical printed QR code.
+            </p>
+            <div class="code-snippet">
+Photocopied Jar #1  --> Scans Genuine QR --> Ledger says "Authentic!" ❌
+Photocopied Jar #2  --> Scans Genuine QR --> Ledger says "Authentic!" ❌
+Photocopied Jar #999--> Scans Genuine QR --> Ledger says "Authentic!" ❌
+            </div>
+            <p style="font-size: 0.8rem; color: #94a3b8;">Result: Counterfeit honey is legitimized by a genuine blockchain record.</p>
+          </div>
+
+          <div class="dual-key-card highlight">
+            <h3 style="color: var(--accent-emerald); margin-bottom: 8px;">🛡️ HoneyChain Solution: Dual-Key Commitment</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
+              HoneyChain splits proof of authenticity across two separate channels that only converge in the hands of the legitimate buyer:
+            </p>
+            <ul style="font-size: 0.85rem; color: var(--text-muted); padding-left: 18px; margin-bottom: 12px;">
+              <li><strong>Public Key (Jar QR):</strong> Embedded on physical label. Anyone can scan to inspect the public supply chain journey.</li>
+              <li><strong>Private Key (Bill Voucher):</strong> Generated randomly by the POS at the moment of billing (e.g. <code>HC-9F2A-4B8C-1E5D</code>) and printed exclusively on the cashier paper bill.</li>
+              <li><strong>Cryptographic Commitment:</strong> The hash commitment <code>keccak256(privateKey)</code> is anchored in the contract upon sale.</li>
+            </ul>
+            <div class="code-snippet" style="color: var(--accent-emerald);">
+// Verification Logic in HoneyChainRegistry.sol:
+if (b.purchaseCommit != commit) return "private key mismatch";
+b.verifyCount += 1;
+if (b.verifyCount > 1) return "duplicate claim — jar was already verified!";
+return "authentic first claim";
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 24px; padding: 18px; background: var(--code-bg); border-radius: 12px; border: 1px solid var(--card-border);">
+          <h4 style="color: var(--accent-cyan); margin-bottom: 8px;">Verification Scenarios Handled by HoneyChain</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-top: 10px;">
+            <div style="padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+              <strong style="color: var(--text-main); font-size: 0.85rem;">Scenario A: Public Browse</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">User scans jar on shelf without buying. Can view farmer & lab history, but authenticity verdict remains "Unsold / Unclaimed".</p>
+            </div>
+            <div style="padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+              <strong style="color: var(--accent-emerald); font-size: 0.85rem;">Scenario B: Genuine Buyer (1st Claim)</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Buyer enters bill code. Commitment matches. Status: <span style="color: var(--accent-emerald); font-weight: bold;">Authentic First Claim</span>. Timestamp recorded.</p>
+            </div>
+            <div style="padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+              <strong style="color: var(--accent-rose); font-size: 0.85rem;">Scenario C: Fraudulent 2nd Scan</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Counterfeiter attempts to verify a second jar using the same code. Status: <span style="color: var(--accent-rose); font-weight: bold;">Duplicate Claim Scam Alert</span> with exact time of first claim.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: SMART CONTRACT -->
+    <div id="smartcontract" class="tab-content">
+      <div class="diagram-board">
+        <h2 style="color: var(--accent-purple); margin-bottom: 12px;">HoneyChainRegistry.sol (EVM Smart Contract)</h2>
+        <p style="color: var(--text-muted); margin-bottom: 18px;">
+          Solidity contract compiled with <code>^0.8.20</code> for deployment on EVM-compatible networks (Polygon POS, Arbitrum, or private Hyperledger Besu consortium).
+        </p>
+
+        <div class="code-snippet" style="max-height: 480px; overflow-y: auto; color: #a5b4fc;">
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract HoneyChainRegistry {
+    address public owner;
+    bytes32 public registryKey;
+
+    struct Batch {
+        bytes32 publicKey;        // SHA256 of packaging block
+        string ipfsCid;           // Immutable Pinata IPFS Content Identifier
+        bytes32 prevHash;         // Previous block hash in DAG
+        string stage;             // Stage name (e.g., "packaging")
+        string jarSerial;         // Unique Jar Serial (e.g., "JAR-9A4B-3C2D")
+        bool exists;
+        bool sold;
+        bytes32 purchaseCommit;   // keccak256(privateKey) issued upon retail sale
+        uint256 verifyCount;      // Number of times verified (flags duplicates)
+        uint256 anchoredAt;       // Block timestamp
+    }
+
+    mapping(bytes32 => Batch) public batches;
+    mapping(string => bytes32) public serialToPublicKey;
+    mapping(bytes32 => bool) public usedCommits;
+
+    event RegistryKeyIssued(bytes32 indexed key, address indexed deployer);
+    event Anchored(bytes32 indexed publicKey, string cid, string stage, string jarSerial);
+    event PurchaseIssued(bytes32 indexed publicKey, bytes32 commit, string billNo);
+    event DualVerified(bytes32 indexed publicKey, bool ok, string reason, uint256 verifyCount);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "not owner");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+        registryKey = keccak256(
+            abi.encodePacked(block.timestamp, msg.sender, block.prevrandao, address(this))
+        );
+        emit RegistryKeyIssued(registryKey, msg.sender);
+    }
+
+    /// Anchors IPFS CID and batch hash onto the immutable ledger
+    function anchor(
+        bytes32 publicKey,
+        string calldata ipfsCid,
+        bytes32 prevHash,
+        string calldata stage,
+        string calldata jarSerial
+    ) external onlyOwner {
+        require(publicKey != bytes32(0), "empty key");
+        require(bytes(ipfsCid).length > 0, "empty cid");
+        Batch storage b = batches[publicKey];
+        require(!b.exists, "already anchored");
+        if (bytes(jarSerial).length > 0) {
+            require(serialToPublicKey[jarSerial] == bytes32(0), "duplicate jar serial");
+            serialToPublicKey[jarSerial] = publicKey;
+        }
+        batches[publicKey] = Batch({
+            publicKey: publicKey,
+            ipfsCid: ipfsCid,
+            prevHash: prevHash,
+            stage: stage,
+            jarSerial: jarSerial,
+            exists: true,
+            sold: false,
+            purchaseCommit: bytes32(0),
+            verifyCount: 0,
+            anchoredAt: block.timestamp
+        });
+        emit Anchored(publicKey, ipfsCid, stage, jarSerial);
+    }
+
+    /// Cashier POS commits purchase at retail sale
+    function issuePurchase(bytes32 publicKey, bytes32 commit, string calldata billNo) external onlyOwner {
+        Batch storage b = batches[publicKey];
+        require(b.exists, "unknown jar");
+        require(!b.sold, "already sold");
+        require(commit != bytes32(0), "empty commit");
+        require(!usedCommits[commit], "commit reused");
+        b.sold = true;
+        b.purchaseCommit = commit;
+        usedCommits[commit] = true;
+        emit PurchaseIssued(publicKey, commit, billNo);
+    }
+
+    /// Dual-key verify: publicKey from QR + keccak256(privateKey) from bill.
+    function verify(bytes32 publicKey, bytes32 commit) external returns (bool ok, string memory reason) {
+        Batch storage b = batches[publicKey];
+        if (!b.exists) return _emitVerify(publicKey, false, "unknown public key");
+        if (!b.sold) return _emitVerify(publicKey, false, "not sold - bill code not issued");
+        if (b.purchaseCommit != commit) return _emitVerify(publicKey, false, "private key mismatch");
+        b.verifyCount += 1;
+        if (b.verifyCount > 1) {
+            return _emitVerify(publicKey, false, "duplicate claim - this jar was already verified");
+        }
+        return _emitVerify(publicKey, true, "authentic first claim");
+    }
+
+    function _emitVerify(bytes32 publicKey, bool ok, string memory reason) internal returns (bool, string memory) {
+        emit DualVerified(publicKey, ok, reason, batches[publicKey].verifyCount);
+        return (ok, reason);
+    }
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: DATA MODELS -->
+    <div id="datamodel" class="tab-content">
+      <div class="diagram-board">
+        <h2 style="color: var(--accent-emerald); margin-bottom: 12px;">Cryptographic Schema & Data Contracts</h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">
+          Structure of the <code>LedgerBlock</code> and <code>JarRecord</code> entities in the MongoDB collection and local runtime cache.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
+
+          <div class="dual-key-card">
+            <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 8px;">LedgerBlock (Mongoose Schema)</h3>
+            <div class="code-snippet">
+{
+  hash: String,             // SHA256 canonical hash (Indexed, Unique)
+  prev_hash: String,        // Parent hash for linear stages
+  prev_hashes: [String],    // Parent hashes array for "pooled" DAG
+  stage: Enum(10),          // "beekeeper_registration" ... "retail"
+  data: Mixed,              // Stage-specific JSON payload
+  beekeeper: ObjectId,      // Beekeeper reference
+  scan_secret: String,      // 16-hex char scan guard token
+  is_frozen: Boolean,       // Locks chain at stage "retail"
+  ipfsCid: String,          // Pinata CID (bafy...)
+  publicKey: String,        // Anchoring public key
+  jarSerial: String,        // Unique retail jar serial number
+  createdBy: {
+    userId: ObjectId,
+    role: "beekeeper" | "kvic",
+    centreId: String
+  }
+}
+            </div>
+          </div>
+
+          <div class="dual-key-card">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">JarRecord (Retail Anti-Cloning Unit)</h3>
+            <div class="code-snippet">
+{
+  jarSerial: String,        // "JAR-XXXX-XXXX" (Indexed, Unique)
+  hash: String,             // Packaging block hash
+  publicKey: String,        // QR Public Key
+  sold: Boolean,            // True once POS logs sale
+  billNo: String,           // Retail cashier receipt number
+  privateKeyCommit: String, // sha256(privateKey | pubKey | registryKey)
+  verifyCount: Number,      // Scan verification counter
+  duplicateFlag: Boolean,   // Set to true if verifyCount > 1
+  duplicateScans: [Date],   // Audit timestamps of fraudulent scans
+  firstVerifiedAt: Date,    // Timestamp of first authentic claim
+  lastVerifiedAt: Date
+}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      HoneyChain Blockchain Architecture &copy; 2026. Designed for Problem Statement ID #26021 (KVIC Honey Mission).
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
