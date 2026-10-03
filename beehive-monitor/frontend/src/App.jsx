@@ -35,7 +35,7 @@ export default function App() {
         <div className="app-footer-inner">
           <span className="app-footer-brand">
             <span className="app-footer-hex">🐝</span>
-            Madhu Setu · HoneyChain
+            Madhu Shakti · HoneyChain
           </span>
           <span>Beekeeper → Collective → Processor → Lab → Khadi · every hop a block, every jar a proof</span>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>SHA256 · DAG · IPFS</span>

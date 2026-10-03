@@ -77,8 +77,8 @@ export default function MapPage() {
           <MapContainer center={INDIA_CENTER} zoom={5} style={{ height: "100%", width: "100%", borderRadius: 12 }}>
             <FixLeafletIcons />
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='Tiles &copy; Esri &mdash; Source: Esri, HERE, Garmin, <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
             />
 
             {centres.map((c) => {
