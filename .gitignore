@@ -1,0 +1,8 @@
+# local-only: venvs, bulk audio, large feature arrays (never commit)
+.venv/
+__pycache__/
+*.pyc
+beehive-monitor/ai/data/
+# Large intermediate numpy feature arrays (reproducible from raw audio + scripts)
+beehive-monitor/ai/**/*.npz
+release_assets/

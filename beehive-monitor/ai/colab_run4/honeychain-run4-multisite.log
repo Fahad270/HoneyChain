@@ -1,0 +1,105 @@
+[{"stream_name":"stdout","time":5.204355392,"data":"INPUT TOPS: ['/kaggle/input/datasets']\n"}
+,{"stream_name":"stdout","time":12.388608918,"data":"TOTAL audio: 7156 csvs: ['/kaggle/input/datasets/annajyang/beehive-sounds/all_data_updated.csv']\n"}
+,{"stream_name":"stdout","time":12.398952273999999,"data":"top audio dirs: [('/kaggle/input/datasets/annajyang/beehive-sounds/sound_files/sound_files', 7100), ('/kaggle/input/datasets/chrisfilo/to-bee-or-no-to-bee', 56)]\n"}
+,{"stream_name":"stdout","time":12.398978524,"data":"SBCM root: /kaggle/input/datasets/annajyang/beehive-sounds\n"}
+,{"stream_name":"stdout","time":12.398984914,"data":"BT root: /kaggle/input/datasets/chrisfilo/to-bee-or-no-to-bee\n"}
+,{"stream_name":"stdout","time":12.398990064,"data":"== tree: /kaggle/input/datasets/annajyang/beehive-sounds\n"}
+,{"stream_name":"stdout","time":12.399889844,"data":"   /kaggle/input/datasets/annajyang/beehive-sounds dirs=1 audio=0 files=1\n"}
+,{"stream_name":"stdout","time":12.399924694,"data":"     csv: all_data_updated.csv\n"}
+,{"stream_name":"stdout","time":12.400593434,"data":"   /kaggle/input/datasets/annajyang/beehive-sounds/sound_files dirs=1 audio=0 files=0\n"}
+,{"stream_name":"stdout","time":14.715867213,"data":"== tree: /kaggle/input/datasets/chrisfilo/to-bee-or-no-to-bee\n"}
+,{"stream_name":"stdout","time":14.770866072,"data":"   /kaggle/input/datasets/chrisfilo/to-bee-or-no-to-bee dirs=0 audio=56 files=136\n"}
+,{"stream_name":"stdout","time":14.877011372,"data":"SBCM csvs: ['/kaggle/input/datasets/annajyang/beehive-sounds/all_data_updated.csv']\n"}
+,{"stream_name":"stdout","time":14.955902312,"data":"SBCM audio files indexed: 7100\n"}
+,{"stream_name":"stdout","time":14.982525921,"data":"  csv: all_data_updated.csv rows: 1275 cols: ['device', 'hive number', 'date', 'hive temp', 'hive humidity', 'hive pressure', 'weather temp', 'weather humidity', 'weather pressure', 'wind speed', 'gust speed', 'weatherID', 'cloud coverage', 'rain', 'lat', 'long', 'file name', 'queen presence', 'queen acceptance', 'frames', 'target', 'time', 'queen status']\n"}
+,{"stream_name":"stdout","time":14.991356968,"data":"    col 'queen presence': {'1': 1117, '0': 158}\n"}
+,{"stream_name":"stdout","time":14.992399508,"data":"    col 'queen acceptance': {'2': 858, '1': 259, '0': 158}\n"}
+,{"stream_name":"stdout","time":14.993352337,"data":"    col 'target': {'5': 459, '3': 368, '4': 168, '0': 111, '2': 91, '1': 78}\n"}
+,{"stream_name":"stdout","time":14.994297967,"data":"    col 'queen status': {'3': 679, '2': 259, '0': 179, '1': 158}\n"}
+,{"stream_name":"stdout","time":14.995234857,"data":"    candidate 'queen presence': queenless=158 queenright=1117\n"}
+,{"stream_name":"stdout","time":14.995822986,"data":"    e.g. csv names: ['2022-06-08--14-52-28_1.raw', '2022-06-08--15-51-41_1.raw', '2022-06-08--17-21-53_1.raw']\n"}
+,{"stream_name":"stdout","time":14.995863387,"data":"    e.g. disk names: ['2022-06-27--17-15-43_1__segment2.wav', '2022-07-04--19-52-59_2__segment0.wav', '2022-06-10--07-39-02_2__segment4.wav']\n"}
+,{"stream_name":"stdout","time":33.655144711,"data":"SBCM windows: {'queenless': 750, 'queenright': 750}\n"}
+,{"stream_name":"stdout","time":33.722903569,"data":"BT audio dirs: 1\n"}
+,{"stream_name":"stdout","time":33.722940758,"data":"  /kaggle/input/datasets/chrisfilo/to-bee-or-no-to-bee n=56 e.g. Hive3_15_07_2017_NO_QueenBee_H3_audio___06_50_00.wav\n"}
+,{"stream_name":"stdout","time":69.864514548,"data":"BT windows: {'queenless': 1250, 'queenright': 1250}\n"}
+,{"stream_name":"stdout","time":69.867749037,"data":"TOTAL (4000, 11) {np.str_('queenless'): np.int64(2000), np.str_('queenright'): np.int64(2000)} | src: {np.str_('bt'): np.int64(2500), np.str_('sbcm'): np.int64(1500)}\n"}
+,{"stream_name":"stdout","time":70.960323035,"data":"MLP holdout: 0.93\n"}
+,{"stream_name":"stderr","time":86.493112789,"data":"2026-09-23 18:48:46.783342: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stdout","time":92.542483786,"data":"TF holdout: 0.935\n"}
+,{"stream_name":"stdout","time":92.687473312,"data":"Saved artifact at '/tmp/tmprflxzywp'. The following endpoints are available:\n"}
+,{"stream_name":"stdout","time":92.687499892,"data":"\n"}
+,{"stream_name":"stdout","time":92.687506222,"data":"* Endpoint 'serve'\n"}
+,{"stream_name":"stdout","time":92.687511762,"data":"  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 11), dtype=tf.float32, name='keras_tensor')\n"}
+,{"stream_name":"stdout","time":92.687517592,"data":"Output Type:\n"}
+,{"stream_name":"stdout","time":92.687522592,"data":"  TensorSpec(shape=(None, 2), dtype=tf.float32, name=None)\n"}
+,{"stream_name":"stdout","time":92.687528032,"data":"Captures:\n"}
+,{"stream_name":"stdout","time":92.687533082,"data":"  133534193736912: TensorSpec(shape=(), dtype=tf.resource, name=None)\n"}
+,{"stream_name":"stdout","time":92.687564282,"data":"  133534181986896: TensorSpec(shape=(), dtype=tf.resource, name=None)\n"}
+,{"stream_name":"stdout","time":92.687572002,"data":"  133534181987856: TensorSpec(shape=(), dtype=tf.resource, name=None)\n"}
+,{"stream_name":"stdout","time":92.687577542,"data":"  133534181986512: TensorSpec(shape=(), dtype=tf.resource, name=None)\n"}
+,{"stream_name":"stderr","time":92.727292395,"data":"/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/convert.py:863: UserWarning: Statistics for quantized inputs were expected, but not specified; continuing anyway.\n"}
+,{"stream_name":"stderr","time":92.727321075,"data":"  warnings.warn(\n"}
+,{"stream_name":"stderr","time":92.727854624,"data":"WARNING: All log messages before absl::InitializeLog() is called are written to STDERR\n"}
+,{"stream_name":"stderr","time":92.727871134,"data":"W0000 00:00:1790189333.019081       7 tf_tfl_flatbuffer_helpers.cc:364] Ignored output_format.\n"}
+,{"stream_name":"stderr","time":92.727876584,"data":"W0000 00:00:1790189333.019106       7 tf_tfl_flatbuffer_helpers.cc:367] Ignored drop_control_dependency.\n"}
+,{"stream_name":"stderr","time":92.730576783,"data":"I0000 00:00:1790189333.021718       7 mlir_graph_optimization_pass.cc:437] MLIR V1 optimization pass is not enabled\n"}
+,{"stream_name":"stderr","time":92.997288326,"data":"fully_quantize: 0, inference_type: 6, input_inference_type: INT8, output_inference_type: INT8\n"}
+,{"stream_name":"stderr","time":93.093824623,"data":"/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/interpreter.py:457: UserWarning:     Warning: tf.lite.Interpreter is deprecated and is scheduled for deletion in\n"}
+,{"stream_name":"stderr","time":93.093858543,"data":"    TF 2.20. Please use the LiteRT interpreter from the ai_edge_litert package.\n"}
+,{"stream_name":"stderr","time":93.093865163,"data":"    See the [migration guide](https://ai.google.dev/edge/litert/migration)\n"}
+,{"stream_name":"stderr","time":93.093869633,"data":"    for details.\n"}
+,{"stream_name":"stderr","time":93.093873683,"data":"    \n"}
+,{"stream_name":"stderr","time":93.093878113,"data":"  warnings.warn(_INTERPRETER_DELETION_WARNING)\n"}
+,{"stream_name":"stderr","time":93.096387892,"data":"INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n"}
+,{"stream_name":"stdout","time":100.533669277,"data":"leave-bt-out: 0.489 (n=2500)\n"}
+,{"stream_name":"stdout","time":110.196323542,"data":"leave-sbcm-out: 0.500 (n=1500)\n"}
+,{"stream_name":"stdout","time":110.196769382,"data":"SAVED: ['dense4v2_int8.tflite', 'labels4v2.json', 'metrics_run4v2.json', 'mlp4v2.joblib', 'run4v2_feat.npz', 'scaler4v2.json']\n"}
+,{"stream_name":"stdout","time":110.196828652,"data":"{\n"}
+,{"stream_name":"stdout","time":110.196833982,"data":"  \"n\": 4000,\n"}
+,{"stream_name":"stdout","time":110.196837712,"data":"  \"classes\": [\n"}
+,{"stream_name":"stdout","time":110.196840992,"data":"    \"queenless\",\n"}
+,{"stream_name":"stdout","time":110.196844112,"data":"    \"queenright\"\n"}
+,{"stream_name":"stdout","time":110.196847102,"data":"  ],\n"}
+,{"stream_name":"stdout","time":110.196849982,"data":"  \"counts\": {\n"}
+,{"stream_name":"stdout","time":110.196853122,"data":"    \"queenless/bt\": 1250,\n"}
+,{"stream_name":"stdout","time":110.196856122,"data":"    \"queenless/sbcm\": 750,\n"}
+,{"stream_name":"stdout","time":110.196858992,"data":"    \"queenright/bt\": 1250,\n"}
+,{"stream_name":"stdout","time":110.196861862,"data":"    \"queenright/sbcm\": 750\n"}
+,{"stream_name":"stdout","time":110.196864782,"data":"  },\n"}
+,{"stream_name":"stdout","time":110.196867532,"data":"  \"mlp_holdout_acc\": 0.93,\n"}
+,{"stream_name":"stdout","time":110.196870422,"data":"  \"mlp_confusion\": [\n"}
+,{"stream_name":"stdout","time":110.196873302,"data":"    [\n"}
+,{"stream_name":"stdout","time":110.196876222,"data":"      363,\n"}
+,{"stream_name":"stdout","time":110.196878912,"data":"      37\n"}
+,{"stream_name":"stdout","time":110.196881772,"data":"    ],\n"}
+,{"stream_name":"stdout","time":110.196884482,"data":"    [\n"}
+,{"stream_name":"stdout","time":110.196887252,"data":"      19,\n"}
+,{"stream_name":"stdout","time":110.196889972,"data":"      381\n"}
+,{"stream_name":"stdout","time":110.196892762,"data":"    ]\n"}
+,{"stream_name":"stdout","time":110.196895972,"data":"  ],\n"}
+,{"stream_name":"stdout","time":110.196898932,"data":"  \"tf_params\": 898,\n"}
+,{"stream_name":"stdout","time":110.196901872,"data":"  \"tf_holdout_acc\": 0.935,\n"}
+,{"stream_name":"stdout","time":110.196904962,"data":"  \"tflite_bytes\": 4616,\n"}
+,{"stream_name":"stdout","time":110.196907872,"data":"  \"int8_agreement\": [\n"}
+,{"stream_name":"stdout","time":110.196910952,"data":"    192,\n"}
+,{"stream_name":"stdout","time":110.196914482,"data":"    200\n"}
+,{"stream_name":"stdout","time":110.196917662,"data":"  ],\n"}
+,{"stream_name":"stdout","time":110.196920522,"data":"  \"leave_one_dataset_out\": {\n"}
+,{"stream_name":"stdout","time":110.196923872,"data":"    \"bt\": {\n"}
+,{"stream_name":"stdout","time":110.196927452,"data":"      \"acc\": 0.4888,\n"}
+,{"stream_name":"stdout","time":110.196930822,"data":"      \"n\": 2500\n"}
+,{"stream_name":"stdout","time":110.196934362,"data":"    },\n"}
+,{"stream_name":"stdout","time":110.196937612,"data":"    \"sbcm\": {\n"}
+,{"stream_name":"stdout","time":110.196941172,"data":"      \"acc\": 0.5,\n"}
+,{"stream_name":"stdout","time":110.196944462,"data":"      \"n\": 1500\n"}
+,{"stream_name":"stdout","time":110.196947932,"data":"    }\n"}
+,{"stream_name":"stdout","time":110.196950682,"data":"  }\n"}
+,{"stream_name":"stdout","time":110.196953462,"data":"}\n"}
+,{"stream_name":"stderr","time":113.616812406,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":113.616843686,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":113.848833814,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":113.848893194,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":114.469529771,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":115.217120011,"data":"[NbConvertApp] Writing 373081 bytes to __results__.html\n"}
+]

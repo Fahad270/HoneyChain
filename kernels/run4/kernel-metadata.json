@@ -1,0 +1,1 @@
+{"code_file": "run4.py", "dataset_sources": ["annajyang/beehive-sounds", "chrisfilo/to-bee-or-no-to-bee"], "enable_gpu": false, "enable_internet": true, "enable_tpu": false, "id": "ashutoshsononey/honeychain-run4-multisite", "is_private": true, "kernel_type": "script", "language": "python", "title": "HoneyChain Run4 multisite"}

@@ -1,0 +1,362 @@
+{
+  "aibelha-1": {
+    "true": "queenright",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.533,
+      0.467
+    ],
+    "n": 15
+  },
+  "aibelha-2": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.929,
+      0.071
+    ],
+    "n": 14
+  },
+  "aibelha-4": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.867,
+      0.133
+    ],
+    "n": 15
+  },
+  "aibelha-10": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.333,
+      0.667
+    ],
+    "n": 15
+  },
+  "aibelha-15": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.929,
+      0.071
+    ],
+    "n": 14
+  },
+  "aibelha-18": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.933,
+      0.067
+    ],
+    "n": 15
+  },
+  "aibelha-19": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.133,
+      0.0,
+      0.867
+    ],
+    "n": 15
+  },
+  "aibelha-23": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 15
+  },
+  "aibelha-27": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.333,
+      0.667
+    ],
+    "n": 15
+  },
+  "aibelha-29": {
+    "true": "queenright",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.538,
+      0.462
+    ],
+    "n": 13
+  },
+  "aibelha-30": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 14
+  },
+  "aibelha-33": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 15
+  },
+  "aibelha-35": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "n": 15
+  },
+  "aibelha-37": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.267,
+      0.733
+    ],
+    "n": 15
+  },
+  "aibelha-38": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 14
+  },
+  "aibelha-39": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.6,
+      0.4
+    ],
+    "n": 15
+  },
+  "aibelha-42": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 15
+  },
+  "aibelha-43": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "n": 15
+  },
+  "aibelha-45": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.4,
+      0.6
+    ],
+    "n": 15
+  },
+  "aibelha-48": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.2,
+      0.8
+    ],
+    "n": 15
+  },
+  "aibelha-56": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.933,
+      0.067
+    ],
+    "n": 15
+  },
+  "aibelha-57": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.133,
+      0.867
+    ],
+    "n": 15
+  },
+  "aibelha-62": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.933,
+      0.067
+    ],
+    "n": 15
+  },
+  "aibelha-64": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.2,
+      0.8
+    ],
+    "n": 15
+  },
+  "aibelha-66": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "n": 15
+  },
+  "aibelha-72": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.929,
+      0.071
+    ],
+    "n": 14
+  },
+  "aibelha-73": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.2,
+      0.8
+    ],
+    "n": 15
+  },
+  "aibelha-74": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "n": 15
+  },
+  "aibelha-76": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.0,
+      0.933,
+      0.067
+    ],
+    "n": 15
+  },
+  "aibelha-84": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.133,
+      0.867
+    ],
+    "n": 15
+  },
+  "file:CJ001_-_Missing_Queen_-_Day_-__101.wav": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.027,
+      0.973,
+      0.0
+    ],
+    "n": 75
+  },
+  "file:Hive1_12_06_2018_QueenBee_H1_audio___16_30_00.wav": {
+    "true": "queenright",
+    "pred": "queenless",
+    "frac": [
+      0.101,
+      0.55,
+      0.349
+    ],
+    "n": 149
+  },
+  "file:Hive1_31_05_2018_NO_QueenBee_H1_audio___15_10_00.wav": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.318,
+      0.588,
+      0.095
+    ],
+    "n": 148
+  },
+  "file:Hive3_15_07_2017_NO_QueenBee_H3_audio___06_40_00.wav": {
+    "true": "queenless",
+    "pred": "queenless",
+    "frac": [
+      0.131,
+      0.697,
+      0.172
+    ],
+    "n": 145
+  },
+  "file:colony-with-queen-gruber.mp3": {
+    "true": "queenright",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.333,
+      0.667
+    ],
+    "n": 9
+  },
+  "file:colony-without-queen-gruber.mp3": {
+    "true": "queenless",
+    "pred": "queenright",
+    "frac": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "n": 9
+  }
+}

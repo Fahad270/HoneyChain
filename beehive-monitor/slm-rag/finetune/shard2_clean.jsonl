@@ -1,0 +1,361 @@
+{"user": "Could you please check if the specific jar QR hash b81d9e02 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "b81d9e02"}}]}
+{"user": "Please trace where the specific harvest of honey with tracking code 9f2e44ab is currently located and being managed by which beekeeper.", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Please provide an estimate of the total honey yield in kilos we can expect from our hives.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies and schemes, including NBB training eligibility, that are available for English beekeepers.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "Could you please locate a KVIC/Khadi centre in Pune for me, where I can purchase beeswax and other honey-related products?", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "I would like to review my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Combine the harvest hashes a3f9c1d2e4 and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["a3f9c1d2e4", "b81d9e02"]}}]}
+{"user": "We needs to RECORD the stated lot arrivin' at the processin' stage, must include all distribution info b81d9e02.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "b81d9e02"}}]}
+{"user": "Please register the sale of the specified jar as per the online bill/order number a3f9c1d2e4.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Where did my honey go after collection?", "assistant": [{"name": "file_rti", "arguments": {"text": "Where did my honey go after collection?"}}]}
+{"user": "Please see the list of all hives and their current health statuses.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, could you provide a forecast that considers the weather and climate impacts on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Check plz if qr hash 9f2e44ab genuine or fake.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "Please trace the current location of the specific honey harvested by Test Farmer B's bees and provide its current status.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos for our hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies/schemes and their eligibility requirements, particularly regarding NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "I needs ta locate a KVIC/Khadi centre in Jaipur, it's kinda urgent!", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "I request access to review my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which yielded 15.5 kilos.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 15.5}}]}
+{"user": "Combine 77aa01cc \u0930\u0939\u0930\u094d\u0938 \u0939\u0947\u0938\u094d\u091f \u090f\u0902\u0921 b81d9e02 \u0930\u0939\u0930\u094d\u0938 \u0939\u0947\u0938\u094d\u091f \u0907\u0928TO \u090f\u0915\u0932LOT.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "b81d9e02"]}}]}
+{"user": "Record the stated lot as it arrives at the processing stage with the identifier b81d9e02.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "b81d9e02"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) offline with the reference number b81d9e02.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "offline"}}]}
+{"user": "Please see the list of all hives and their current health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, could you provide forecast information that takes into account the weather's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Trace where the honey from Test Farmer B's specific harvest is now located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos based on the number of hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies/schemes and their eligibility, including NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "I request to locate a KVIC/Khadi centre in Indore, where I can purchase supplies for my beekeeping business.", "assistant": [{"name": "find_centre", "arguments": {"city": "Indore"}}]}
+{"user": "I would like to share my own journey in keeping bees, as documented in my ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9, which yielded 15.5 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 15.5}}]}
+{"user": "Combine the harvest hashes 77aa01cc and a3f9c1d2e4 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "a3f9c1d2e4"]}}]}
+{"user": "Record a stated lot arriving at the processing stage a3f9c1d2e4.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "I need to register the sale of that jar, bill's present on a3f9c1d2e4 online.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Please check if the specific jar QR hash 77aa01cc is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "77aa01cc"}}]}
+{"user": "Request from English Beekeeper: Can you trace where the specific harvest from Test Farmer B's bees is now located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Please provide an estimate of honey yield in kilos from the given number of hives in Romanized Hinglish.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and understand the eligibility criteria for this scheme.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "I am looking for the location of a KVIC/Khadi centre in Pune, India.", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "Could you see my own ledgar journy, plz?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which yielded 4 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 4}}]}
+{"user": "I request to combine the stated harvest hashes 77aa01cc and 9f2e44ab into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "9f2e44ab"]}}]}
+{"user": "Please record the arrival of the stated lot at the processing stage with tracking code 9f2e44ab.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "9f2e44ab"}}]}
+{"user": "REGISTER sale of jar b81d9e02, done offline.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "offline"}}]}
+{"user": "Please review the list of all hives and their current health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, could you provide a forecast that takes into account the weather's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check if the specific jar QR hash 77aa01cc is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "77aa01cc"}}]}
+{"user": "I needs ta trace where dis 9f2e44ab batchta honey is now 'n tell me if it got shipped yet!", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "In English, could you provide an estimate of the total honey yield in kilos that can be expected from the given number of hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Please locate an KVIC/Khadi centre in Nagpur, India, for my beekeeping supplies and services.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "Record the harvest from hive_5, which produced 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_5", "weight_kg": 12}}]}
+{"user": "I request to combine the stated harvest hashes b81d9e02 and 9f2e44ab into one lot for efficient storage and transportation.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["b81d9e02", "9f2e44ab"]}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, including all details of the packaging, identified by a3f9c1d2e4.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Please register the sale of the jar mentioned in the bill/order present, as noted offline: c4e77f10.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "c4e77f10", "channel": "offline"}}]}
+{"user": "Where did my honey go after collection? Romanized Hinglish: Where did mi honey go after collection?", "assistant": [{"name": "file_rti", "arguments": {"text": "Where did my honey go after collection?"}}]}
+{"user": "Could you provide a forecast that takes into account the weather and climate to help with foraging and honey curing in English?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check if the specific jar QR code hash b81d9e02 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "b81d9e02"}}]}
+{"user": "Could you trace the current location of the honey harvested by 9f2e44ab's bees and provide its current status?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "In English, can you provide an estimate of the total honey yield in kilos we can expect from our 50 hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies/schemes and their eligibility requirements, including NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "Please locate a KVIC/Khadi centre in Nagpur that can supply us with Romanized Hinglish beekeeping materials and resources.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I seek to share my own journey in beekeeping as detailed in my personal ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Combine the stated harvest hashes 9f2e44ab and 77aa01cc into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "77aa01cc"]}}]}
+{"user": "Record the lot numbered a3f9c1d2e4 as it arrives at the processing stage, noting its current packaging.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) for reference number 9f2e44ab through our online platform.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "online"}}]}
+{"user": "See kar list of hives aur uska heeth status - Romanized Hinglish: See the list of hives and their health status.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, could you provide forecasts that consider the weather and climate's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you check if the specific jar QR code with hash a3f9c1d2e4 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Test Farmer B needs to trace the current location of the specific harvest of honey they recently produced and supply its whereabouts.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Can u giv me an estiamte on the honey yild in kilos frim my hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies/schemes and their eligibility requirements, particularly focusing on NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "Could you please locate a KVIC/Khadi centre in Jaipur for me?", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "See my own Romanized Hinglish beekeeping journey.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_5, which yielded 4. kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_5", "weight_kg": 4}}]}
+{"user": "Combine the stated harvest hashes 77aa01cc and 9f2e44ab into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "9f2e44ab"]}}]}
+{"user": "Record the stated lot as it arrives at the processing stage, ensuring all packaging is accounted for and adheres to C4E77F10 standards.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "c4e77f10"}}]}
+{"user": "Please register the sale of the specified jar (bill/order present) online with the identifier b81d9e02.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "online"}}]}
+{"user": "Check the list of hives nand their healh status plz.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Romanized Hinglish: Please consider the weather/climate effect on foraging and honey-making while deciding the next move for the beehives.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check if the specific jar QR hash 9f2e44ab is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "Please trace the current location of the specific harvest from Test Farmer B's honey operation and provide its current status in English.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "I would like to learn about subsidies and schemes for beekeeping, including NBB training eligibility, so I can better understand the financial support options available.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Pune that can provide resources for my beekeeping business.", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "I hereby request access to review my own beekeeping records and ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I Record the harvest from hive_9, which yielded 4 kilos, please.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 4}}]}
+{"user": "Need to merge all comb lot hashes into one - got a3f9c1d2e4 and 9f2e44ab to combine, can we?", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["a3f9c1d2e4", "9f2e44ab"]}}]}
+{"user": "Record the lot number and its arrival at the processing stage, ensuring all packaging units are accounted for, including those with identifier b81d9e02.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "b81d9e02"}}]}
+{"user": "Please register the sale of jar b81d9e02 for offline processing.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "offline"}}]}
+{"user": "Could you provide forecasts that consider the weather and climate's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Check whether the specific jar QR hash a3f9c1d2e4 is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Could you trace where the specific harvest of honey labeled with the ID 9f2e44ab is now located and which beekeeper is currently managing it?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Could you provide an estimate in kilos of honey we can expect from our 10 hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Pune, India.", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "I request access to review my own detailed ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which yielded 4 kilos of honey, in the English language.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 4}}]}
+{"user": "Combine a3f9c1d2e4 and c4e77f10 stated harvest hashes into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["a3f9c1d2e4", "c4e77f10"]}}]}
+{"user": "Record the lot numbered b81d9e02 as it arrives at the processing stage from distribution.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "b81d9e02"}}]}
+{"user": "Register the sale of the jar (bill/order present) online with the unique identifier a3f9c1d2e4.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Need to know how weather affects bees when foraging and curing honey.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you please check if the specific jar QR hash 9f2e44ab is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "TRACE where is the specific harvest/beekeeper honey from Test Farmer B now located. Romanized Hinglish: TRACE where is the specific harvest/beekeeper honey from Test Farmer B now located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos from my hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and understand the eligibility criteria for beekeeping in England.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "Could you please review my own ledger journey in English?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9, which yielded 4 kilos of honey in English.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 4}}]}
+{"user": "I request to combine the stated harvest hashes c4e77f10 and 77aa01cc into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "77aa01cc"]}}]}
+{"user": "Record a stated lot arriving at the processing stage; it must be noted that this concerns distribution b81d9e02.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "b81d9e02"}}]}
+{"user": "Please register the sale of the stated jar, bill/order present, for transaction 9f2e44ab using offline methods.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "offline"}}]}
+{"user": "Please see the list of all hives along with their current health status.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could you please check whether the specific jar QR code hash b81d9e02 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "b81d9e02"}}]}
+{"user": "Please trace where the specific harvest from Test Farmer B's English honey is now located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Please give an estimate of the honey yield in kilos from my hives, written in Romanized Hinglish: \"Hive n\u016bmbar se kya hony kh\u0101s kili mo\u1e45gi ch\u0101hd\u016b?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Pune plz can we find one in the area?", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "I seek to share my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Please combine the stated harvest hashes c4e77f10 and 9f2e44ab into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "9f2e44ab"]}}]}
+{"user": "Record the stated lot arriving at the processing stage, which must be traced from transport to c4e77f10.", "assistant": [{"name": "log_stage", "arguments": {"stage": "transport", "prev_hash": "c4e77f10"}}]}
+{"user": "REGISTER sale of jar 9f2e44ab, done offline.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "offline"}}]}
+{"user": "In English, could you provide forecasts that consider the weather and climate impacts on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could ye kindly check if the spcific jar QR hash a3f9c1d2e4 is rinnegated?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Please trace where the honey with tracking code 9f2e44ab is currently located in our supply chain.", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "I am seeking the location of a KVIC/Khadi centre in Nagpur, India, where I can purchase beekeeping equipment and supplies.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "Combine the harvest hashes c4e77f10 and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "b81d9e02"]}}]}
+{"user": "Please record the lot number 77aa01cc as it arrives at the packaging stage.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of that jar; got the bill/order present down offline 9f2e44ab.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "offline"}}]}
+{"user": "Please see the list of all hives and their respective health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could you provide weather and climate updates that bear on foraging and honey curing activities?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you trace the current location of the specific honey harvested by Test Farmer B and provide its current status?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Locate a KVIC/Khadi centre in Indore, please. It's important to mention all in Romanized Hinglish.", "assistant": [{"name": "find_centre", "arguments": {"city": "Indore"}}]}
+{"user": "Could you review my own ledgar journi, please?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I have recorded the harvest from hive_9, which yielded 20 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 20}}]}
+{"user": "Please combine the stated harvest hashes c4e77f10 and a3f9c1d2e4 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "a3f9c1d2e4"]}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, ensuring all packaging materials identified by 9f2e44ab are accounted for.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "9f2e44ab"}}]}
+{"user": "Register the sale of the stated jar (bill/order present) online, identified by 77aa01cc.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "77aa01cc", "channel": "online"}}]}
+{"user": "Romanized Hinglish keener, see the list of hives auruncaheen health status hai.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could you provide weather and climate updates to help us plan for optimal foraging and honey curing conditions?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please check whether the specific jar QR hash c4e77f10 is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "c4e77f10"}}]}
+{"user": "Please provide an estimate of the total honey yield in kilos we can expect from our five hives.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies and schemes, including NBB training eligibility, to better understand the financial support options available for beekeepers in England.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "See my own Romanized Hinglish journey.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_5 with 20 kilos just made.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_5", "weight_kg": 20}}]}
+{"user": "Please combine the stated harvest hashes b81d9e02 and c4e77f10 into one lot for processing.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["b81d9e02", "c4e77f10"]}}]}
+{"user": "Record the lot number A3F9C1D2E4 as it arrives at the processing stage.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Please register the sale of jar c4e77f10 for offline processing.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "c4e77f10", "channel": "offline"}}]}
+{"user": "Romanized Hinglish: \"Know how weather and climate effects bee foraging and honey curing plz.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please trace the current location of the honey labeled 9f2e44ab and provide details on which specific hive it was harvested from.", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "I wish to review my own journey documented in the English beekeeping ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I RECORD the harvest from hive_3 - we got 8 kilos of honey today!", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 8}}]}
+{"user": "Combine the harvest hashes a3f9c1d2e4 and 77aa01cc into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["a3f9c1d2e4", "77aa01cc"]}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, ensuring all packaging units marked with 9f2e44ab are accounted for.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "9f2e44ab"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) online with the identifier 9f2e44ab.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "online"}}]}
+{"user": "Could you please provide weather and climate updates that affect foraging and honey curing in English?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "CHECK whether the specific jar QR hash 9f2e44ab is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "Can you trace where the specific harvest from Test Farmer B's English honey is now located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Can ye stimate the honey yield in kilos from our 10 hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Nashik, India, for my beekeeping supplies and resources.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nashik"}}]}
+{"user": "Please see my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I have recorded the harvest from hive_1, which yielded 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_1", "weight_kg": 12}}]}
+{"user": "Combine 77aa01cc aur c4e77f10 stated harvest hashes into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "c4e77f10"]}}]}
+{"user": "Please record the arrival of the stated lot at the processing stage, specifically noting 9f2e44ab.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "9f2e44ab"}}]}
+{"user": "Kindly register the sale of the stated jar as per the bill/order present, and please confirm the transaction online with the reference number 9f2e44ab.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "online"}}]}
+{"user": "Could ya plz show me the list o' hives an' their heath statuses?", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "The English beekeeper requests information on how weather and climate conditions affect foraging and honey curing.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check if the specific jar QR hash a3f9c1d2e4 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Please trace where the specific harvest from Test Farmer B's honey is now located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and the eligibility criteria for this scheme.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Nagpur, India.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I request access to review and update my own hive record in your system, reflecting my comprehensive ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9 with 12 kilos just made.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 12}}]}
+{"user": "Can we combine the harvest hashes 9f2e44ab and a3f9c1d2e4 into one lot?", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "a3f9c1d2e4"]}}]}
+{"user": "RECORD a stated lot arriving at a processing stage jisda distribution mein a3f9c1d2e4.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Kindly register the sale of the stated jar, as per bill/order present, and ensure it is recorded online with reference number c4e77f10.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "c4e77f10", "channel": "online"}}]}
+{"user": "In English, I need information considering the weather and climate's impact on foraging and honey curing for my apiary management.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Request: Please trace where the specific harvest from Test Farmer B's bees is currently located in English.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Romanized Hinglish: \"Estimate khunjeen yield in kilees from hive numbers.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Nagpur, India, for my beekeeping supplies and information.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I have recorded the harvest from hive_9, which produced 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 12}}]}
+{"user": "Combine the stated harvest hashes 9f2e44ab and c4e77f10 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "c4e77f10"]}}]}
+{"user": "Please record the lot in packaging 9f2e44ab as it arrives at the processing stage.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "9f2e44ab"}}]}
+{"user": "REGISTER sale of jar b81d9e02 online - bill/order present.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "online"}}]}
+{"user": "Can ya help me get a grasp on how the weather affects the bees when they're out foraging and curing their honey?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please check if the QR hash b81d9e02 for the honey jar is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "b81d9e02"}}]}
+{"user": "Could you please trace where the specific harvest of honey from Test Farmer B is currently located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos for my hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Please learn about the subsidies/schemes and eligibility including NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Pune, India, for my beekeeping supplies and resources.", "assistant": [{"name": "find_centre", "arguments": {"city": "Pune"}}]}
+{"user": "May I please review my own ledger journey in English?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_1, which produced 20 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_1", "weight_kg": 20}}]}
+{"user": "Combine the stated harvest hashes b81d9e02 and 9f2e44ab into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["b81d9e02", "9f2e44ab"]}}]}
+{"user": "We need to RECORD the lot arrivinG at the processinG stage, MUST note all c4e77f10 details.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "c4e77f10"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) for reference number a3f9c1d2e4 online.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Where did my honey go after collection? Romaniye ka honey kya diya gaya abhi kaun kaun se place par?", "assistant": [{"name": "file_rti", "arguments": {"text": "Where did my honey go after collection?"}}]}
+{"user": "In English, could you provide a forecast that takes into account the weather and climate's impact on foraging and honey production?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you please check if the specific jar QR hash 77aa01cc is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "77aa01cc"}}]}
+{"user": "Could you trace where the specific harvest of honey from Test Farmer B is now located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate in kilos of honey that can be expected from our hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Locate a KVIC/Khadi centre in Jaipur, it must be mentioned in Romanized Hinglish.", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "Please review and note my own journey in keeping the hive ledger in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which produced 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 12}}]}
+{"user": "Please record the stated lot arriving at the processing stage, ensuring all packaging details and c4e77f10 specifications are noted.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "c4e77f10"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) with the reference number 77aa01cc for offline processing.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "77aa01cc", "channel": "offline"}}]}
+{"user": "Romanized Hinglish: Deewane hives ka health status dekho.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, I need up-to-date information on weather and climate conditions that affect foraging and honey production to ensure optimal hive management.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please trace the current location of the 9f2e44ab batch of honey and inform us of the latest information on its whereabouts?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "I would like to learn about the available subsidies and schemes, including NBB training eligibility, that are currently offered in England.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "See my own Romanized Hinglish ledger journey.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Please combine the stated harvest hashes 77aa01cc and 9f2e44ab into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "9f2e44ab"]}}]}
+{"user": "Record the lot number and its transport details, including the a3f9c1d2e4 identifier, upon arrival at the processing stage.", "assistant": [{"name": "log_stage", "arguments": {"stage": "transport", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Requesting to register sale of that jar, bill present, 77aa01cc offline.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "77aa01cc", "channel": "offline"}}]}
+{"user": "Please see the list of hives and their health status in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Romanized Hinglish: Please consider the weather/climate when advising on foraging and honey production.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please check whether the specific jar QR hash 9f2e44ab is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "Could you trace where the specific harvest from Test Farmer B's English honey is currently located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and the eligibility criteria for beekeepers in England.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "Could you see my own ledgar journy, please?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record harvyst made from hive_9, contatinin 20 Romanizd kilos.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 20}}]}
+{"user": "Combine the harvest hashes 77aa01cc and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "b81d9e02"]}}]}
+{"user": "Please record that the stated lot has arrived at the processing stage with the identifier a3f9c1d2e4.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "a3f9c1d2e4"}}]}
+{"user": "Please register the sale of jar a3f9c1d2e4 for offline processing.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "offline"}}]}
+{"user": "Please see the list of hives and their current health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, I need information on how weather and climate affect bees' foraging and honey curing.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you provide an estimate in kilos of honey that can be expected from my hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I am looking to locate a KVIC/Khadi centre in Nagpur, India, for my beekeeping supplies and resources.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I would like to see my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9, which produced 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 12}}]}
+{"user": "Combine c4e77f10 and 77aa01cc harash into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "77aa01cc"]}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, where the processing identifier is 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of the stated jar, as per bill/order present, using the online system a3f9c1d2e4.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "In English, could you provide forecast information that considers the weather's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please trace where the specific harvest/beekeeper honey from Test Farmer B is now located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate in kilos of honey we can expect from our 50 hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and understand the eligibility requirements.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "Could you please locate a KVIC/Khadi centre in Nagpur for me?", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I seek to review and discuss my own detailed ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record a harvest from hive_9 got 20 kilos.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 20}}]}
+{"user": "Record the stated lot reaching the processing stage with ID 9f2e44ab.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "9f2e44ab"}}]}
+{"user": "Request to register the sale of the specified jar, as per bill/order present, must be recorded online with reference number 77aa01cc.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "77aa01cc", "channel": "online"}}]}
+{"user": "Could you provide weather and climate information that bears on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you please check whether the specific jar QR code with hash a3f9c1d2e4 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Could you please trace where the specific harvest from Test Farmer B is now located in English?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Please give an estimate of the honey yield in kilos from the number of hives in . Romanized Hinglish.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and understand the eligibility requirements for beekeepers in England.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "Please review my own journey in maintaining the ledger for our hive activities.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which yielded 20 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 20}}]}
+{"user": "Combine the stated harvest hashes 9f2e44ab and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "b81d9e02"]}}]}
+{"user": "Record the lot numbered c4e77f10 as it arrives at the processing stage from distribution.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "c4e77f10"}}]}
+{"user": "Register sale of jar no. c4e77f10 via online bill/order present.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "c4e77f10", "channel": "online"}}]}
+{"user": "Please can you help me see the list of hivs and thair health statys?", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Please trace where the honey labeled 9f2e44ab is currently located and being handled by which beekeeper.", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "I am looking for the location of a KVIC/Khadi centre in Nagpur, India.", "assistant": [{"name": "find_centre", "arguments": {"city": "Nagpur"}}]}
+{"user": "I would like to share my own journey in beekeeping and see my ledger updated accordingly.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which produced 4 kilos of honey, in the English hive log.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 4}}]}
+{"user": "Comb's harv'st hashes 77aa01cc an' c4e77f10 gotta be chucked int' one lot, no split'n'.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "c4e77f10"]}}]}
+{"user": "Record the stated lot arriving at the processing stage for batch 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) for unit b81d9e02 offline.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "offline"}}]}
+{"user": "Please review the current list of all hives along with their respective health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could you provide weather and climate updates to help us plan for optimal foraging and honey curing seasons?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Request from Test Farmer B: Please trace the current location of the specific harvest of honey produced by our English beekeeper.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Please locate a KVIC/Khadi centre in Indore, the city must be Romanized Hinglish.", "assistant": [{"name": "find_centre", "arguments": {"city": "Indore"}}]}
+{"user": "I would like to share my own journey in keeping bees, as recorded in my own ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I have recorded the harvest from hive_9, which yielded 8 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 8}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, which is under distribution and identified by the code 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "77aa01cc"}}]}
+{"user": "Register the sale of the jar (bill/order present) online with reference number 9f2e44ab.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "online"}}]}
+{"user": "Romanized Hinglish: Deekhaan sabhi beehives aur inka heethi status dharaa.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could ya pass the word 'bout how thaa weather an' climate playin' out there affects our bees' foraging an' honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you please check if the specific jar QR hash a3f9c1d2e4 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "a3f9c1d2e4"}}]}
+{"user": "Trace the current location of the specific harvest from Test Farmer B's bees, which was originally collected in English.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "In English, estimate the total honey yield in kilos we can expect from our hives.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Record the harvest from hive_1, which yielded 12 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_1", "weight_kg": 12}}]}
+{"user": "Please register the sale of the jar as per the bill/order present, referring to transaction ID a3f9c1d2e4 and noting it as an offline sale.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "offline"}}]}
+{"user": "Romanized Hinglish: \"Please know well how weather and climate affect bees while foraging and curing.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please trace where the specific harvest from Test Farmer B's apiary is now located in English?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Please provide an estimate of the total honey yield in kilos that can be expected from the given number of hives.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Can you help me locate a KVIC/Khadi centre in Nashik plz?", "assistant": [{"name": "find_centre", "arguments": {"city": "Nashik"}}]}
+{"user": "I would like to share my own ledger journey in English.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record hive_5 harvest from 15.5 kilos just made.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_5", "weight_kg": 15.5}}]}
+{"user": "Please combine the stated harvest hashes 77aa01cc and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "b81d9e02"]}}]}
+{"user": "Record the stated lot as it arrives at the processing stage, and ensure to include identifier c4e77f10 in the documentation.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "c4e77f10"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) online using the reference number a3f9c1d2e4.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Could you please provide forecasted weather and climate conditions that affect foraging and honey production in English?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Check whether the specific jar QR hash 77aa01cc is genuine.", "assistant": [{"name": "verify_jar", "arguments": {"hash": "77aa01cc"}}]}
+{"user": "Test Farmer B needs to trace the current location of a specific harvest of honey produced by their English beekeepers.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "In English, could you provide an estimate of the total honey yield in kilos that can be expected from our hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I need to locate a KVIC/Khadi centre in Jaipur, India, for my beekeeping supplies and resources.", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "Please review and confirm my own journey as an English beekeeper according to my ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I have recorded the harvest from hive_9, which produced 8 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 8}}]}
+{"user": "Combine b81d9e02 AND 9f2e44ab harvest hashes into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["b81d9e02", "9f2e44ab"]}}]}
+{"user": "Record the stated lot arriving at the processing stage, which must include all details of transport and the c4e77f10 batch number.", "assistant": [{"name": "log_stage", "arguments": {"stage": "transport", "prev_hash": "c4e77f10"}}]}
+{"user": "Register the sale of that jar, bill's present, 9f2e44ab offline typo'd.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "offline"}}]}
+{"user": "Could you please provide a forecast that takes into account the weather and climate conditions specifically affecting foraging and honey curing in English?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check whether the specific jar QR hash c4e77f10 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "c4e77f10"}}]}
+{"user": "TRACE kahan abhi 9f2e44ab ka ekad honey jarra hai jo Maine pahunchana chahiya.", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Estimate the total honey yield in kilos from the given number of hives in English.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies and schemes for beekeeping, including the NBB training eligibility criteria.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "Record the stated lot arriving at the processing stage, including all packaging details, and note the batch ID 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) online with the reference number 9f2e44ab.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "9f2e44ab", "channel": "online"}}]}
+{"user": "In English, could you provide a forecast that considers the weather's impact on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please give an estimate of the honey yield in kilos from the given number of hives in Romanized Hinglish.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about subsidies/schemes and their eligibility requirements, particularly in relation to NBB training eligibility.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "Could you please locate a KVIC/Khadi centre in Jaipur, India, where I can purchase local honey products?", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "Please review my own ledger journey as an English beekeeper.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_1, which produced 8 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_1", "weight_kg": 8}}]}
+{"user": "Combine the stated harvest hashes c4e77f10 and 77aa01cc into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "77aa01cc"]}}]}
+{"user": "Record the stated lot arriving at the processing stage, which must be noted in the distribution log 9f2e44ab.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "9f2e44ab"}}]}
+{"user": "REGISTER sale of jar a3f9c1d2e4 online - bill/order present.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "Please see the list of hives and their health statuses in English.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "Could you provide information in English that considers the weather and climate's impact on bees for foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Please trace where the specific harvest from Test Farmer B's English honey is currently located.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "In English, can you provide an estimate of the total honey yield in kilos that can be expected from the given number of hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Learn about subsidies/schemes and NBB training eligibility kya haari - please guide hoon.", "assistant": [{"name": "search_schemes", "arguments": {"query": "NBB training eligibility"}}]}
+{"user": "I am looking to locate a KVIC/Khadi centre in Jaipur, India, where I can purchase local beekeeping supplies and learn about traditional honey production techniques.", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "Could you please review and confirm my own ledger journey in English?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the arrival of the stated lot at the processing stage, ensuring all packaging labeled with 9f2e44ab is accounted for.", "assistant": [{"name": "log_stage", "arguments": {"stage": "packaging", "prev_hash": "9f2e44ab"}}]}
+{"user": "Register the sale of the stated jar (bill/order present) for reference number a3f9c1d2e4 online.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "online"}}]}
+{"user": "I seek information in English regarding how weather and climate conditions impact bee foraging and honey curing.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you trace where the specific harvest from Test Farmer B's bees is currently located? English.", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could u give an eStimatE on how manY kilos oF hOoNe wE cn gEt frOm thIs 20 hivEs?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Locate a KVIC/Khadi centre in Jaipur which must be mentioned in Romanized Hinglish.", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "May I see my own ledger journey in English?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9, which produced 20 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 20}}]}
+{"user": "Please combine the stated harvest hashes 9f2e44ab and 77aa01cc into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "77aa01cc"]}}]}
+{"user": "Record the stated lot arriving at the processing stage, which is under distribution and identified by 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of this jar (bill/order present) online with the reference number 77aa01cc.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "77aa01cc", "channel": "online"}}]}
+{"user": "Romanized Hinglish: Dekhun hives ki ziddiyon aur uski koshish karun.", "assistant": [{"name": "get_hives", "arguments": {}}]}
+{"user": "In English, I need your expert advice on how the weather and climate significantly impact foraging and honey curing in my apiary.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you trace where the specific harvest of Test Farmer B's English honey is currently located?", "assistant": [{"name": "get_twin", "arguments": {"id": "Test Farmer B"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos from our 50 hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Can you locate a KVIC/Khadi centre in Nashik that caters to English-speaking visitors?", "assistant": [{"name": "find_centre", "arguments": {"city": "Nashik"}}]}
+{"user": "Check my own Romanized Hinglish ledger journey.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_9, which yielded 4 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 4}}]}
+{"user": "Combine all them honeycomb hashes 9f2e44ab an' 77aa01cc into one lot, got it?", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["9f2e44ab", "77aa01cc"]}}]}
+{"user": "Please record that the stated lot has arrived at the processing stage, and note the identifier 77aa01cc.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "77aa01cc"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) online with the reference number b81d9e02.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "b81d9e02", "channel": "online"}}]}
+{"user": "Romanized Hinglish: Please consider the weather/climate while planning for foraging and honey-making activities.", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Can you please check if the specific jar with QR hash b81d9e02 is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "b81d9e02"}}]}
+{"user": "Can you trace where the honey labeled with code 9f2e44ab is currently located in our supply chain?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Please review my own journey as an English beekeeper and update my ledger accordingly.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "I RECORD the harvest from hive_9 - collected 4 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_9", "weight_kg": 4}}]}
+{"user": "Record the lot arriving at the processing stage, which involves distribution and includes reference c4e77f10.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "c4e77f10"}}]}
+{"user": "Register the sale of the stated jar, bill/order present, for offline transaction a3f9c1d2e4.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "offline"}}]}
+{"user": "Check 77aa01cc ke jar QR hash genuine!", "assistant": [{"name": "verify_jar", "arguments": {"hash": "77aa01cc"}}]}
+{"user": "Could you trace the current location of the 9f2e44ab batch of honey harvested by our local beekeepers?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Could you provide an estimate in kilos of honey that can be expected from the given number of hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I seek to document my own journey in beekeeping in my own English-language ledger.", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_1, which yielded 8 kilos of honey in English.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_1", "weight_kg": 8}}]}
+{"user": "Combine 77aa01cc aur b81d9e02 harvest hashes ek lot mein.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["77aa01cc", "b81d9e02"]}}]}
+{"user": "Record that the stated lot has arrived at the processing stage, b81d9e02 must be noted.", "assistant": [{"name": "log_stage", "arguments": {"stage": "processing", "prev_hash": "b81d9e02"}}]}
+{"user": "Please register the sale of the stated jar mentioned in bill/order number a3f9c1d2e4, to be processed offline.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "a3f9c1d2e4", "channel": "offline"}}]}
+{"user": "In English, could you provide a forecast that takes into account the weather and climate to help with our foraging and honey-curing processes?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you please check whether the specific jar QR hash 9f2e44ab is genuine?", "assistant": [{"name": "verify_jar", "arguments": {"hash": "9f2e44ab"}}]}
+{"user": "TRACE kya hai 9f2e44ab ka honey abhi kaunsa beekeeper se aya hai?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Could you provide an estimate of the total honey yield in kilos we can expect from our hives?", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "I would like to learn about the PMEGP subsidy for 20 boxes and understand the eligibility requirements for this scheme.", "assistant": [{"name": "search_schemes", "arguments": {"query": "PMEGP subsidy for 20 boxes"}}]}
+{"user": "We needs ta locate a KVIC/Khadi centre in Jaipur, plz.", "assistant": [{"name": "find_centre", "arguments": {"city": "Jaipur"}}]}
+{"user": "May I review and update my own ledger journey in English?", "assistant": [{"name": "get_my_blocks", "arguments": {}}]}
+{"user": "Record the harvest from hive_3, which produced 20 kilos of honey.", "assistant": [{"name": "log_extraction", "arguments": {"hive_id": "hive_3", "weight_kg": 20}}]}
+{"user": "Combine the stated harvest hashes c4e77f10 and b81d9e02 into one lot.", "assistant": [{"name": "pool_lot", "arguments": {"prev_hashes": ["c4e77f10", "b81d9e02"]}}]}
+{"user": "Record the stated lot arriving at the processing stage which is part of the distribution process, 9f2e44ab mentioned.", "assistant": [{"name": "log_stage", "arguments": {"stage": "distribution", "prev_hash": "9f2e44ab"}}]}
+{"user": "Please register the sale of the stated jar (bill/order present) for c4e77f10 online.", "assistant": [{"name": "issue_sale", "arguments": {"hash": "c4e77f10", "channel": "online"}}]}
+{"user": "Could you provide a forecast that considers the weather and climate impacts on foraging and honey curing?", "assistant": [{"name": "get_weather", "arguments": {}}]}
+{"user": "Could you trace the current location of the 9f2e44ab batch of honey and let me know which beekeeper is now in possession of it?", "assistant": [{"name": "get_twin", "arguments": {"id": "9f2e44ab"}}]}
+{"user": "Please provide an estimate of honey yield in kilos from the given hive numbers in Romanized Hinglish.", "assistant": [{"name": "predict_yield", "arguments": {}}]}
+{"user": "Could you please locate a KVIC/Khadi centre in Nashik that offers English-language classes?", "assistant": [{"name": "find_centre", "arguments": {"city": "Nashik"}}]}

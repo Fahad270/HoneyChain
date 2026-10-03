@@ -1,0 +1,42 @@
+{
+  "CJ001_-_Missing_Queen_-_Day_-__100.wav": {
+    "true": "queenless",
+    "pred": "queenless",
+    "windows": 75,
+    "qr_frac": 0.027,
+    "mean_post": [
+      0.719,
+      0.281
+    ]
+  },
+  "Hive1_12_06_2018_QueenBee_H1_audio___16_40_00.wav": {
+    "true": "queenright",
+    "pred": "queenright",
+    "windows": 149,
+    "qr_frac": 0.765,
+    "mean_post": [
+      0.374,
+      0.626
+    ]
+  },
+  "Hive1_31_05_2018_NO_QueenBee_H1_audio___15_30_00.wav": {
+    "true": "queenless",
+    "pred": "queenless",
+    "windows": 149,
+    "qr_frac": 0.101,
+    "mean_post": [
+      0.669,
+      0.331
+    ]
+  },
+  "Hive3_20_07_2017_QueenBee_H3_audio___06_20_00.wav": {
+    "true": "queenright",
+    "pred": "queenright",
+    "windows": 148,
+    "qr_frac": 0.743,
+    "mean_post": [
+      0.39,
+      0.61
+    ]
+  }
+}
