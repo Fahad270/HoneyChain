@@ -1,0 +1,360 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 900" width="1420" height="900">
+  <defs>
+    <style>
+      text { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+      .mono { font-family: 'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace; }
+    </style>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <radialGradient id="glowAmber" cx="12%" cy="10%" r="35%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowPurple" cx="62%" cy="40%" r="30%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowGreen" cx="88%" cy="85%" r="35%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1420" height="900" rx="20" fill="#0F172A" stroke="#1E293B" stroke-width="1.5"/>
+  <rect width="1420" height="900" rx="20" fill="url(#glowAmber)"/>
+  <rect width="1420" height="900" rx="20" fill="url(#glowPurple)"/>
+  <rect width="1420" height="900" rx="20" fill="url(#glowGreen)"/>
+
+  <!-- Top Header -->
+  <circle cx="44" cy="44" r="4" fill="#F59E0B"/>
+  <text x="56" y="48" font-size="11" font-weight="700" letter-spacing="1.2" fill="#F59E0B">HONEYCHAIN ARCHITECTURE · SIH 2026 PS 26021 · FIELD TO LEDGER</text>
+  <text x="44" y="82" font-size="25" font-weight="800" fill="#F8FAFC">Mobile Orchard Ingestion → <tspan fill="url(#goldGrad)">Edge AI Pipeline</tspan> → DAG Blockchain</text>
+  <text x="44" y="106" font-size="12.5" font-weight="400" fill="#94A3B8">Offline voice harvest logging, in-hive acoustic edge, fine-tuned SLM router &amp; RAG, and immutable DAG provenance.</text>
+
+  <!-- Header Badges -->
+  <g transform="translate(810, 42)">
+    <rect width="180" height="28" rx="7" fill="#F59E0B" fill-opacity="0.12" stroke="#F59E0B" stroke-opacity="0.3"/>
+    <text x="90" y="18" font-size="11" font-weight="600" fill="#FBBF24" text-anchor="middle">📱 Budget Phone (&lt;75MB RAM)</text>
+  </g>
+  <g transform="translate(1002, 42)">
+    <rect width="195" height="28" rx="7" fill="#3B82F6" fill-opacity="0.12" stroke="#3B82F6" stroke-opacity="0.3"/>
+    <text x="97" y="18" font-size="11" font-weight="600" fill="#60A5FA" text-anchor="middle">✈️ Orchard Airplane Mode Ready</text>
+  </g>
+  <g transform="translate(1209, 42)">
+    <rect width="171" height="28" rx="7" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-opacity="0.3"/>
+    <text x="85" y="18" font-size="11" font-weight="600" fill="#34D399" text-anchor="middle">🔒 Zero-Hallucination Gate</text>
+  </g>
+
+  <line x1="40" y1="130" x2="1380" y2="130" stroke="#1E293B" stroke-width="1"/>
+
+  <!-- ==================== LANE 1: IN THE APIARY ==================== -->
+  <g transform="translate(40, 148)">
+    <rect width="310" height="660" rx="14" fill="#152033" fill-opacity="0.92" stroke="#283548" stroke-width="1"/>
+    <path d="M 0 14 Q 0 0 14 0 L 296 0 Q 310 0 310 14 L 310 3 L 0 3 Z" fill="#F59E0B"/>
+    
+    <!-- Header -->
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#F59E0B"/>
+    <text x="26" y="30" font-size="12" font-weight="800" fill="#000" text-anchor="middle">1</text>
+    <text x="46" y="25" font-size="13.5" font-weight="700" fill="#F1F5F9">In the Apiary (Field)</text>
+    <text x="46" y="39" font-size="10.5" font-weight="400" fill="#64748B">Farmer's Phone + Hive Edge</text>
+    <line x1="14" y1="46" x2="296" y2="46" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Module 1.1: Native Voice ASR -->
+    <g transform="translate(14, 56)">
+      <rect width="282" height="136" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🎙️ Hands-Free Voice ASR</text>
+      <rect x="194" y="8" width="76" height="16" rx="4" fill="#F59E0B" fill-opacity="0.2"/>
+      <text x="232" y="20" font-size="9" font-weight="700" fill="#FBBF24" text-anchor="middle">0MB MODEL</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Beekeeper speaks hands-free in Hindi, English,</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">or Hinglish via native browser Web Speech API.</text>
+      <rect x="10" y="62" width="262" height="62" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#CBD5E1" class="mono">"aaj bara kg honey tha from 3"</text>
+      <text x="16" y="94" font-size="9.5" fill="#FBBF24" class="mono">→ Number Word: bara = 12</text>
+      <text x="16" y="110" font-size="9.5" fill="#34D399" class="mono">→ Parsed: {hive: HIVE-03, kg: 12}</text>
+    </g>
+
+    <!-- Module 1.2: Confirm Card -->
+    <g transform="translate(14, 204)">
+      <rect width="282" height="136" rx="9" fill="#142624" stroke="#10B981" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">📋 Confirm-Before-Commit</text>
+      <rect x="190" y="8" width="80" height="16" rx="4" fill="#10B981" fill-opacity="0.25"/>
+      <text x="230" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">HUMAN GATE</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Green review card shows extracted slots.</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">Farmer verifies on phone with gloves before sign.</text>
+      <rect x="10" y="62" width="262" height="62" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#FBBF24" class="mono">Hive: HIVE-03 | Weight: 12 kg</text>
+      <text x="16" y="94" font-size="9.5" fill="#94A3B8" class="mono">Editable fields: Adjust or Retake</text>
+      <text x="16" y="110" font-size="9.5" fill="#34D399" class="mono">🔒 Zero auto-mint to blockchain</text>
+    </g>
+
+    <!-- Module 1.3: Offline LocalStorage -->
+    <g transform="translate(14, 352)">
+      <rect width="282" height="136" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">✈️ Offline LocalStorage Queue</text>
+      <rect x="186" y="8" width="84" height="16" rx="4" fill="#F59E0B" fill-opacity="0.2"/>
+      <text x="228" y="20" font-size="9" font-weight="700" fill="#FBBF24" text-anchor="middle">DEAD ZONES</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Queues harvests client-side in orchard dead</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">zones without cellular coverage.</text>
+      <rect x="10" y="62" width="262" height="62" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#FBBF24" class="mono">[✈️ 1 queued offline] amber badge</text>
+      <text x="16" y="94" font-size="9.5" fill="#CBD5E1" class="mono">Persistent FIFO browser storage</text>
+      <text x="16" y="110" font-size="9.5" fill="#60A5FA" class="mono">Survives refresh &amp; phone restart</text>
+    </g>
+
+    <!-- Module 1.4: Hive ESP32 Mic -->
+    <g transform="translate(14, 500)">
+      <rect width="282" height="138" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🐝 In-Hive Acoustic Edge</text>
+      <rect x="194" y="8" width="76" height="16" rx="4" fill="#10B981" fill-opacity="0.2"/>
+      <text x="232" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">8KB INT8</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Solar/battery ESP32 microphone computes 4s</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">STFT windows to detect queenless distress buzz.</text>
+      <rect x="10" y="62" width="262" height="64" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#34D399" class="mono">queenright (0.95) / queenless (0.05)</text>
+      <text x="16" y="94" font-size="9.5" fill="#CBD5E1" class="mono">TFLite micro INT8: 8,032 bytes</text>
+      <text x="16" y="110" font-size="9.5" fill="#FBBF24" class="mono">Alerts beekeeper before hive loss</text>
+    </g>
+  </g>
+
+  <!-- Flow 1 -> 2 -->
+  <circle cx="362" cy="478" r="12" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+  <text x="362" y="482" font-size="11" fill="#94A3B8" text-anchor="middle">→</text>
+
+  <!-- ==================== LANE 2: FIELD CONNECTIVITY ==================== -->
+  <g transform="translate(374, 148)">
+    <rect width="250" height="660" rx="14" fill="#152033" fill-opacity="0.92" stroke="#283548" stroke-width="1"/>
+    <path d="M 0 14 Q 0 0 14 0 L 236 0 Q 250 0 250 14 L 250 3 L 0 3 Z" fill="#3B82F6"/>
+
+    <!-- Header -->
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#3B82F6"/>
+    <text x="26" y="30" font-size="12" font-weight="800" fill="#FFF" text-anchor="middle">2</text>
+    <text x="46" y="25" font-size="13.5" font-weight="700" fill="#F1F5F9">Field Sync &amp; Transit</text>
+    <text x="46" y="39" font-size="10.5" font-weight="400" fill="#64748B">Local Hotspot or 4G Reconnect</text>
+    <line x1="14" y1="46" x2="236" y2="46" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Module 2.1: Orchard Dead Zone -->
+    <g transform="translate(14, 56)">
+      <rect width="222" height="136" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">📶 Orchard Dead Zone</text>
+      <rect x="146" y="8" width="66" height="16" rx="4" fill="#3B82F6" fill-opacity="0.2"/>
+      <text x="179" y="20" font-size="9" font-weight="700" fill="#60A5FA" text-anchor="middle">ZERO NET</text>
+      <text x="12" y="40" font-size="10.5" fill="#94A3B8">All harvest logs stay securely</text>
+      <text x="12" y="55" font-size="10.5" fill="#94A3B8">buffered on beekeeper's mobile</text>
+      <text x="12" y="70" font-size="10.5" fill="#94A3B8">phone throughout the workday.</text>
+      <rect x="10" y="80" width="202" height="44" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="98" font-size="9" fill="#94A3B8" class="mono">No cloud pinging</text>
+      <text x="16" y="112" font-size="9" fill="#34D399" class="mono">100% offline autonomy</text>
+    </g>
+
+    <!-- Module 2.2: Batch Sync -->
+    <g transform="translate(14, 204)">
+      <rect width="222" height="154" rx="9" fill="#122538" stroke="#3B82F6" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🔄 One-Tap Batch Sync</text>
+      <rect x="146" y="8" width="66" height="16" rx="4" fill="#10B981" fill-opacity="0.2"/>
+      <text x="179" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">SYNC API</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">When beekeeper approaches</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">village shed or 4G returns,</text>
+      <text x="12" y="66" font-size="10.5" fill="#FBBF24" font-weight="700">[Sync Now to Ledger]</text>
+      <text x="12" y="80" font-size="10.5" fill="#94A3B8">flushes FIFO batch over Wi-Fi.</text>
+      <rect x="10" y="92" width="202" height="50" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="110" font-size="9" fill="#CBD5E1" class="mono">POST /api/ledger/block</text>
+      <text x="16" y="126" font-size="9" fill="#34D399" class="mono">Batch flushed · 0 data loss</text>
+    </g>
+
+    <!-- Module 2.3: Village KVIC Node -->
+    <g transform="translate(14, 370)">
+      <rect width="222" height="154" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🏛️ Village KVIC Node</text>
+      <rect x="146" y="8" width="66" height="16" rx="4" fill="#3B82F6" fill-opacity="0.2"/>
+      <text x="179" y="20" font-size="9" font-weight="700" fill="#60A5FA" text-anchor="middle">HOTSPOT</text>
+      <text x="12" y="40" font-size="10.5" fill="#94A3B8">₹3,000 Raspberry Pi at KVIC</text>
+      <text x="12" y="54" font-size="10.5" fill="#94A3B8">collection centre runs local</text>
+      <text x="12" y="68" font-size="10.5" fill="#94A3B8">offline node for 50+ apiaries.</text>
+      <rect x="10" y="84" width="202" height="56" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="102" font-size="9" fill="#CBD5E1" class="mono">Local Wi-Fi SSID</text>
+      <text x="16" y="116" font-size="9" fill="#60A5FA" class="mono">Zero internet needed</text>
+      <text x="16" y="130" font-size="9" fill="#FBBF24" class="mono">Hosts Router + SLM + RAG</text>
+    </g>
+
+    <!-- Module 2.4: Transit Gateway -->
+    <g transform="translate(14, 536)">
+      <rect width="222" height="102" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">📦 Custody Transfer</text>
+      <rect x="146" y="8" width="66" height="16" rx="4" fill="#8B5CF6" fill-opacity="0.2"/>
+      <text x="179" y="20" font-size="9" font-weight="700" fill="#C084FC" text-anchor="middle">DAG BLOCK</text>
+      <text x="12" y="38" font-size="10" fill="#94A3B8">Drum seal QR &amp; GPS coordinates</text>
+      <text x="12" y="52" font-size="10" fill="#94A3B8">logged upon dispatch to processing.</text>
+      <rect x="10" y="62" width="202" height="30" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="81" font-size="9" fill="#34D399" class="mono">Tamper-evident drum lock</text>
+    </g>
+  </g>
+
+  <!-- Flow 2 -> 3 -->
+  <circle cx="636" cy="478" r="12" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+  <text x="636" y="482" font-size="11" fill="#94A3B8" text-anchor="middle">→</text>
+
+  <!-- ==================== LANE 3: VILLAGE EDGE AI PIPELINE ==================== -->
+  <g transform="translate(648, 148)">
+    <rect width="420" height="660" rx="14" fill="#152033" fill-opacity="0.92" stroke="#283548" stroke-width="1"/>
+    <path d="M 0 14 Q 0 0 14 0 L 406 0 Q 420 0 420 14 L 420 3 L 0 3 Z" fill="#8B5CF6"/>
+
+    <!-- Header -->
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#8B5CF6"/>
+    <text x="26" y="30" font-size="12" font-weight="800" fill="#FFF" text-anchor="middle">3</text>
+    <text x="46" y="25" font-size="13.5" font-weight="700" fill="#F1F5F9">Village / KVIC Edge Node</text>
+    <text x="46" y="39" font-size="10.5" font-weight="400" fill="#64748B">Safety Gate, Intent Router, 0.5B SLM &amp; Dense RAG</text>
+    <line x1="14" y1="46" x2="406" y2="46" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Module 3.1: Pre-LLM Gate -->
+    <g transform="translate(14, 56)">
+      <rect width="392" height="136" rx="9" fill="#281A22" stroke="#EF4444" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🛡️ Tier 0: Level 0 Deterministic Safety Gate</text>
+      <rect x="296" y="8" width="86" height="16" rx="4" fill="#EF4444" fill-opacity="0.25"/>
+      <text x="339" y="20" font-size="9" font-weight="700" fill="#F87171" text-anchor="middle">HARD SAFETY</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Blocks chemical dosages (amitraz, formic, oxalic, tylosin)</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">and Devanagari dosage units (कितनी दवा, मात्रा, खुराक).</text>
+      <rect x="10" y="62" width="372" height="62" rx="6" fill="#190F16" stroke="#3A1C27"/>
+      <text x="16" y="78" font-size="9.5" fill="#FCA5A5" class="mono">"how much oxalic acid?" / "kitna amitraz daalu?"</text>
+      <text x="16" y="94" font-size="9.5" fill="#EF4444" class="mono">→ REFUSE &amp; Escalate to KVK / Veterinary Officer</text>
+      <text x="16" y="110" font-size="9.5" fill="#34D399" class="mono">Zero chemical milligrams ever emitted by AI</text>
+    </g>
+
+    <!-- Module 3.2: laya-choice Router -->
+    <g transform="translate(14, 204)">
+      <rect width="392" height="138" rx="9" fill="#182234" stroke="#8B5CF6" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">⚡ Tier 1: laya-choice Intent Router</text>
+      <rect x="306" y="8" width="76" height="16" rx="4" fill="#8B5CF6" fill-opacity="0.25"/>
+      <text x="344" y="20" font-size="9" font-weight="700" fill="#C084FC" text-anchor="middle">95.4% ACC</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">ModernBERT sequence classifier routes 15 Express tools</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">with a strict 0.6 confidence gating threshold.</text>
+      <rect x="10" y="62" width="372" height="64" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#CBD5E1" class="mono">conf &lt; 0.6 → ask_clarify safe fallback</text>
+      <text x="16" y="94" font-size="9.5" fill="#60A5FA" class="mono">Non-autoregressive: cannot hallucinate fake tools</text>
+      <text x="16" y="110" font-size="9.5" fill="#34D399" class="mono">Domain tools achieve 0.95 - 0.998 confidence</text>
+    </g>
+
+    <!-- Module 3.3: Qwen2.5-0.5B LoRA SLM -->
+    <g transform="translate(14, 354)">
+      <rect width="392" height="142" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🧠 Tier 2: Fine-Tuned 0.5B SLM Extractor</text>
+      <rect x="296" y="8" width="86" height="16" rx="4" fill="#F59E0B" fill-opacity="0.2"/>
+      <text x="339" y="20" font-size="9" font-weight="700" fill="#FBBF24" text-anchor="middle">34MB LoRA</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Qwen2.5-0.5B LoRA (r=16, a=32) trained on 2,010</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">multilingual &amp; Hinglish conversational traces.</text>
+      <rect x="10" y="62" width="372" height="68" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#34D399" class="mono">Tool Acc: 22% → 92.0% (+70pp lift)</text>
+      <text x="16" y="94" font-size="9.5" fill="#60A5FA" class="mono">Valid JSON: 40% → 100.0% (+60pp lift)</text>
+      <text x="16" y="110" font-size="9.5" fill="#FBBF24" class="mono">Exact Slot Match: 20% → 84.0% (+64pp lift)</text>
+    </g>
+
+    <!-- Module 3.4: Dense RAG & FSSAI Code -->
+    <g transform="translate(14, 508)">
+      <rect width="392" height="138" rx="9" fill="#1A203B" stroke="#8B5CF6" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">📚 Tier 3: Dense RAG &amp; FSSAI Code Verification</text>
+      <rect x="306" y="8" width="76" height="16" rx="4" fill="#10B981" fill-opacity="0.2"/>
+      <text x="344" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">58MB INT8</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Finetuned MiniLM-L12 (93.3% Top-3, 0.827 MRR)</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">retrieves verified FAO 2020 cards + pure code lab checks.</text>
+      <rect x="10" y="62" width="372" height="64" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="16" y="78" font-size="9.5" fill="#F87171" class="mono">Moisture 22.4% &gt; 20% → FAIL (FSSAI Reg 2.8.3)</text>
+      <text x="16" y="94" font-size="9.5" fill="#FCA5A5" class="mono">Risk: Zygosaccharomyces yeast fermentation</text>
+      <text x="16" y="110" font-size="9.5" fill="#34D399" class="mono">FAO 2020 Advisory: Screened bottom boards</text>
+    </g>
+  </g>
+
+  <!-- Flow 3 -> 4 -->
+  <circle cx="1080" cy="478" r="12" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+  <text x="1080" y="482" font-size="11" fill="#94A3B8" text-anchor="middle">→</text>
+
+  <!-- ==================== LANE 4: DAG LEDGER & RETAIL ==================== -->
+  <g transform="translate(1092, 148)">
+    <rect width="288" height="660" rx="14" fill="#152033" fill-opacity="0.92" stroke="#283548" stroke-width="1"/>
+    <path d="M 0 14 Q 0 0 14 0 L 274 0 Q 288 0 288 14 L 288 3 L 0 3 Z" fill="#10B981"/>
+
+    <!-- Header -->
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#10B981"/>
+    <text x="26" y="30" font-size="12" font-weight="800" fill="#000" text-anchor="middle">4</text>
+    <text x="46" y="25" font-size="13.5" font-weight="700" fill="#F1F5F9">DAG Ledger &amp; Retail</text>
+    <text x="46" y="39" font-size="10.5" font-weight="400" fill="#64748B">Immutable Trust &amp; Consumer QR</text>
+    <line x1="14" y1="46" x2="274" y2="46" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Module 4.1: DAG Blockchain -->
+    <g transform="translate(14, 56)">
+      <rect width="260" height="268" rx="9" fill="#142624" stroke="#10B981" stroke-opacity="0.4" stroke-width="1.2"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🔗 HoneyChain DAG Blocks</text>
+      <rect x="186" y="8" width="62" height="16" rx="4" fill="#10B981" fill-opacity="0.25"/>
+      <text x="217" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">SHA-256</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Cryptographic hashes connect hops:</text>
+      
+      <rect x="10" y="48" width="240" height="206" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="14" y="68" font-size="9.5" fill="#FBBF24" class="mono">Step 1: Beekeeper Genesis QR</text>
+      <text x="14" y="88" font-size="9.5" fill="#CBD5E1" class="mono">Step 2: Spoken Harvest (Voice)</text>
+      <text x="14" y="108" font-size="9.5" fill="#CBD5E1" class="mono">Step 3: Collective Pool Lot (Many→1)</text>
+      <text x="14" y="128" font-size="9.5" fill="#CBD5E1" class="mono">Step 4: Transit &amp; Cold Storage</text>
+      <text x="14" y="148" font-size="9.5" fill="#34D399" class="mono">Step 5: NABL Lab Purity Cert</text>
+      <text x="14" y="168" font-size="9.5" fill="#60A5FA" class="mono">Step 6: Packaging &amp; Jar Serial</text>
+      <text x="14" y="188" font-size="9.5" fill="#C084FC" class="mono">Step 7: Distributor Route Scan</text>
+      <text x="14" y="208" font-size="9.5" fill="#F87171" class="mono">Step 8: Khadi Shelf Retail Freeze</text>
+      <text x="14" y="234" font-size="9" fill="#94A3B8" class="mono">Hash: a7f8...93b2 (immutable)</text>
+    </g>
+
+    <!-- Module 4.2: Consumer Proof -->
+    <g transform="translate(14, 336)">
+      <rect width="260" height="175" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🏷️ Consumer Jar Proof</text>
+      <rect x="174" y="8" width="74" height="16" rx="4" fill="#10B981" fill-opacity="0.2"/>
+      <text x="211" y="20" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">PUBLIC SCAN</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Buyer scans Khadi honey jar QR</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">in retail store with phone camera</text>
+      <text x="12" y="66" font-size="10.5" fill="#94A3B8">to view complete provenance tree:</text>
+      <rect x="10" y="78" width="240" height="84" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="14" y="96" font-size="9" fill="#34D399" class="mono">✓ Beekeeper: Rameshwar (KVIC #412)</text>
+      <text x="14" y="112" font-size="9" fill="#FBBF24" class="mono">✓ Apiary: Alwar Mustard Orchard</text>
+      <text x="14" y="128" font-size="9" fill="#60A5FA" class="mono">✓ Harvest: 2026-10-03 · 12 kg</text>
+      <text x="14" y="144" font-size="9" fill="#34D399" class="mono">✓ Lab: Moisture 17.8% (Pass &lt;20%)</text>
+    </g>
+
+    <!-- Module 4.3: Shelf Freeze -->
+    <g transform="translate(14, 523)">
+      <rect width="260" height="115" rx="9" fill="#182234" stroke="#283548" stroke-width="1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="700" fill="#F8FAFC">🔒 Retail Shelf Freeze</text>
+      <rect x="166" y="8" width="82" height="16" rx="4" fill="#3B82F6" fill-opacity="0.2"/>
+      <text x="207" y="20" font-size="9" font-weight="700" fill="#60A5FA" text-anchor="middle">TAMPER-PROOF</text>
+      <text x="12" y="38" font-size="10.5" fill="#94A3B8">Once jar reaches retail shelf,</text>
+      <text x="12" y="52" font-size="10.5" fill="#94A3B8">DAG state freezes permanently.</text>
+      <rect x="10" y="64" width="240" height="38" rx="6" fill="#0B1120" stroke="#1E293B"/>
+      <text x="14" y="82" font-size="9" fill="#34D399" class="mono">Permanent read-only cryptographic lock</text>
+    </g>
+  </g>
+
+  <!-- ==================== FOOTER ==================== -->
+  <line x1="40" y1="824" x2="1380" y2="824" stroke="#1E293B" stroke-width="1"/>
+  
+  <g transform="translate(40, 856)">
+    <text x="0" y="0" font-size="12" font-weight="800" fill="#10B981">✓</text>
+    <text x="16" y="0" font-size="11" font-weight="500" fill="#94A3B8">Budget Android Friendly (&lt;75MB RAM)</text>
+
+    <text x="250" y="0" font-size="12" font-weight="800" fill="#10B981">✓</text>
+    <text x="266" y="0" font-size="11" font-weight="500" fill="#94A3B8">100% Offline in Orchard Dead Zones</text>
+
+    <text x="500" y="0" font-size="12" font-weight="800" fill="#10B981">✓</text>
+    <text x="516" y="0" font-size="11" font-weight="500" fill="#94A3B8">Edge AI (Laya 95.4% · Qwen 92.0% · MiniLM 93.3%)</text>
+
+    <text x="860" y="0" font-size="12" font-weight="800" fill="#10B981">✓</text>
+    <text x="876" y="0" font-size="11" font-weight="500" fill="#94A3B8">SHA-256 DAG Immutable Provenance</text>
+  </g>
+
+  <text x="1380" y="856" font-size="11" fill="#64748B" class="mono" text-anchor="end">HoneyChain SIH 2026 PS 26021</text>
+
+</svg>

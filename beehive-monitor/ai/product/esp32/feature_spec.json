@@ -1,0 +1,22 @@
+{
+  "model": "queen_model.tflite",
+  "task": ["nobee", "queenless", "queenright"],
+  "audio": {"sample_rate_hz": 16000, "channels": 1, "window_s": 4.0},
+  "features": [
+    {"name": "rms_db", "desc": "window RMS in dBFS"},
+    {"name": "worker_hum", "desc": "log-energy 200-300 Hz (worker hum band)"},
+    {"name": "queen_pipe", "desc": "log-energy 400-550 Hz (queen piping band)"},
+    {"name": "whoop", "desc": "log-energy 300-450 Hz (whooping/stop signal)"},
+    {"name": "worker_pipe", "desc": "log-energy 100-250 Hz"},
+    {"name": "queen_harm", "desc": "log-energy 500-2000 Hz (queen harmonics)"},
+    {"name": "sub", "desc": "log-energy 0-100 Hz"},
+    {"name": "hiss", "desc": "log-energy 3000-6000 Hz"},
+    {"name": "centroid", "desc": "spectral centroid in Hz"},
+    {"name": "qw_ratio", "desc": "log10(queen_pipe / worker_hum)"},
+    {"name": "zcr", "desc": "zero-crossing rate"}
+  ],
+  "standardization": "x = (x - mean) / std using gateway/scaler.json",
+  "firmware_note": "reimplement band log-energies with fixed-point Goertzel filters at 240/480/360 Hz instead of full STFT; quantise gateway/edge_thresholds.json per-class means to int8",
+  "alert_rule": "queenless posterior > 0.7 for 3 consecutive windows OR worker-band median beyond the hive's own 7-night baseline by +-2 sigma for > 30 min",
+  "warning": "never ship a global dB threshold; every hive needs its own 7-night worker-band baseline median"
+}

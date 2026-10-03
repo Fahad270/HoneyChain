@@ -14,6 +14,7 @@ const mapRoutes = require("./routes/mapRoutes");
 const rtiRoutes = require("./routes/rtiRoutes");
 const kycRoutes = require("./routes/kycRoutes");
 const authRoutes = require("./routes/authRoutes");
+const advisoryRoutes = require("./routes/advisoryRoutes");
 const { optionalAuth } = require("./middleware/auth");
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/api/map", mapRoutes);
 app.use("/api/rti", rtiRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/advisory", advisoryRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`[server] Running on http://localhost:${PORT}`));

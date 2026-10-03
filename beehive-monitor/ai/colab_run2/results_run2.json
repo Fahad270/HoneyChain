@@ -1,0 +1,40 @@
+{
+  "classes": [
+    "queenless",
+    "queenright"
+  ],
+  "n": 548,
+  "mlp_holdout_acc": 0.9,
+  "mlp_confusion": [
+    [
+      42,
+      8
+    ],
+    [
+      3,
+      57
+    ]
+  ],
+  "mel_norm": {
+    "mean": -3.03214430809021,
+    "std": 0.5695187449455261
+  },
+  "cnn_params": 1282,
+  "cnn_holdout_acc": 0.4545454680919647,
+  "cnn_confusion": [
+    [
+      50,
+      0
+    ],
+    [
+      60,
+      0
+    ]
+  ],
+  "loho_accs": [
+    0.0,
+    0.125,
+    0.0
+  ],
+  "mean_loho_acc": 0.041666666666666664
+}
