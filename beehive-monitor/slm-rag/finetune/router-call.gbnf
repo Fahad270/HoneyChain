@@ -1,0 +1,17 @@
+# GBNF grammar for the HoneyChain router envelope — deployment-side constraint.
+# Enforces: exactly one [{name, arguments}] where name is one of the 15 known tools.
+# Use: llama-server --grammar-file router-call.gbnf (or `grammar` body field).
+# Guarantees SYNTAX only (per JSONSchemaBench): semantics (right tool, grounded
+# slots) still need the finetuned weights + routerExecutor.js validation.
+# NOTE: arguments is open-object here (per-tool slot shapes vary); the executor
+# validates slots. Tighten per-tool with separate grammars if measured necessary.
+
+root ::= "[" ws call ws "]"
+call ::= "{" ws "\"name\"" ws ":" ws tool ws "," ws "\"arguments\"" ws ":" ws object ws "}"
+tool ::= "\"get_hives\"" | "\"get_weather\"" | "\"verify_jar\"" | "\"get_twin\"" | "\"predict_yield\"" | "\"search_schemes\"" | "\"find_centre\"" | "\"get_my_blocks\"" | "\"log_extraction\"" | "\"pool_lot\"" | "\"log_stage\"" | "\"issue_sale\"" | "\"file_rti\"" | "\"ask_clarify\"" | "\"refuse\""
+object ::= "{" ws (string ws ":" ws value (ws "," ws string ws ":" ws value)*)? ws "}"
+value ::= object | array | string | number | "true" | "false" | "null"
+array ::= "[" ws (value (ws "," ws value)*)? ws "]"
+string ::= "\"" ([^"\\] | "\\" ["\\/bfnrt] | "\\u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F])* "\""
+number ::= "-"? ([0-9] | [1-9] [0-9]*) ("." [0-9]+)? ([eE] [-+]? [0-9]+)?
+ws ::= ([ \t\n])*

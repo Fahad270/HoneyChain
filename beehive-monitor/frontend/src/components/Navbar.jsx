@@ -32,7 +32,7 @@ export default function Navbar() {
         <Link className="navbar-brand" to="/" onClick={() => setOpen(false)}>
           <span className="brand-hex" aria-hidden>🐝</span>
           <span className="brand-text">
-            <span className="brand-name">Madhu Setu</span>
+            <span className="brand-name">Madhu Shakti</span>
             <span className="brand-sub">HoneyChain · NBHM</span>
           </span>
         </Link>

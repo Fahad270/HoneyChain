@@ -5,7 +5,9 @@ import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import LedgerGraph from "./LedgerGraph.jsx";
 import { STAGE_LABEL, STAGE_ICON, WORKFLOW_STEPS } from "../stages.js";
+import VoiceHarvestLogger from "../components/VoiceHarvestLogger.jsx";
 import "./Ledger.css";
+
 
 function shortHash(h) {
   if (!h) return "genesis";
@@ -182,7 +184,7 @@ export default function Ledger() {
       <div className="ledger-head">
         <div>
           <div className="ledger-kicker">Honey Workflow 1 → 9 • Live on ledger</div>
-          <h1>Honey <span style={{ background: "var(--color-honey-gradient)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>Ledger</span></h1>
+          <h1>Honey Ledger</h1>
           <p className="dashboard-sub">
             Every hop is a block. First block after registration is your genesis QR — scan it to append the next hop.
             Collective pools many farmer blocks into one (DAG), processor scans, lab scans & certifies, retail freezes.
@@ -402,13 +404,29 @@ export default function Ledger() {
             Scan previous QR → paste hash → pick stage → add data. Collective pools many hashes with “pooled”.
           </p>
 
-          <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 4 }}>
+          <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 12 }}>
             {isBeekeeper
               ? "Beekeeper: log your harvest as Honey Extraction (Step 2) with your genesis hash as prev. Collection onward needs a KVIC account."
               : "KVIC: you handle the whole KVIC network from collection to freeze. Supporting institutions on your side: Cooperative societies, transport, processing plant, Quality Control Labs, Branding and Khadi outlets."}
           </div>
 
+          {isBeekeeper && (
+            <VoiceHarvestLogger
+              defaultPrevHash={form.prev_hash || (blocks.length > 0 ? blocks[blocks.length - 1].hash : "")}
+              onCommitHarvest={async (harvestPayload) => {
+                const res = await api.post("/ledger/block", {
+                  stage: harvestPayload.stage,
+                  prev_hash: harvestPayload.prev_hash,
+                  data: harvestPayload.data,
+                });
+                load();
+                return res;
+              }}
+            />
+          )}
+
           <form onSubmit={handleCreate} className="create-form">
+
             <label className="field">
               <span>Stage * — filtered by your role ({role})</span>
               <select value={form.stage} onChange={(e) => setForm((f) => ({ ...f, stage: e.target.value }))}>

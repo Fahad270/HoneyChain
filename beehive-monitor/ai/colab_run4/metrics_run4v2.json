@@ -1,0 +1,41 @@
+{
+  "n": 4000,
+  "classes": [
+    "queenless",
+    "queenright"
+  ],
+  "counts": {
+    "queenless/bt": 1250,
+    "queenless/sbcm": 750,
+    "queenright/bt": 1250,
+    "queenright/sbcm": 750
+  },
+  "mlp_holdout_acc": 0.93,
+  "mlp_confusion": [
+    [
+      363,
+      37
+    ],
+    [
+      19,
+      381
+    ]
+  ],
+  "tf_params": 898,
+  "tf_holdout_acc": 0.935,
+  "tflite_bytes": 4616,
+  "int8_agreement": [
+    192,
+    200
+  ],
+  "leave_one_dataset_out": {
+    "bt": {
+      "acc": 0.4888,
+      "n": 2500
+    },
+    "sbcm": {
+      "acc": 0.5,
+      "n": 1500
+    }
+  }
+}

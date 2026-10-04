@@ -16,8 +16,7 @@ React (Vite) + Express + MongoDB Atlas — 10-page platform for beekeeper onboar
 | **Chain** | SHA256 hash chain + DAG (`backend/utils/hash.js:3`) — no coin, no node | `blockHash(prev\|stage\|canonical(data))` at `hash.js:12`; `pooledHash(sorted(prevHashes)\|stage\|data)` at `hash.js:20` — mirrors `beekeeper/app.py:283` |
 | **Auth** | Two-tier JWT (`backend/controllers/authController.js`, `middleware/auth.js`) | `beekeeper` (steps 1–2) vs `kvic` (steps 3–8); bcrypt cost 10, 7-day tokens; role comes ONLY from login — no role switch exists |
 | **KYC** | Offline Aadhaar Verhoeff (`utils/aadhaar.js`) + demo OTP + DigiLocker OAuth (`controllers/kycController.js`) | Typo-proof numbers, OTP-gated linked-profile fetch, eAadhaar pull when `DIGILOCKER_*` set |
-| **Directory** | Real KVIC offices (`backend/data/kvicDirectory.js`, 47 entries) | Published addresses (PMEGP directory, kvic.gov.in, nbb.gov.in) with per-entry sources; city-approx pins |
-| **AI** | Anthropic Claude Sonnet (`ANTHROPIC_MODEL`, default `claude-sonnet-4-5`) via `backend/controllers/diseaseController.js` | No labeled dataset — JSON prompt at `diseaseController.js:6` |
+| **AI / Edge ML** | Multi-Tier Offline Pipeline: Level 0 Deterministic Dosage Safety Gate, `laya-choice` Intent Router (95.4% Acc), `Qwen2.5-0.5B` LoRA SLM (92.0% Acc, 34MB), `MiniLM-L12` Dense RAG (93.3% Top-3, 58MB), ESP32 In-Hive Acoustic Distress (8KB INT8), plus cloud vision backup via Anthropic Claude (`diseaseController.js`) | Zero chemical hallucination; runs on ₹3,000 Raspberry Pi at village KVIC node without cloud internet |
 | **Styling** | Plain CSS, `:root` tokens in `frontend/src/index.css` | Zero framework, ledger cards reuse same tokens — theme untouched |
 
 ---

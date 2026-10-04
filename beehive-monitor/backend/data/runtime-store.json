@@ -653,5 +653,18 @@
       "createdAt": "2026-08-31T18:01:18.411Z"
     }
   ],
-  "users": []
+  "users": [
+    {
+      "_id": "411f33b0ded7238d3682acc9",
+      "name": "Ramesh Kumar",
+      "role": "beekeeper",
+      "passwordHash": "$2b$10$1zpeWOs9Ud7T9bnPapjLe.9fspx4dGbEYTjF5b7HBd/gozalBfOCm",
+      "phone": "9876543210",
+      "status": "active",
+      "createdAt": "2026-10-03T10:03:31.175Z",
+      "updatedAt": "2026-10-03T10:03:31.175Z",
+      "lastLoginAt": "2026-10-03T10:04:22.504Z"
+    }
+  ],
+  "escrows": []
 }

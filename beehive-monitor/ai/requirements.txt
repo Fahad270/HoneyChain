@@ -1,0 +1,27 @@
+# HoneyChain bee-acoustic — gateway/laptop dependencies.
+# ESP32 firmware needs none of this (it runs queen_model.tflite only).
+#
+# Install:  pip install -r requirements.txt
+# Smoke test (no downloads): python ai/train_bee_acoustic.py --self-test
+
+# Vectors, feature math. Required by everything.
+numpy==2.5.3
+# Resampling + STFT in the training tool (train_bee_acoustic.py).
+scipy==1.18.1
+# STFT features. REQUIRED: every shipped artifact (twin, scaler, base,
+# INT8) was built with librosa-STFT 11-scalars. The scipy-STFT lookalike
+# in train_bee_acoustic.py scores near chance on ship scalers — do not mix.
+librosa==0.11.0
+# Gateway MLP twin + per-site calibration.
+# NOTE: model files were fit with scikit-learn 1.6.1. Newer versions load
+# them with an InconsistentVersionWarning; votes are unaffected. If you
+# need warning-free loads, retrain the twin (see ai/colab_run10/METRICS.md).
+scikit-learn==1.9.1
+# Model file format.
+joblib==1.5.2
+
+# --- Optional, only to run the INT8 bytes on a laptop ---
+# pip install ai-edge-litert        # current LiteRT runtime
+# (tf.lite.Interpreter is deprecated as of TF 2.20; tflite-runtime on Pi)
+# --- Optional, only to rebuild datasets / retrain from scratch ---
+# pandas, soundfile, huggingface_hub, matplotlib
