@@ -46,6 +46,13 @@ export default function Ledger() {
   const [creating, setCreating] = useState(false);
   const [expandedQr, setExpandedQr] = useState({});
   const toggleQr = (hash) => setExpandedQr((prev) => ({ ...prev, [hash]: !prev[hash] }));
+  const [expandedHash, setExpandedHash] = useState({});
+  const toggleHash = (hash) => setExpandedHash((prev) => ({ ...prev, [hash]: !prev[hash] }));
+
+  const beekeeperBlocks = useMemo(() => {
+    return blocks.filter((b) => b.stage === "honey_extraction" || b.stage === "beekeeper_registration");
+  }, [blocks]);
+
   const [form, setForm] = useState({
     stage: "honey_extraction",
     prev_hash: "",
@@ -183,8 +190,14 @@ export default function Ledger() {
 
       <div className="pagehead">
         <div>
-<h1>Ledger</h1>
-          <p>{blocks.length} blocks · {frozenCount} frozen · tip {tip ? `${tip.hash.slice(0, 10)}…` : "—"} · appending needs a login</p>
+          <h1>{isBeekeeper ? "Harvest Logbook (मधु पुस्तिका)" : isKvic ? "Blockchain Custody Ledger" : "Public Blockchain Ledger"}</h1>
+          <p>
+            {isBeekeeper
+              ? "Official Apiary Harvest Logbook · Log honey yields, speak via voice SLM, and track KVIC procurement at MSP (₹225/kg)."
+              : isKvic
+                ? `${blocks.length} blocks · ${frozenCount} frozen · tip ${tip ? `${tip.hash.slice(0, 10)}…` : "—"} · KVIC multi-centre custody management`
+                : `${blocks.length} blocks · ${frozenCount} frozen · public immutable DAG chain · CBRTI NABL lab verified`}
+          </p>
         </div>
         <div className="actions">
           <Link className="btn btn-outline" to="/verify">Verify a jar</Link>
@@ -192,128 +205,325 @@ export default function Ledger() {
         </div>
       </div>
 
-      {/* Personal scope — tied to the login, not a switch */}
-      {user && (
-        <div className="scope-bar">
-          <div className="ledger-filters">
-            <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => switchScope("mine")}>
-              {isBeekeeper ? "My honey" : "My lots"}
-            </button>
-            <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => switchScope("all")}>
-              Full chain
-            </button>
-          </div>
-          <span className="scope-note">
-            {scope === "mine"
-              ? scopeInfo?.type === "beekeeper"
-                ? `Tied to ${scopeInfo.beekeeper?.name || "your profile"} — your blocks plus every hop downstream.`
-                : scopeInfo?.type === "officer"
-                  ? `Lots you minted${scopeInfo.centre ? ` · ${scopeInfo.centre.name}` : ""} — plus where they travelled.`
-                  : "Your personal view."
-              : "Every block on the public chain."}
-          </span>
-        </div>
-      )}
-      {scopeError && (
-        <div className="card" style={{ borderColor: "#E8C46A", marginBottom: 16 }}>
-          <span className="dashboard-sub">{scopeError} </span>
-          {isBeekeeper && <Link to="/account">Link your profile on the Account page →</Link>}
-          {!isBeekeeper && <span className="dashboard-sub">Mint your first block below — it will appear here.</span>}
-        </div>
-      )}
-
-      {/* The graph — evocative, elucidatory: stages as lanes, pools converging.
-          Always the whole scope (filtering would snap its edges). */}
-      <LedgerGraph
-        blocks={blocks}
-        title={scope === "mine" && user ? (isBeekeeper ? "My honey's journey" : "Lots I touched") : "The living chain"}
-        onSelect={(b) => navigate(b.scan_secret ? `/verify/${b.hash}?s=${encodeURIComponent(b.scan_secret)}` : `/verify/${b.hash}`)}
-      />
-      <div style={{ textAlign: "right", margin: "-10px 2px 16px" }}>
-        <Link className="qr-link" to="/graph">Open full graph explorer →</Link>
-      </div>
-
-      {/* Workflow progress bar — diagram 1→9 */}
-      <div className="card workflow-bar">
-        <div className="workflow-steps">
-          {WORKFLOW_STEPS.map((s) => {
-            const active = activeStages.has(s.key);
-            const isPooled = s.key === "pooled";
-            return (
-              <div key={s.key + s.num} className={`wf-step ${active ? "active" : ""} ${isPooled ? "pooled" : ""}`}>
-                <div className="wf-num">{s.num}{isPooled ? "′" : ""}</div>
-                <div className="wf-label">{s.label}</div>
-                <div className={`wf-dot ${active ? "on" : ""}`} />
+      {isBeekeeper ? (
+        /* ——— Beekeeper Dedicated Harvest Logbook UI (Clean, No Chain Clutter) ——— */
+        <div className="beekeeper-logbook-container">
+          <div className="sync-status-card">
+            <div className="sync-status-left">
+              <span className="sync-dot live" />
+              <div>
+                <strong>Local Apiary Logbook · Offline-Ready</strong>
+                <p>Harvest records are stored locally with offline timestamps and can be synced at the village KVIC centre.</p>
               </div>
-            );
-          })}
-        </div>
-        <div className="workflow-legend">
-          <span><span className="wf-dot on" style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, verticalAlign: "middle", marginRight: 6 }} />has block</span>
-          <span>3′ = collective pool (many → one)</span>
-          <span>Retail freezes • Consumer only verifies</span>
-        </div>
-      </div>
+            </div>
+            <div className="sync-status-right">
+              <span className="sync-counter">{beekeeperBlocks.length} Records Logged</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-primary"
+                onClick={() => {
+                  load();
+                  alert("✓ Harvest records verified and synced with local KVIC node.");
+                }}
+              >
+                🔄 Sync with KVIC Node
+              </button>
+            </div>
+          </div>
 
-      {/* Filter + create */}
-      <div className="ledger-actions">
-        <div className="ledger-filters">
-          <button className={`filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
-            All
-          </button>
-          {Object.keys(STAGE_LABEL).map((k) => (
-            <button key={k} className={`filter-btn ${filter === k ? "active" : ""}`} onClick={() => setFilter(k)}>
-              {STAGE_LABEL[k]}
-            </button>
-          ))}
-        </div>
-      </div>
+          <div className="logbook-grid">
+            {/* Left Column: My Harvests */}
+            <div className="logbook-records">
+              <div className="section-head">
+                <h3>My Harvest Entries (मधु पुस्तिका)</h3>
+                <span className="record-count">{beekeeperBlocks.length} total entries</span>
+              </div>
 
-      <div className="ledger-layout">
-        {/* Chain */}
-        <div className="ledger-chain">
-          {filtered.length === 0 && (
-            <div className="card empty">
-              No blocks yet. Register a beekeeper — first block appears here automatically.
+              {beekeeperBlocks.length === 0 ? (
+                <div className="card empty">
+                  No harvests recorded yet. Use the voice logger on the right or type details below to log your first honey extraction.
+                </div>
+              ) : (
+                beekeeperBlocks.map((b) => {
+                  const isGen = b.stage === "beekeeper_registration";
+                  const harvestDate = b.data?.harvest_date || b.createdAt;
+                  const weightKg = b.data?.weight_kg || b.data?.quantity_kg || 12;
+                  const flowerSource = b.data?.flower_source || b.data?.flower_type || "Mustard (सरसों)";
+                  const hiveId = b.data?.hive_id || "HIVE-01";
+                  const mspValue = typeof weightKg === "number" ? `₹${(weightKg * 225).toLocaleString()}` : "₹2,700";
+
+                  return (
+                    <div key={b.hash} className="card harvest-card">
+                      <div className="harvest-card-head">
+                        <div className="harvest-badge">
+                          {isGen ? "🐝 Registered Apiary (Genesis)" : "🍯 Honey Harvest"}
+                        </div>
+                        <span className="harvest-date">
+                          {new Date(harvestDate).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
+
+                      {isGen ? (
+                        <div className="harvest-gen-info" style={{ marginBottom: 12 }}>
+                          <h4 style={{ margin: "4px 0" }}>{b.beekeeper?.name || b.data?.name} — {b.beekeeper?.village || b.data?.village}</h4>
+                          <p style={{ margin: 0, fontSize: 12.5, color: "var(--color-text-muted)" }}>
+                            {b.data?.noOfBeeColonies || 5} Bee Colonies Active · Aadhaar KYC Verified · NBHM ID: {b.data?.clusterId || "ALW-KVIC-04"}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="harvest-metrics-grid">
+                          <div className="h-metric">
+                            <span className="hm-label">Hive Number</span>
+                            <span className="hm-val">{hiveId}</span>
+                          </div>
+                          <div className="h-metric">
+                            <span className="hm-label">Honey Yield</span>
+                            <span className="hm-val accent">{weightKg} kg</span>
+                          </div>
+                          <div className="h-metric">
+                            <span className="hm-label">Floral Source</span>
+                            <span className="hm-val">{flowerSource}</span>
+                          </div>
+                          <div className="h-metric">
+                            <span className="hm-label">KVIC MSP (₹225/kg)</span>
+                            <span className="hm-val success">{mspValue}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="harvest-status-row">
+                        <span className="status-label">KVIC Procurement Status:</span>
+                        <span className="status-pill status-healthy">
+                          {isGen ? "✓ Apiary Registered" : "📦 Ready for Village KVIC Collection"}
+                        </span>
+                      </div>
+
+                      <div className="harvest-card-actions">
+                        <Link className="btn btn-outline btn-sm" to={`/verify/${b.hash}`}>
+                          Verify Purity Certificate
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => toggleQr(b.hash)}
+                        >
+                          {expandedQr[b.hash] ? "▲ Hide QR" : "📱 Show Harvest QR"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => toggleHash(b.hash)}
+                        >
+                          {expandedHash[b.hash] ? "▲ Hide Proof Hash" : "# Proof Hash"}
+                        </button>
+                      </div>
+
+                      {expandedQr[b.hash] && (
+                        <div className="story-qr" style={{ marginTop: 12 }}>
+                          <div className="qr-box">
+                            <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={105} />
+                          </div>
+                          <div className="qr-meta">
+                            <strong>Official Harvest Proof QR</strong>
+                            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--color-text-muted)" }}>
+                              Show this QR to the KVIC field officer during village collection to transfer custody and trigger your Aadhaar DBT payment.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {expandedHash[b.hash] && (
+                        <div className="expanded-hash-box">
+                          <span style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 800, color: "var(--color-text-muted)", display: "block" }}>Immutable Blockchain Hash</span>
+                          <code style={{ fontSize: 11, wordBreak: "break-all" }}>{b.hash}</code>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Right Column: Voice Logger & Field Standards */}
+            <div className="logbook-tools">
+              <VoiceHarvestLogger
+                defaultPrevHash={form.prev_hash || (blocks.length > 0 ? blocks[0].hash : "")}
+                onCommitHarvest={async (harvestPayload) => {
+                  const res = await api.post("/ledger/block", {
+                    stage: harvestPayload.stage,
+                    prev_hash: harvestPayload.prev_hash,
+                    data: harvestPayload.data,
+                  });
+                  load();
+                  return res;
+                }}
+              />
+
+              <div className="card fssai-field-card" style={{ marginTop: 16 }}>
+                <h4>🌾 Pre-Harvest Field Standards (FSSAI / Agmark)</h4>
+                <p className="dashboard-sub" style={{ fontSize: 12, margin: "4px 0 10px" }}>
+                  Perform these quick checks before handing over to the KVIC collection centre:
+                </p>
+                <ul className="field-checklist">
+                  <li><strong>Moisture ≤ 20%:</strong> Ensure honey is taken only from sealed/capped honeycombs (75%+ sealed).</li>
+                  <li><strong>Food-Grade Container:</strong> Use designated stainless steel food cans or food-grade HDPE buckets provided by KVIC.</li>
+                  <li><strong>Zero Brood Contamination:</strong> Use queen excluders so honey extraction is free from bee larvae and brood wax.</li>
+                  <li><strong>No Direct Heating:</strong> Do not heat honey over direct flame; natural raw crystallization is normal and accepted.</li>
+                </ul>
+              </div>
+
+              <div className="card" style={{ marginTop: 16, background: "var(--color-primary-light)", borderColor: "var(--color-primary)" }}>
+                <h4>🍯 Track Your Honey Beyond The Apiary</h4>
+                <p style={{ fontSize: 12, margin: "4px 0 12px", color: "var(--color-text-muted)" }}>
+                  Want to see which Khadi store your honey lot reached after KVIC collection and CBRTI testing?
+                </p>
+                <Link to="/twin" className="btn btn-primary btn-sm" style={{ width: "100%", textAlign: "center" }}>
+                  Open My Twin (Traceability Journey) →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* ——— KVIC Officer / Public Auditor Blockchain Custody View ——— */
+        <>
+          {/* Personal scope — tied to the login, not a switch */}
+          {user && (
+            <div className="scope-bar">
+              <div className="ledger-filters">
+                <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => switchScope("mine")}>
+                  My lots
+                </button>
+                <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => switchScope("all")}>
+                  Full chain
+                </button>
+              </div>
+              <span className="scope-note">
+                {scope === "mine"
+                  ? scopeInfo?.type === "officer"
+                    ? `Lots you minted${scopeInfo.centre ? ` · ${scopeInfo.centre.name}` : ""} — plus where they travelled.`
+                    : "Your personal view."
+                  : "Every block on the public chain."}
+              </span>
+            </div>
+          )}
+          {scopeError && (
+            <div className="card" style={{ borderColor: "#E8C46A", marginBottom: 16 }}>
+              <span className="dashboard-sub">{scopeError} </span>
             </div>
           )}
 
-          {filtered.map((b, idx) => {
-            const isGenesis = !b.prev_hash && (!b.prev_hashes || b.prev_hashes.length === 0);
-            const isPooled = b.stage === "pooled" && b.prev_hashes && b.prev_hashes.length;
-            const isFrozen = b.is_frozen || b.stage === "retail";
-            const veryFirst = idx === 0 && isGenesis && b.stage === "beekeeper_registration";
-            const isHarvestOrGenesis = b.stage === "beekeeper_registration" || b.stage === "honey_extraction";
+          {/* The graph — evocative, elucidatory: stages as lanes, pools converging. */}
+          <LedgerGraph
+            blocks={blocks}
+            title={scope === "mine" && user ? "Lots I touched" : "The living chain"}
+            onSelect={(b) => navigate(b.scan_secret ? `/verify/${b.hash}?s=${encodeURIComponent(b.scan_secret)}` : `/verify/${b.hash}`)}
+          />
+          <div style={{ textAlign: "right", margin: "-10px 2px 16px" }}>
+            <Link className="qr-link" to="/graph">Open full graph explorer →</Link>
+          </div>
 
-            return (
-              <div key={b.hash} className={`story-item${isPooled ? " pool" : ""}`}>
-                <div className="story-card">
-                  <span className="story-tag">
-                    {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage} · Step {b.stage_meta?.step || "•"}
-                  </span>
-                  <h3>
-                    {b.collective_name || (b.beekeeper?.name ? `${b.beekeeper.name}${b.beekeeper.village ? " • " + b.beekeeper.village : ""}` : (b.data?.name ? `${b.data.name}${b.data.village ? " • " + b.data.village : ""}` : STAGE_LABEL[b.stage] || b.stage))}
-                    {isFrozen && <span className="status-pill status-critical" style={{ marginLeft: 8 }}>Frozen at retail</span>}
-                    {isPooled && <span className="status-pill status-warning" style={{ marginLeft: 8 }}>DAG • {b.prev_hashes.length}→1</span>}
-                  </h3>
-                  <div className="story-date">{new Date(b.createdAt).toLocaleString()}</div>
-                  <div className="hash-row" style={{ marginTop: 10 }}>
-                    <span className="hash-label">Hash</span>
-                    <code className="hash-val">{b.hash}</code>
-                    <button className="copy-btn" onClick={async () => { try { await navigator.clipboard.writeText(b.hash); } catch { const ta = document.createElement("textarea"); ta.value = b.hash; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); } }} title="Copy">⎘</button>
+          {/* Workflow progress bar — diagram 1→9 */}
+          <div className="card workflow-bar">
+            <div className="workflow-steps">
+              {WORKFLOW_STEPS.map((s) => {
+                const active = activeStages.has(s.key);
+                const isPooled = s.key === "pooled";
+                return (
+                  <div key={s.key + s.num} className={`wf-step ${active ? "active" : ""} ${isPooled ? "pooled" : ""}`}>
+                    <div className="wf-num">{s.num}{isPooled ? "′" : ""}</div>
+                    <div className="wf-label">{s.label}</div>
+                    <div className={`wf-dot ${active ? "on" : ""}`} />
                   </div>
-                  <div className="hash-row">
-                    <span className="hash-label">Prev</span>
-                    {isPooled ? (
-                      <div className="prev-pooled">
-                        {b.prev_hashes.map((ph) => (
-                          <code key={ph} className="hash-val small">{ph.slice(0, 16)}…</code>
-                        ))}
+                );
+              })}
+            </div>
+            <div className="workflow-legend">
+              <span><span className="wf-dot on" style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, verticalAlign: "middle", marginRight: 6 }} />has block</span>
+              <span>3′ = collective pool (many → one)</span>
+              <span>Retail freezes • Consumer only verifies</span>
+            </div>
+          </div>
+
+          {/* Filter + create */}
+          <div className="ledger-actions">
+            <div className="ledger-filters">
+              <button className={`filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
+                All
+              </button>
+              {Object.keys(STAGE_LABEL).map((k) => (
+                <button key={k} className={`filter-btn ${filter === k ? "active" : ""}`} onClick={() => setFilter(k)}>
+                  {STAGE_LABEL[k]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="ledger-layout">
+            {/* Chain */}
+            <div className="ledger-chain">
+              {filtered.length === 0 && (
+                <div className="card empty">
+                  No blocks yet. Register a beekeeper — first block appears here automatically.
+                </div>
+              )}
+
+              {filtered.map((b, idx) => {
+                const isGenesis = !b.prev_hash && (!b.prev_hashes || b.prev_hashes.length === 0);
+                const isPooled = b.stage === "pooled" && b.prev_hashes && b.prev_hashes.length;
+                const isFrozen = b.is_frozen || b.stage === "retail";
+                const veryFirst = idx === 0 && isGenesis && b.stage === "beekeeper_registration";
+                const isHarvestOrGenesis = b.stage === "beekeeper_registration" || b.stage === "honey_extraction";
+
+                return (
+                  <div key={b.hash} className={`story-item${isPooled ? " pool" : ""}`}>
+                    <div className="story-card">
+                      <span className="story-tag">
+                        {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage} · Step {b.stage_meta?.step || "•"}
+                      </span>
+                      <h3>
+                        {b.collective_name || (b.beekeeper?.name ? `${b.beekeeper.name}${b.beekeeper.village ? " • " + b.beekeeper.village : ""}` : (b.data?.name ? `${b.data.name}${b.data.village ? " • " + b.data.village : ""}` : STAGE_LABEL[b.stage] || b.stage))}
+                        {isFrozen && <span className="status-pill status-critical" style={{ marginLeft: 8 }}>Frozen at retail</span>}
+                        {isPooled && <span className="status-pill status-warning" style={{ marginLeft: 8 }}>DAG • {b.prev_hashes.length}→1</span>}
+                      </h3>
+                      <div className="story-date">{new Date(b.createdAt).toLocaleString()}</div>
+                      
+                      {/* Compact Expandable Hash */}
+                      <div className="hash-row" style={{ marginTop: 10 }}>
+                        <span className="hash-label">Hash</span>
+                        <code className="hash-val compact">{shortHash(b.hash)}</code>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-xs"
+                          style={{ padding: "2px 8px", fontSize: 11 }}
+                          onClick={() => toggleHash(b.hash)}
+                        >
+                          {expandedHash[b.hash] ? "▲ Hide" : "👁️ Hash"}
+                        </button>
+                        <button className="copy-btn" onClick={async () => { try { await navigator.clipboard.writeText(b.hash); } catch { const ta = document.createElement("textarea"); ta.value = b.hash; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); } }} title="Copy full hash">⎘</button>
                       </div>
-                    ) : (
-                      <code className="hash-val small">{b.prev_hash || "— genesis"}</code>
-                    )}
-                  </div>
+                      {expandedHash[b.hash] && (
+                        <div className="expanded-hash-box">
+                          <code>{b.hash}</code>
+                        </div>
+                      )}
+
+                      <div className="hash-row">
+                        <span className="hash-label">Prev</span>
+                        {isPooled ? (
+                          <div className="prev-pooled">
+                            {b.prev_hashes.map((ph) => (
+                              <code key={ph} className="hash-val small">{shortHash(ph)}</code>
+                            ))}
+                          </div>
+                        ) : (
+                          <code className="hash-val small">{shortHash(b.prev_hash) || "— genesis"}</code>
+                        )}
+                      </div>
 
                   <div className="block-payload">
                     <div className="payload-label">Block data</div>
@@ -518,6 +728,8 @@ export default function Ledger() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

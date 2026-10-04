@@ -54,5 +54,141 @@
 .v-body { flex: 1; min-width: 0; }
 .v-label { font-weight: 800; font-size: 13px; }
 .v-hash { font-size: 11px; color: var(--color-text-muted); font-family: ui-monospace, monospace; }
-.verify-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
 .verify-help { margin: 8px 0 0 18px; line-height: 1.75; font-size: 13px; color: var(--color-text-muted); }
+
+/* ——— Consumer Purity Passport (Retail View) ——— */
+.consumer-passport {
+  margin-top: 10px;
+}
+.passport-hero {
+  background: linear-gradient(135deg, #1e3a2b 0%, #2b5e3e 100%);
+  color: white;
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(30, 58, 43, 0.15);
+}
+.passport-emblem {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a7f3d0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.passport-hero h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: white;
+  letter-spacing: -0.01em;
+}
+.passport-hero p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #e2e8f0;
+  line-height: 1.5;
+  max-width: 650px;
+}
+.passport-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1.5px solid #34d399;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ecfdf5;
+  margin-top: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.passport-product-card {
+  margin-bottom: 20px;
+  border-top: 4px solid var(--color-accent);
+}
+.passport-product-card h3 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.pg-item {
+  background: var(--color-surface-2);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+.pg-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+.pg-val {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin-top: 3px;
+}
+.pg-val.accent { color: var(--color-accent); }
+.pg-val.success { color: #15803d; }
+
+.passport-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+.pt-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.pt-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 800;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.pt-content strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--color-ink);
+}
+.pt-content p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.passport-footer-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}

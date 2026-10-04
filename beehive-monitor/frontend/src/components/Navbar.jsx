@@ -12,10 +12,9 @@ export default function Navbar() {
   const links = useMemo(() => {
     if (role === "beekeeper") {
       return [
-        { to: "/twin", label: "My Farm" },
+        { to: "/twin", label: "My Twin" },
         { to: "/dashboard", label: "Hives" },
-        { to: "/ledger", label: "Ledger" },
-        { to: "/graph", label: "Graph" },
+        { to: "/ledger", label: "Harvest Log" },
         { to: "/diagnose", label: "AI Lab" },
         { to: "/map", label: "Map" },
         { to: "/learn", label: "Learn" },
@@ -23,7 +22,7 @@ export default function Navbar() {
     }
     if (role === "kvic") {
       return [
-        { to: "/ledger", label: "Ledger" },
+        { to: "/ledger", label: "Custody Ledger" },
         { to: "/graph", label: "DAG Graph" },
         { to: "/dashboard", label: "Hives" },
         { to: "/map", label: "Centres" },
