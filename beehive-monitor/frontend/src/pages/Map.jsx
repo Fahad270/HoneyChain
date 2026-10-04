@@ -5,6 +5,13 @@ import api from "../api.js";
 import L from "leaflet";
 import "./Map.css";
 
+// Software-rendered WebViews (headless CI, old rural Androids) sporadically
+// mis-composite translate3d-positioned tiles. left/top positioning is
+// bulletproof everywhere — set before any map mounts.
+if (typeof window !== "undefined") {
+  L.Browser.any3d = false;
+}
+
 const INDIA_CENTER = [22.5, 79.5];
 
 // TileLayer that retries failed tiles with backoff instead of dropping them.
@@ -60,6 +67,17 @@ export default function MapPage() {
   const [error, setError] = useState(null);
   const [selectedCluster, setSelectedCluster] = useState(null);
   const [selectedCentre, setSelectedCentre] = useState(null);
+  // Mount Leaflet only after first paint + fonts settle: it snapshots the
+  // container size at init, and a premature measure strands tiles off-grid.
+  const [layoutReady, setLayoutReady] = useState(false);
+  useEffect(() => {
+    let on = true;
+    const done = () => { if (on) setLayoutReady(true); };
+    const raf = () => requestAnimationFrame(() => requestAnimationFrame(done));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(raf);
+    else raf();
+    return () => { on = false; };
+  }, []);
 
   useEffect(() => {
     Promise.all([api.get("/map/geo"), api.get("/map/kvic-centres").catch(() => null)]).then(([g, d]) => {
@@ -97,6 +115,7 @@ export default function MapPage() {
 
       <div className="map-layout">
         <div className="map-container">
+          {layoutReady ? (
           <MapContainer center={INDIA_CENTER} zoom={5} style={{ height: "100%", width: "100%", borderRadius: 12 }}>
             <FixLeafletIcons />
             <RetryTiles />
@@ -166,6 +185,9 @@ export default function MapPage() {
               </CircleMarker>
             ))}
           </MapContainer>
+          ) : (
+            <div style={{ height: 560 }} className="empty">Loading map…</div>
+          )}
         </div>
 
         <div className="map-sidebar">
