@@ -1,4 +1,5 @@
 /* Madhu Shakti · HoneyChain — Field Tool theme. Flat, compact, high-contrast. */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css");
 
 :root {
   --color-bg: #f7f4eb;
