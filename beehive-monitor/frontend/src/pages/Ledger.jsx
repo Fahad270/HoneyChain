@@ -289,7 +289,7 @@ export default function Ledger() {
                     {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage} · Step {b.stage_meta?.step || "•"}
                   </span>
                   <h3>
-                    {b.collective_name || (b.beekeeper ? `${b.beekeeper.name} • ${b.beekeeper.village}` : STAGE_LABEL[b.stage] || b.stage)}
+                    {b.collective_name || (b.beekeeper?.name ? `${b.beekeeper.name}${b.beekeeper.village ? " • " + b.beekeeper.village : ""}` : (b.data?.name ? `${b.data.name}${b.data.village ? " • " + b.data.village : ""}` : STAGE_LABEL[b.stage] || b.stage))}
                     {isFrozen && <span className="status-pill status-critical" style={{ marginLeft: 8 }}>Frozen at retail</span>}
                     {isPooled && <span className="status-pill status-warning" style={{ marginLeft: 8 }}>DAG • {b.prev_hashes.length}→1</span>}
                   </h3>

@@ -604,17 +604,21 @@ async function getTwin(req, res) {
     let startHashes = [];
     let beekeeperDoc = null;
 
-    const isObjectId = /^[a-f0-9]{24}$/i.test(rawId);
+    beekeeperDoc = await store.findBeekeeperById(rawId);
+    if (!beekeeperDoc) {
+      const allBk = await store.listBeekeepers();
+      beekeeperDoc = allBk.find((bk) => String(bk._id) === rawId || bk.name?.toLowerCase() === rawId.toLowerCase() || bk.phoneNumber === rawId || bk.aadhaarNo === rawId);
+    }
 
-    if (isObjectId) {
-      beekeeperDoc = await store.findBeekeeperById(rawId);
+    if (beekeeperDoc) {
+      const bkId = String(beekeeperDoc._id);
       startHashes = all
         .filter((b) => {
           const bk = b.beekeeper && typeof b.beekeeper === "object" ? b.beekeeper._id : b.beekeeper;
-          return String(bk || "") === rawId || String(b.data?.beekeeperId || "") === rawId;
+          return String(bk || "") === bkId || String(b.data?.beekeeperId || "") === bkId || String(bk || "") === rawId;
         })
         .map((b) => b.hash);
-      if (!startHashes.length && beekeeperDoc) {
+      if (!startHashes.length) {
         return res.json({
           success: true,
           data: {
