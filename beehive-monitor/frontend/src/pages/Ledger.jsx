@@ -314,6 +314,11 @@ export default function Ledger() {
                       </div>
 
                       <div className="harvest-card-actions">
+                        {isGen && (
+                          <Link className="btn btn-outline btn-sm" to="/">
+                            📝 {t("registration_form", "Registration Form")}
+                          </Link>
+                        )}
                         <Link className="btn btn-outline btn-sm" to={`/verify/${b.hash}`}>
                           {t("verify_purity_cert", "Verify Certificate")}
                         </Link>

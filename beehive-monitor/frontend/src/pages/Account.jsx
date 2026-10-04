@@ -255,7 +255,8 @@ export default function Account() {
             <h3>What your tier can do</h3>
             {user.role === "beekeeper" ? (
               <ul className="flag-list">
-                <li>Register + log <strong>Honey Extraction</strong> on the Ledger</li>
+                <li><Link to="/" style={{ fontWeight: 600 }}>📝 Onboard / Registration Form (Genesis Block 0)</Link></li>
+                <li>Log <strong>Honey Extraction</strong> on the <Link to="/ledger">Harvest Logbook</Link></li>
                 <li>Track your lot on <Link to="/twin">My Twin</Link> to the Khadi shelf</li>
                 <li>Verify jars at <Link to="/verify">Khadi stores</Link></li>
               </ul>

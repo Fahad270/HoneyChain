@@ -46,6 +46,7 @@ const TRANSLATIONS = {
     open_my_twin: "Open My Twin (Traceability Journey) →",
     mustard: "Mustard",
     multiflora: "Multiflora",
+    registration_form: "Registration Form",
 
     // Consumer Passport
     passport_title: "Khadi Honey Passport",
@@ -107,6 +108,7 @@ const TRANSLATIONS = {
     open_my_twin: "मेरी ट्विन खोलें (सफर देखें) →",
     mustard: "सरसों",
     multiflora: "मल्टीफ्लोरा",
+    registration_form: "पंजीकरण प्रपत्र",
 
     // Consumer Passport
     passport_title: "खादी हनी पासपोर्ट",
