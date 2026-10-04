@@ -1,24 +1,47 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useRole } from "../context/RoleContext.jsx";
 import BeeMark from "./BeeMark.jsx";
 import "./Navbar.css";
 
-const links = [
-  { to: "/", label: "Register", end: true },
-  { to: "/dashboard", label: "Hives" },
-  { to: "/map", label: "Map" },
-  { to: "/ledger", label: "Ledger" },
-  { to: "/graph", label: "Graph" },
-  { to: "/twin", label: "My Twin" },
-  { to: "/learn", label: "Learn" },
-  { to: "/diagnose", label: "AI Lab" },
-];
-
 export default function Navbar() {
   const { role, ROLE_META, user, logout } = useRole();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const links = useMemo(() => {
+    if (role === "beekeeper") {
+      return [
+        { to: "/twin", label: "My Farm" },
+        { to: "/dashboard", label: "Hives" },
+        { to: "/ledger", label: "Ledger" },
+        { to: "/graph", label: "Graph" },
+        { to: "/diagnose", label: "AI Lab" },
+        { to: "/map", label: "Map" },
+        { to: "/learn", label: "Learn" },
+      ];
+    }
+    if (role === "kvic") {
+      return [
+        { to: "/ledger", label: "Ledger" },
+        { to: "/graph", label: "DAG Graph" },
+        { to: "/dashboard", label: "Hives" },
+        { to: "/map", label: "Centres" },
+        { to: "/diagnose", label: "AI Lab" },
+        { to: "/learn", label: "Learn" },
+      ];
+    }
+    // Public visitor / consumer / auditor
+    return [
+      { to: "/verify", label: "Verify Jar" },
+      { to: "/ledger", label: "Public Ledger" },
+      { to: "/graph", label: "DAG Graph" },
+      { to: "/dashboard", label: "Hives" },
+      { to: "/map", label: "Map" },
+      { to: "/diagnose", label: "AI Lab" },
+      { to: "/learn", label: "Learn" },
+    ];
+  }, [role]);
 
   function handleLogout() {
     logout();
@@ -26,10 +49,12 @@ export default function Navbar() {
     navigate("/");
   }
 
+  const brandDestination = role === "beekeeper" ? "/twin" : role === "kvic" ? "/ledger" : "/ledger";
+
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link className="navbar-brand" to="/" onClick={() => setOpen(false)}>
+        <Link className="navbar-brand" to={brandDestination} onClick={() => setOpen(false)}>
           <BeeMark size={32} />
           <span className="brand-text">
             <span className="brand-name">Madhu Shakti</span>
@@ -73,9 +98,14 @@ export default function Navbar() {
             </div>
           </>
         ) : (
-          <Link className="btn btn-honey btn-account" to="/account" onClick={() => setOpen(false)}>
-            Log in
-          </Link>
+          <div className="public-auth-group">
+            <span className="tier-pill tier-public" title="Public Audit Mode: anyone can inspect ledger blocks and verify jars. Log in to mint or claim identities.">
+              👁️ Public Audit
+            </span>
+            <Link className="btn btn-honey btn-account" to="/account" onClick={() => setOpen(false)}>
+              Log in
+            </Link>
+          </div>
         )}
       </div>
     </header>

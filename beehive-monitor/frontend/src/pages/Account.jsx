@@ -39,6 +39,19 @@ export default function Account() {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
+  async function quickLogin(loginId, pass) {
+    setBusy(true);
+    setStatus(null);
+    try {
+      await login(loginId, pass);
+      setStatus({ ok: true, msg: "Logged in successfully — role tier active." });
+    } catch (err) {
+      setStatus({ ok: false, msg: err?.response?.data?.error || "Login failed." });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function doLogin(e) {
     e.preventDefault();
     setBusy(true);
@@ -199,7 +212,42 @@ export default function Account() {
             {claimMsg && <div className="kyc-alert info" style={{ marginTop: 12 }}>{claimMsg}</div>}
 
             <div className="account-actions">
-              <button className="btn btn-outline" onClick={logout}>Log out</button>
+              <div className="demo-switcher-box">
+                <span className="demo-switcher-title">⚡ Switch demo profile:</span>
+                <div className="demo-accounts-grid">
+                  {user.role !== "beekeeper" && (
+                    <button
+                      type="button"
+                      className="demo-account-btn beekeeper"
+                      onClick={async () => {
+                        await logout();
+                        await quickLogin("9876543210", "Password@123");
+                      }}
+                      disabled={busy}
+                    >
+                      <span className="demo-badge">🐝 Beekeeper</span>
+                      <strong>Rameshwar Patel</strong>
+                      <small>Hives, Genesis, Voice Harvest</small>
+                    </button>
+                  )}
+                  {user.role !== "kvic" && (
+                    <button
+                      type="button"
+                      className="demo-account-btn kvic"
+                      onClick={async () => {
+                        await logout();
+                        await quickLogin("kvic.officer@kvic.gov.in", "Password@123");
+                      }}
+                      disabled={busy}
+                    >
+                      <span className="demo-badge">🏛️ KVIC Officer</span>
+                      <strong>Aditya Verma</strong>
+                      <small>Collection, Pooling, Retail Freeze</small>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <button className="btn btn-outline" onClick={logout} style={{ marginTop: 14 }}>Log out</button>
             </div>
           </div>
 
@@ -237,6 +285,35 @@ export default function Account() {
 
       <div className="account-grid">
         <div className="card account-card">
+          <div className="demo-accounts-box">
+            <div className="demo-accounts-title">
+              <span>⚡ Quick Demo Login (Evaluator Access)</span>
+              <small>Click to log in instantly with pre-seeded cryptographic data</small>
+            </div>
+            <div className="demo-accounts-grid">
+              <button
+                type="button"
+                className="demo-account-btn beekeeper"
+                onClick={() => quickLogin("9876543210", "Password@123")}
+                disabled={busy}
+              >
+                <span className="demo-badge">🐝 Beekeeper</span>
+                <strong>Rameshwar Patel</strong>
+                <small>9876543210 · Steps 1–2 (Hives, Genesis, Voice Harvest)</small>
+              </button>
+              <button
+                type="button"
+                className="demo-account-btn kvic"
+                onClick={() => quickLogin("kvic.officer@kvic.gov.in", "Password@123")}
+                disabled={busy}
+              >
+                <span className="demo-badge">🏛️ KVIC Officer</span>
+                <strong>Aditya Verma</strong>
+                <small>kvic.officer@kvic.gov.in · Steps 3–8 (Pooling & Retail Freeze)</small>
+              </button>
+            </div>
+          </div>
+
           <div className="mode-toggle">
             <button type="button" className={`filter-btn ${mode === "login" ? "active" : ""}`} onClick={() => { setMode("login"); setStatus(null); }}>Log in</button>
             <button type="button" className={`filter-btn ${mode === "signup" ? "active" : ""}`} onClick={() => { setMode("signup"); setStatus(null); }}>Create account</button>

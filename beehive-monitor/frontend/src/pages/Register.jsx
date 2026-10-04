@@ -145,6 +145,24 @@ export default function Register() {
         </div>
       </div>
 
+      {user?.linkedBeekeeperId && (
+        <div className="card" style={{ background: "var(--color-primary-light)", borderColor: "var(--color-primary)", marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <div>
+              <strong style={{ color: "var(--color-primary)", display: "block", fontSize: 15 }}>
+                ✓ Profile Already Registered & Linked
+              </strong>
+              <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>
+                You are logged in as <strong>{user.name}</strong>. Your genesis block is already minted on HoneyChain.
+              </span>
+            </div>
+            <Link to="/twin" className="btn btn-primary" style={{ minHeight: 38, padding: "8px 16px", fontSize: 13 }}>
+              Open My Farm Twin →
+            </Link>
+          </div>
+        </div>
+      )}
+
       <div className="wizard-steps">
         {STEPS.map((s) => (
           <button

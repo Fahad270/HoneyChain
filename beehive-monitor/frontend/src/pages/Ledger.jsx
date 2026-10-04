@@ -44,6 +44,8 @@ export default function Ledger() {
   const [scopeInfo, setScopeInfo] = useState(null);
   const [scopeError, setScopeError] = useState("");
   const [creating, setCreating] = useState(false);
+  const [expandedQr, setExpandedQr] = useState({});
+  const toggleQr = (hash) => setExpandedQr((prev) => ({ ...prev, [hash]: !prev[hash] }));
   const [form, setForm] = useState({
     stage: "honey_extraction",
     prev_hash: "",
@@ -279,8 +281,9 @@ export default function Ledger() {
           {filtered.map((b, idx) => {
             const isGenesis = !b.prev_hash && (!b.prev_hashes || b.prev_hashes.length === 0);
             const isPooled = b.stage === "pooled" && b.prev_hashes && b.prev_hashes.length;
-            const isFrozen = b.is_frozen;
+            const isFrozen = b.is_frozen || b.stage === "retail";
             const veryFirst = idx === 0 && isGenesis && b.stage === "beekeeper_registration";
+            const isHarvestOrGenesis = b.stage === "beekeeper_registration" || b.stage === "honey_extraction";
 
             return (
               <div key={b.hash} className={`story-item${isPooled ? " pool" : ""}`}>
@@ -323,27 +326,80 @@ export default function Ledger() {
                     )}
                   </div>
 
-                  <div className="story-qr">
-                    <div className="qr-box">
-                      <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={110} level="M" />
+                  {expandedQr[b.hash] && (
+                    <div className="story-qr">
+                      <div className="qr-box">
+                        <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={110} level="M" />
+                      </div>
+                      <div className="qr-meta">
+                        <div className="qr-caption">
+                          {isFrozen
+                            ? "🔒 Terminal Retail Block (Consumer Verification Only)"
+                            : isBeekeeper && !isHarvestOrGenesis
+                              ? "🏛️ KVIC Custody Hop (Read-only for Beekeeper)"
+                              : isBeekeeper
+                                ? "🐝 Beekeeper Harvest Link"
+                                : isKvic
+                                  ? "🏛️ Scan to Append Next KVIC Custody Hop"
+                                  : "🔍 Public Verification & Audit QR"}
+                        </div>
+                        <Link className="qr-link" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
+                          {window.location.host}/verify/{shortHash(b.hash)}?s=…
+                        </Link>
+                        {isFrozen ? (
+                          <div className="frozen-note">Frozen — no children allowed. Consumer verifies at Khadi store.</div>
+                        ) : (
+                          <div className="scan-hint" style={{ marginTop: 6 }}>
+                            scan_secret: <code>{b.scan_secret}</code>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <div className="qr-caption">Scan to append next hop</div>
-                      <Link className="qr-link" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
-                        {window.location.host}/verify/{shortHash(b.hash)}?s=…
-                      </Link>
-                      {isFrozen && <div className="frozen-note">Frozen — no children allowed. Consumer verifies at Khadi store.</div>}
-                    </div>
-                  </div>
+                  )}
 
                   <div className="block-actions">
                     <Link className="btn btn-primary" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
                       Verify chain
                     </Link>
-                    <button className="btn btn-outline" onClick={() => setForm((f) => ({ ...f, prev_hash: b.hash }))}>
-                      Use as prev
+                    <button
+                      type="button"
+                      className={`btn btn-outline ${expandedQr[b.hash] ? "active" : ""}`}
+                      onClick={() => toggleQr(b.hash)}
+                    >
+                      {expandedQr[b.hash] ? "▲ Hide QR" : "📱 Show QR"}
                     </button>
-                    <span className="scan-hint">scan_secret: <code>{b.scan_secret}</code></span>
+
+                    {isFrozen ? (
+                      <span className="role-tag tag-frozen" title="Terminal block: chain is frozen at retail shelf. No further hops permitted.">
+                        🔒 Frozen at Retail
+                      </span>
+                    ) : isBeekeeper ? (
+                      isHarvestOrGenesis ? (
+                        <button
+                          type="button"
+                          className="btn btn-outline"
+                          onClick={() => setForm((f) => ({ ...f, prev_hash: b.hash, stage: "honey_extraction" }))}
+                        >
+                          Use as prev (Harvest)
+                        </button>
+                      ) : (
+                        <span className="role-tag tag-read-only" title="Downstream KVIC custody hop. Only KVIC officers can append to this block.">
+                          🏛️ KVIC Custody Hop (Read-only)
+                        </span>
+                      )
+                    ) : isKvic ? (
+                      <button
+                        type="button"
+                        className="btn btn-outline"
+                        onClick={() => setForm((f) => ({ ...f, prev_hash: b.hash }))}
+                      >
+                        Use as prev
+                      </button>
+                    ) : (
+                      <Link className="btn btn-outline" to="/account" title="Log in as Beekeeper or KVIC Officer to append blocks">
+                        Log in to append
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
