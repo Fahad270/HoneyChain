@@ -468,7 +468,7 @@ export default function Verify() {
                 <div className="vb-icon">{block.stage_meta?.icon || "⬡"}</div>
                 <div>
                   <div className="vb-stage">{block.stage_meta?.label || block.stage}</div>
-                  <div className="vb-step">Step {block.stage_meta?.step} • {block.stage}</div>
+                  <div className="vb-step">{block.stage_meta?.desc || "Custody Verification"}</div>
                 </div>
                 <div className="vb-time">{new Date(block.createdAt).toLocaleString()}</div>
               </div>

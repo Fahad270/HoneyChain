@@ -306,7 +306,7 @@ export default function FarmerTwin(){
               {journey.map((b,idx)=>(
                 <div key={b.hash} className={`story-item${b.prev_hashes ? " pool" : ""}`}>
                   <div className="story-card">
-                    <span className="story-tag">{b.stage_meta?.label || b.stage} · Step {b.stage_meta?.step}{idx===journey.length-1 ? " · current" : ""}</span>
+                    <span className="story-tag">{b.stage_meta?.label || b.stage}{idx===journey.length-1 ? " · current custody" : ""}</span>
                     <h3>{b.collective_name || (b.beekeeper ? `${b.beekeeper.name}` : b.stage_meta?.label || b.stage)}</h3>
                     <div className="story-date">{new Date(b.createdAt).toLocaleString()}</div>
                     <div className="hash-row" style={{ marginTop: 10 }}>

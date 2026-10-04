@@ -6,12 +6,12 @@ const RoleContext = createContext(null);
 const ROLE_META = {
   beekeeper: {
     label: "Beekeeper",
-    desc: "Steps 1–2: Hive + Harvest",
+    desc: "Farm-Gate & Harvest",
     badge: "🐝",
   },
   kvic: {
     label: "KVIC",
-    desc: "Steps 3–8: Collective → Khadi",
+    desc: "Collective Custody & Retail",
     badge: "🏛️",
   },
 };

@@ -279,7 +279,7 @@ a.btn-outline:hover {
   display: inline-block;
 }
 .qr-caption { font-size: 12px; font-weight: 700; color: var(--color-text-muted); margin-top: 8px; }
-.qr-link { font-size: 11px; color: var(--color-text-muted); word-break: break-all; text-decoration: none; font-family: ui-monospace, monospace; }
+.qr-link { font-size: 11px; color: var(--color-text-muted); word-break: break-all; text-decoration: none; font-family: ui-monospace, monospace; max-width: 100%; display: inline-block; }
 
 .dashboard-sub { color: var(--color-text-muted); font-size: 13.5px; margin-top: 4px; line-height: 1.6; }
 .empty { color: var(--color-text-muted); font-size: 13px; }

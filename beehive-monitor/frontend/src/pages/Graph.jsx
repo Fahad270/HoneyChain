@@ -40,7 +40,7 @@ export default function Graph() {
   }
 
   useEffect(() => {
-    const s = user ? "mine" : "all";
+    const s = "all";
     setScope(s);
     load(s);
     setSelected(null);

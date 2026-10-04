@@ -196,7 +196,7 @@ async function seed() {
       quality_grade: "Grade A Raw",
     },
     beekeeper: "bk_rameshwar01",
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_kvic_rajesh", name: "Rajesh Sharma", role: "kvic", centreId: "kvic-alwar" },
     createdAt: "2026-10-02T11:00:00.000Z",
   });
 
@@ -214,6 +214,7 @@ async function seed() {
       aadhaar_masked: "XXXXXXXX7654",
     },
     beekeeper: "bk_sunita02",
+    createdBy: { userId: "user_bk_sunita02", name: "Sunita Devi", role: "beekeeper" },
     createdAt: "2026-10-01T10:00:00.000Z",
   });
 
@@ -228,6 +229,7 @@ async function seed() {
       moisture_est_pct: 17.9,
     },
     beekeeper: "bk_sunita02",
+    createdBy: { userId: "user_bk_sunita02", name: "Sunita Devi", role: "beekeeper" },
     createdAt: "2026-10-02T09:00:00.000Z",
   });
 
@@ -241,7 +243,7 @@ async function seed() {
       temperature_c: 24,
     },
     beekeeper: "bk_sunita02",
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_kvic_pooja", name: "Pooja Meena", role: "kvic", centreId: "kvic-alwar" },
     createdAt: "2026-10-02T11:30:00.000Z",
   });
 
@@ -259,6 +261,7 @@ async function seed() {
       aadhaar_masked: "XXXXXXXX4567",
     },
     beekeeper: "bk_vikram03",
+    createdBy: { userId: "user_bk_vikram03", name: "Vikram Singh", role: "beekeeper" },
     createdAt: "2026-10-01T10:30:00.000Z",
   });
 
@@ -273,6 +276,7 @@ async function seed() {
       moisture_est_pct: 18.0,
     },
     beekeeper: "bk_vikram03",
+    createdBy: { userId: "user_bk_vikram03", name: "Vikram Singh", role: "beekeeper" },
     createdAt: "2026-10-02T09:30:00.000Z",
   });
 
@@ -286,7 +290,7 @@ async function seed() {
       temperature_c: 24,
     },
     beekeeper: "bk_vikram03",
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_kvic_mukesh", name: "Mukesh Yadav", role: "kvic", centreId: "kvic-alwar" },
     createdAt: "2026-10-02T12:00:00.000Z",
   });
 
@@ -318,7 +322,7 @@ async function seed() {
       dispatch_time: "2026-10-03T06:00:00Z",
       destination: "KVIC Processing Plant, Jaipur",
     },
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_transport_surender", name: "Surender Meena", role: "transporter", centreId: "kvic-jaipur" },
     createdAt: "2026-10-03T06:00:00.000Z",
   });
 
@@ -334,7 +338,7 @@ async function seed() {
       enzyme_activity_guaranteed: true,
     },
     qa: { passed: true, inspection_officer: "Dr. K. S. Rathore", date: "2026-10-03" },
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_proc_dr_rathore", name: "Dr. K. S. Rathore", role: "processor", centreId: "kvic-jaipur" },
     createdAt: "2026-10-03T11:00:00.000Z",
   });
 
@@ -359,7 +363,7 @@ async function seed() {
       pollen_profile: "Monofloral Mustard >82%",
       antibiotics: "ND (Not Detected)",
     },
-    createdBy: { userId: "user_cbrti_dr_sharma", name: "Dr. Sneha Sharma", role: "kvic", centreId: "cbrti-pune" },
+    createdBy: { userId: "user_cbrti_dr_sharma", name: "Dr. Sneha Sharma", role: "lab_analyst", centreId: "cbrti-pune" },
     createdAt: "2026-10-03T16:00:00.000Z",
   });
 
@@ -374,7 +378,7 @@ async function seed() {
       batch_code: "KHADI-RAW-MUSTARD-500G-B01",
       best_before: "2028-10-03",
     },
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_pack_anil", name: "Anil Kumar", role: "packager", centreId: "kvic-jaipur" },
     createdAt: "2026-10-03T18:00:00.000Z",
   });
 
@@ -387,7 +391,7 @@ async function seed() {
       dispatch_manifest: "MANIFEST-DELHI-004",
       consignee: "Khadi Gramodyog Bhavan, Connaught Circus, New Delhi",
     },
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_dist_harish", name: "Harish Chander", role: "distributor", centreId: "kvic-delhi" },
     createdAt: "2026-10-04T05:30:00.000Z",
   });
 
@@ -403,7 +407,7 @@ async function seed() {
       qr_verified: true,
       offlineStoreId: "khadi-delhi",
     },
-    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdBy: { userId: "user_retail_meera", name: "Meera Joshi", role: "retailer", centreId: "khadi-delhi" },
     createdAt: "2026-10-04T09:00:00.000Z",
   });
 

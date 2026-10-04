@@ -395,7 +395,7 @@ export default function Register() {
                 <div className="genesis-head">
                   <div>
                     <div className="genesis-title">First block on ledger — GENESIS</div>
-                    <div className="genesis-sub">Step 1 · Beekeeper Registration · present this QR to your collective</div>
+                    <div className="genesis-sub">Beekeeper Genesis Registration · Present this QR to your collective</div>
                   </div>
                   <span className="status-pill status-healthy">On-chain</span>
                 </div>

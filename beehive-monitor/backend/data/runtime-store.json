@@ -40,50 +40,6 @@
       "updatedAt": "2026-10-01T09:00:00.000Z"
     }
   ],
-  "users": [
-    {
-      "_id": "user_rameshwar01",
-      "name": "Rameshwar Patel",
-      "phone": "9876543210",
-      "email": "rameshwar@honeychain.org",
-      "passwordHash": "$2b$10$7fUwTTGa1cL2Z3VZ4rfQr.tRzZb63wphI1YswLitUe4S0nMmZYbNq",
-      "role": "beekeeper",
-      "beekeeperId": "bk_rameshwar01",
-      "status": "active",
-      "createdAt": "2026-10-01T08:00:00.000Z",
-      "updatedAt": "2026-10-01T08:00:00.000Z"
-    },
-    {
-      "_id": "user_kvic_aditya02",
-      "name": "Aditya Verma (KVIC Officer)",
-      "phone": "9820012345",
-      "email": "kvic.officer@kvic.gov.in",
-      "passwordHash": "$2b$10$7fUwTTGa1cL2Z3VZ4rfQr.tRzZb63wphI1YswLitUe4S0nMmZYbNq",
-      "role": "kvic",
-      "assignedCentreId": "kvic-jaipur",
-      "centreVerified": true,
-      "orgName": "KVIC Rajasthan State Directorate",
-      "designation": "District Beekeeping Development Officer",
-      "status": "active",
-      "createdAt": "2026-10-01T08:00:00.000Z",
-      "updatedAt": "2026-10-01T08:00:00.000Z"
-    },
-    {
-      "_id": "user_cbrti_dr_sharma",
-      "name": "Dr. Sneha Sharma (CBRTI Pune)",
-      "phone": "9820099881",
-      "email": "qa.cbrti@kvic.gov.in",
-      "passwordHash": "$2b$10$7fUwTTGa1cL2Z3VZ4rfQr.tRzZb63wphI1YswLitUe4S0nMmZYbNq",
-      "role": "kvic",
-      "assignedCentreId": "cbrti-pune",
-      "centreVerified": true,
-      "orgName": "Central Bee Research & Training Institute",
-      "designation": "Senior Quality Control Biochemist",
-      "status": "active",
-      "createdAt": "2026-10-01T08:00:00.000Z",
-      "updatedAt": "2026-10-01T08:00:00.000Z"
-    }
-  ],
   "blocks": [
     {
       "_id": "blk_ed0ab0e07887e0a2",
@@ -112,7 +68,7 @@
         "role": "beekeeper"
       },
       "is_frozen": false,
-      "scan_secret": "daf3983f45c2b052",
+      "scan_secret": "aaef8175501c39bb",
       "createdAt": "2026-10-01T09:15:00.000Z",
       "updatedAt": "2026-10-01T09:15:00.000Z"
     },
@@ -142,7 +98,7 @@
         "role": "beekeeper"
       },
       "is_frozen": false,
-      "scan_secret": "02732b26313127a2",
+      "scan_secret": "9c4bdd34919c45f0",
       "createdAt": "2026-10-02T08:30:00.000Z",
       "updatedAt": "2026-10-02T08:30:00.000Z"
     },
@@ -166,13 +122,13 @@
         "state": "rajasthan"
       },
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
+        "userId": "user_kvic_rajesh",
+        "name": "Rajesh Sharma",
         "role": "kvic",
-        "centreId": "kvic-jaipur"
+        "centreId": "kvic-alwar"
       },
       "is_frozen": false,
-      "scan_secret": "8873cd6526bc7b6c",
+      "scan_secret": "e5f6cf0751bc9627",
       "createdAt": "2026-10-02T11:00:00.000Z",
       "updatedAt": "2026-10-02T11:00:00.000Z"
     },
@@ -197,9 +153,13 @@
         "village": "Bhiwadi Rural",
         "state": "rajasthan"
       },
-      "createdBy": null,
+      "createdBy": {
+        "userId": "user_bk_sunita02",
+        "name": "Sunita Devi",
+        "role": "beekeeper"
+      },
       "is_frozen": false,
-      "scan_secret": "e188b464fc3bbddb",
+      "scan_secret": "eccb101d9c9589f7",
       "createdAt": "2026-10-01T10:00:00.000Z",
       "updatedAt": "2026-10-01T10:00:00.000Z"
     },
@@ -222,9 +182,13 @@
         "village": "Bhiwadi Rural",
         "state": "rajasthan"
       },
-      "createdBy": null,
+      "createdBy": {
+        "userId": "user_bk_sunita02",
+        "name": "Sunita Devi",
+        "role": "beekeeper"
+      },
       "is_frozen": false,
-      "scan_secret": "58e9aba10216d005",
+      "scan_secret": "312baf2073e4c5b2",
       "createdAt": "2026-10-02T09:00:00.000Z",
       "updatedAt": "2026-10-02T09:00:00.000Z"
     },
@@ -247,13 +211,13 @@
         "state": "rajasthan"
       },
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
+        "userId": "user_kvic_pooja",
+        "name": "Pooja Meena",
         "role": "kvic",
-        "centreId": "kvic-jaipur"
+        "centreId": "kvic-alwar"
       },
       "is_frozen": false,
-      "scan_secret": "280efa91bce35596",
+      "scan_secret": "c0807cd5c7f9a41b",
       "createdAt": "2026-10-02T11:30:00.000Z",
       "updatedAt": "2026-10-02T11:30:00.000Z"
     },
@@ -278,9 +242,13 @@
         "village": "Tijara",
         "state": "rajasthan"
       },
-      "createdBy": null,
+      "createdBy": {
+        "userId": "user_bk_vikram03",
+        "name": "Vikram Singh",
+        "role": "beekeeper"
+      },
       "is_frozen": false,
-      "scan_secret": "7fc97c4cd0894bcc",
+      "scan_secret": "71c811bfbc55159a",
       "createdAt": "2026-10-01T10:30:00.000Z",
       "updatedAt": "2026-10-01T10:30:00.000Z"
     },
@@ -303,9 +271,13 @@
         "village": "Tijara",
         "state": "rajasthan"
       },
-      "createdBy": null,
+      "createdBy": {
+        "userId": "user_bk_vikram03",
+        "name": "Vikram Singh",
+        "role": "beekeeper"
+      },
       "is_frozen": false,
-      "scan_secret": "5466751d47a879ef",
+      "scan_secret": "1a2254b1dbbe88e5",
       "createdAt": "2026-10-02T09:30:00.000Z",
       "updatedAt": "2026-10-02T09:30:00.000Z"
     },
@@ -328,13 +300,13 @@
         "state": "rajasthan"
       },
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
+        "userId": "user_kvic_mukesh",
+        "name": "Mukesh Yadav",
         "role": "kvic",
-        "centreId": "kvic-jaipur"
+        "centreId": "kvic-alwar"
       },
       "is_frozen": false,
-      "scan_secret": "f34bc35f24d38318",
+      "scan_secret": "47d8afc170de93c5",
       "createdAt": "2026-10-02T12:00:00.000Z",
       "updatedAt": "2026-10-02T12:00:00.000Z"
     },
@@ -363,7 +335,7 @@
         "centreId": "kvic-jaipur"
       },
       "is_frozen": false,
-      "scan_secret": "30eb76507879e863",
+      "scan_secret": "c6b31cd537e7bc60",
       "createdAt": "2026-10-02T15:00:00.000Z",
       "updatedAt": "2026-10-02T15:00:00.000Z"
     },
@@ -383,13 +355,13 @@
       },
       "beekeeper": null,
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
-        "role": "kvic",
+        "userId": "user_transport_surender",
+        "name": "Surender Meena",
+        "role": "transporter",
         "centreId": "kvic-jaipur"
       },
       "is_frozen": false,
-      "scan_secret": "efa1b1fddb873eb3",
+      "scan_secret": "4686cd8f4f283b54",
       "createdAt": "2026-10-03T06:00:00.000Z",
       "updatedAt": "2026-10-03T06:00:00.000Z"
     },
@@ -408,13 +380,13 @@
       },
       "beekeeper": null,
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
-        "role": "kvic",
+        "userId": "user_proc_dr_rathore",
+        "name": "Dr. K. S. Rathore",
+        "role": "processor",
         "centreId": "kvic-jaipur"
       },
       "is_frozen": false,
-      "scan_secret": "ff68999a35fc3fb6",
+      "scan_secret": "fbfd6871f5f2c8c1",
       "qa": {
         "passed": true,
         "inspection_officer": "Dr. K. S. Rathore",
@@ -439,11 +411,11 @@
       "createdBy": {
         "userId": "user_cbrti_dr_sharma",
         "name": "Dr. Sneha Sharma",
-        "role": "kvic",
+        "role": "lab_analyst",
         "centreId": "cbrti-pune"
       },
       "is_frozen": false,
-      "scan_secret": "eb7d92235bcb537b",
+      "scan_secret": "1b85afa85d523ff4",
       "lab": {
         "ca_number": "NABL-TC-8821",
         "cert_hash": "9f8a7c6e5d4b3a210987654321fedcba0123456789abcdef",
@@ -473,13 +445,13 @@
       },
       "beekeeper": null,
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
-        "role": "kvic",
+        "userId": "user_pack_anil",
+        "name": "Anil Kumar",
+        "role": "packager",
         "centreId": "kvic-jaipur"
       },
       "is_frozen": false,
-      "scan_secret": "1c857d7a17568878",
+      "scan_secret": "9cba3113d944b5ac",
       "createdAt": "2026-10-03T18:00:00.000Z",
       "updatedAt": "2026-10-03T18:00:00.000Z"
     },
@@ -496,13 +468,13 @@
       },
       "beekeeper": null,
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
-        "role": "kvic",
-        "centreId": "kvic-jaipur"
+        "userId": "user_dist_harish",
+        "name": "Harish Chander",
+        "role": "distributor",
+        "centreId": "kvic-delhi"
       },
       "is_frozen": false,
-      "scan_secret": "cc0668b939882c12",
+      "scan_secret": "c60d4de51f98cf08",
       "createdAt": "2026-10-04T05:30:00.000Z",
       "updatedAt": "2026-10-04T05:30:00.000Z"
     },
@@ -521,13 +493,13 @@
       },
       "beekeeper": null,
       "createdBy": {
-        "userId": "user_kvic_aditya02",
-        "name": "Aditya Verma",
-        "role": "kvic",
-        "centreId": "kvic-jaipur"
+        "userId": "user_retail_meera",
+        "name": "Meera Joshi",
+        "role": "retailer",
+        "centreId": "khadi-delhi"
       },
       "is_frozen": true,
-      "scan_secret": "cbb92eedc7d51b3c",
+      "scan_secret": "d5e5a22ad58d5c4a",
       "createdAt": "2026-10-04T09:00:00.000Z",
       "updatedAt": "2026-10-04T09:00:00.000Z"
     },
@@ -557,7 +529,7 @@
         "role": "beekeeper"
       },
       "is_frozen": false,
-      "scan_secret": "2184dce7672f3986",
+      "scan_secret": "c7fbec51faa7bd6d",
       "createdAt": "2026-10-04T12:00:00.000Z",
       "updatedAt": "2026-10-04T12:00:00.000Z"
     }
@@ -594,6 +566,52 @@
       "verifyCount": 0,
       "createdAt": "2026-10-04T09:30:00.000Z",
       "updatedAt": "2026-10-04T09:30:00.000Z"
+    }
+  ],
+  "rti": [],
+  "users": [
+    {
+      "_id": "user_rameshwar01",
+      "name": "Rameshwar Patel",
+      "phone": "9876543210",
+      "email": "rameshwar@honeychain.org",
+      "passwordHash": "$2b$10$hi4uUrkgSt96/dcVEO/nE.r4YHFFVCZQ1Ag1.EuUOJnqqxY2s9QJq",
+      "role": "beekeeper",
+      "beekeeperId": "bk_rameshwar01",
+      "status": "active",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "_id": "user_kvic_aditya02",
+      "name": "Aditya Verma (KVIC Officer)",
+      "phone": "9820012345",
+      "email": "kvic.officer@kvic.gov.in",
+      "passwordHash": "$2b$10$hi4uUrkgSt96/dcVEO/nE.r4YHFFVCZQ1Ag1.EuUOJnqqxY2s9QJq",
+      "role": "kvic",
+      "assignedCentreId": "kvic-jaipur",
+      "centreVerified": true,
+      "orgName": "KVIC Rajasthan State Directorate",
+      "designation": "District Beekeeping Development Officer",
+      "status": "active",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "lastLoginAt": "2026-10-04T11:40:30.677Z"
+    },
+    {
+      "_id": "user_cbrti_dr_sharma",
+      "name": "Dr. Sneha Sharma (CBRTI Pune)",
+      "phone": "9820099881",
+      "email": "qa.cbrti@kvic.gov.in",
+      "passwordHash": "$2b$10$hi4uUrkgSt96/dcVEO/nE.r4YHFFVCZQ1Ag1.EuUOJnqqxY2s9QJq",
+      "role": "kvic",
+      "assignedCentreId": "cbrti-pune",
+      "centreVerified": true,
+      "orgName": "Central Bee Research & Training Institute",
+      "designation": "Senior Quality Control Biochemist",
+      "status": "active",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
     }
   ],
   "escrows": [
@@ -660,6 +678,5 @@
       "createdAt": "2026-10-04T12:00:00.000Z",
       "updatedAt": "2026-10-04T12:00:00.000Z"
     }
-  ],
-  "rti": []
+  ]
 }

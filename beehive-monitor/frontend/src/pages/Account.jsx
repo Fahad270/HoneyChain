@@ -5,8 +5,8 @@ import { useAuth } from "../context/RoleContext.jsx";
 import "./Account.css";
 
 const TIERS = [
-  { key: "beekeeper", icon: "🐝", title: "Beekeeper account", desc: "Steps 1–2: your hives, your harvest. Link your beekeeper profile via Aadhaar OTP." },
-  { key: "kvic", icon: "🏛️", title: "KVIC account", desc: "Steps 3–8: collective pooling, processing, lab, packaging, Khadi retail. Attach to a real KVIC centre." },
+  { key: "beekeeper", icon: "🐝", title: "Beekeeper account", desc: "Farm-gate harvest logging, hive telemetry, and Aadhaar OTP identity." },
+  { key: "kvic", icon: "🏛️", title: "KVIC account", desc: "Collective lot pooling, NABL testing, packaging, and Khadi retail freeze." },
 ];
 
 function loadKycProof() {
@@ -300,7 +300,7 @@ export default function Account() {
               >
                 <span className="demo-badge">🐝 Beekeeper</span>
                 <strong>Rameshwar Patel</strong>
-                <small>9876543210 · Steps 1–2 (Hives, Genesis, Voice Harvest)</small>
+                <small>9876543210 · Beekeeper (Hives, Genesis, Voice Harvest)</small>
               </button>
               <button
                 type="button"
@@ -310,7 +310,7 @@ export default function Account() {
               >
                 <span className="demo-badge">🏛️ KVIC Officer</span>
                 <strong>Aditya Verma</strong>
-                <small>kvic.officer@kvic.gov.in · Steps 3–8 (Pooling & Retail Freeze)</small>
+                <small>kvic.officer@kvic.gov.in · Nodal Officer (Pooling & Retail Freeze)</small>
               </button>
             </div>
           </div>

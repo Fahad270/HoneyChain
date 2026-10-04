@@ -183,8 +183,8 @@ export default function Ledger() {
           <span className="badge">{isKvic ? "KVIC" : "Public view"}</span>
           <span>
             {isKvic
-              ? "You are KVIC: steps 3–8 — collection, pooled batches, transport, processing & QC, lab certification, packaging, distribution and Khadi retail."
-              : "You are browsing the chain read-only. Log in with the matching account to append blocks."}
+              ? "Oversee village honey collection, collective lot pooling, laboratory clearance, and retail supply chain custody."
+              : "Browsing the chain in read-only public audit mode. Log in with an authorized account to append custody blocks."}
           </span>
           {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
         </div>
@@ -491,7 +491,7 @@ export default function Ledger() {
                   <div key={b.hash} className={`story-item${isPooled ? " pool" : ""}`}>
                     <div className="story-card">
                       <span className="story-tag">
-                        {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage} · Step {b.stage_meta?.step || "•"}
+                        {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage}
                       </span>
                       <h3>
                         {b.collective_name || (b.beekeeper?.name ? `${b.beekeeper.name}${b.beekeeper.village ? " • " + b.beekeeper.village : ""}` : (b.data?.name ? `${b.data.name}${b.data.village ? " • " + b.data.village : ""}` : STAGE_LABEL[b.stage] || b.stage))}
@@ -550,22 +550,25 @@ export default function Ledger() {
                         <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={110} level="M" />
                       </div>
                       <div className="qr-meta">
-                        <div className="qr-caption">
+                        <div className="qr-caption" style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text)" }}>
                           {isFrozen
-                            ? "🔒 Terminal Retail Block (Consumer Verification Only)"
-                            : isBeekeeper && !isHarvestOrGenesis
-                              ? "🏛️ KVIC Custody Hop (Read-only for Beekeeper)"
-                              : isBeekeeper
-                                ? "🐝 Beekeeper Harvest Link"
-                                : isKvic
-                                  ? "🏛️ Scan to Append Next KVIC Custody Hop"
-                                  : "🔍 Public Verification & Audit QR"}
+                            ? "🔒 Certified Retail Product QR"
+                            : isBeekeeper
+                              ? "🐝 Farm-Gate Handoff QR Code"
+                              : isKvic
+                                ? "🏛️ Custody Handoff QR Code"
+                                : "🔍 Public Verification QR"}
                         </div>
-                        <Link className="qr-link" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
-                          {window.location.host}/verify/{shortHash(b.hash)}?s=…
+                        <p style={{ margin: "4px 0 8px", fontSize: 12, color: "var(--color-text-muted)", lineHeight: 1.4 }}>
+                          {isFrozen
+                            ? "Consumer authenticity token. Scan to view NABL lab tests and origin passport."
+                            : "Scan with mobile camera to verify custody and append next block."}
+                        </p>
+                        <Link className="btn btn-outline btn-xs" style={{ width: "fit-content", padding: "4px 10px", fontSize: 11.5 }} to={`/verify/${b.hash}?s=${b.scan_secret}`}>
+                          🔗 Open Verification Page ↗
                         </Link>
                         {isFrozen ? (
-                          <div className="frozen-note">Frozen — no children allowed. Consumer verifies at Khadi store.</div>
+                          <div className="frozen-note" style={{ marginTop: 6 }}>Locked at Retail — Batch Complete</div>
                         ) : (
                           <div className="scan-hint" style={{ marginTop: 6 }}>
                             scan_secret: <code>{b.scan_secret}</code>
@@ -648,8 +651,8 @@ export default function Ledger() {
 
           <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 12 }}>
             {isBeekeeper
-              ? "Beekeeper: log your harvest as Honey Extraction (Step 2) with your genesis hash as prev. Collection onward needs a KVIC account."
-              : "KVIC: you handle the whole KVIC network from collection to freeze. Supporting institutions on your side: Cooperative societies, transport, processing plant, Quality Control Labs, Branding and Khadi outlets."}
+              ? "Beekeeper: log your harvest as Honey Extraction with your genesis hash as previous block. Collection onward requires authorized KVIC custody."
+              : "KVIC: oversee the collective network from village collection to retail freeze. Supporting institutions: Primary Cooperatives, logistics fleet, processing facilities, CBRTI/NABL testing labs, and Khadi outlets."}
           </div>
 
           {isBeekeeper && (

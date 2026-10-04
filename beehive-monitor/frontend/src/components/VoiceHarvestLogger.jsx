@@ -312,7 +312,7 @@ export default function VoiceHarvestLogger({ onCommitHarvest, defaultPrevHash = 
         <div style={{ padding: 14, background: "#ECFDF5", borderRadius: 8, border: "2px solid #10B981", marginBottom: 12 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <span style={{ fontWeight: 700, color: "#065F46" }}>✅ Verify Extracted Harvest Details</span>
-            <span className="status-pill status-healthy">Step 2: Honey Extraction</span>
+            <span className="status-pill status-healthy">Honey Extraction Record</span>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
