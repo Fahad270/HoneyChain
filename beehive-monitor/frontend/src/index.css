@@ -112,12 +112,43 @@ input, select, textarea { font-family: inherit; font-size: 15px; }
   white-space: nowrap;
 }
 .btn:active { transform: translateY(1px); }
-.btn-primary { background: var(--color-primary); color: #fff; }
-.btn-primary:hover { background: var(--color-primary-dark); }
-.btn-honey { background: var(--color-accent); color: #fff; }
-.btn-honey:hover { filter: brightness(0.94); }
-.btn-outline { background: var(--color-surface); border-color: var(--color-primary); color: var(--color-primary); }
-.btn-outline:hover { background: var(--color-primary-light); }
+.btn-primary,
+a.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.btn-primary:hover,
+a.btn-primary:hover {
+  background: var(--color-primary-dark);
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.btn-honey,
+a.btn-honey {
+  background: var(--color-accent);
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.btn-honey:hover,
+a.btn-honey:hover {
+  filter: brightness(0.94);
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.btn-outline,
+a.btn-outline {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary) !important;
+  text-decoration: none;
+}
+.btn-outline:hover,
+a.btn-outline:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark) !important;
+  text-decoration: none;
+}
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ——— pills / badges ——— */

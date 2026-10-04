@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link, useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
+import { useLanguage } from "../context/LanguageContext.jsx";
 import "./Verify.css";
 
 function short(h) {
@@ -12,6 +13,7 @@ export default function Verify() {
   const { hash } = useParams();
   const [search] = useSearchParams();
   const navigate = useNavigate();
+  const { lang, t } = useLanguage();
   const token = search.get("s");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -94,11 +96,11 @@ export default function Verify() {
     <div className="page-container verify-page">
       <div className="pagehead">
         <div>
-          <h1>{hash && block ? "Khadi Honey Passport" : "Verify Authenticity"}</h1>
+          <h1>{hash && block ? t("passport_title", "Khadi Honey Passport") : t("verify_title", "Verify Authenticity")}</h1>
           <p>
             {hash && block
-              ? "Official digital purity certificate & farm-to-shelf provenance record"
-              : "Khadi counters + ekhadiindia.com orders · public, no login · paste the hash from the jar QR"}
+              ? t("passport_sub", "Official digital purity certificate & farm-to-shelf provenance record")
+              : t("verify_sub", "Khadi counters + ekhadiindia.com orders · public, no login · paste the hash from the jar QR")}
           </p>
         </div>
         {hash && (
@@ -148,15 +150,14 @@ export default function Verify() {
         <div className="consumer-passport">
           <div className="passport-hero">
             <div className="passport-emblem">
-              <span>🏛️</span> KVIC Honey Mission · Ministry of MSME, Govt. of India
+              <span>🏛️</span> {t("emblem", "KVIC Honey Mission · Ministry of MSME, Govt. of India")}
             </div>
-            <h2>Certified Pure Khadi Honey Passport</h2>
+            <h2>{t("hero_title", "Certified Pure Khadi Honey Passport")}</h2>
             <p>
-              Direct-from-apiary traceability verified on HoneyChain’s tamper-proof cryptographic ledger.
-              Every batch tested for zero synthetic adulteration and backed by fair farmer procurement at official MSP.
+              {t("hero_desc", "Direct-from-apiary traceability verified on HoneyChain’s tamper-proof cryptographic ledger. Every batch tested for zero synthetic adulteration and backed by fair farmer procurement at official MSP.")}
             </p>
             <div className="passport-stamp">
-              <span>✓</span> 100% Pure Honey · Authenticity Guaranteed
+              <span>✓</span> {t("purity_stamp", "100% Pure Honey · Authenticity Guaranteed")}
             </div>
           </div>
 

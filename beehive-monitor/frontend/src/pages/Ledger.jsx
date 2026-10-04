@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
+import { useLanguage } from "../context/LanguageContext.jsx";
 import LedgerGraph from "./LedgerGraph.jsx";
 import { STAGE_LABEL, WORKFLOW_STEPS } from "../stages.js";
 import VoiceHarvestLogger from "../components/VoiceHarvestLogger.jsx";
@@ -16,6 +17,7 @@ function shortHash(h) {
 
 export default function Ledger() {
   const { role, user } = useRole();
+  const { lang, t } = useLanguage();
   const navigate = useNavigate();
   const isBeekeeper = role === "beekeeper";
   const isKvic = role === "kvic";
@@ -176,32 +178,41 @@ export default function Ledger() {
 
   return (
     <div className="page-container ledger-page">
-      <div className="role-line">
-        <span className="badge">{isBeekeeper ? "Beekeeper" : isKvic ? "KVIC" : "Public view"}</span>
-        <span>
-          {isBeekeeper
-              ? "You manage steps 1–2: registration + honey harvest. Paste your genesis QR hash, log weight / hive / flower — your collective then pools it onward."
-              : isKvic
-                ? "You are KVIC: steps 3–8 — collection, pooled batches, transport, processing & QC, lab certification, packaging, distribution and Khadi retail."
-                : "You are browsing the chain read-only. Log in with the matching account to append blocks."}
-        </span>
-        {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
-      </div>
+      {!isBeekeeper && (
+        <div className="role-line">
+          <span className="badge">{isKvic ? "KVIC" : "Public view"}</span>
+          <span>
+            {isKvic
+              ? "You are KVIC: steps 3–8 — collection, pooled batches, transport, processing & QC, lab certification, packaging, distribution and Khadi retail."
+              : "You are browsing the chain read-only. Log in with the matching account to append blocks."}
+          </span>
+          {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
+        </div>
+      )}
 
       <div className="pagehead">
         <div>
-          <h1>{isBeekeeper ? "Harvest Logbook (मधु पुस्तिका)" : isKvic ? "Blockchain Custody Ledger" : "Public Blockchain Ledger"}</h1>
+          <h1>{isBeekeeper ? t("harvest_logbook_title", "Harvest Logbook") : isKvic ? t("custody_ledger_title", "Blockchain Custody Ledger") : t("public_ledger_title", "Public Blockchain Ledger")}</h1>
           <p>
             {isBeekeeper
-              ? "Official Apiary Harvest Logbook · Log honey yields, speak via voice SLM, and track KVIC procurement at MSP (₹225/kg)."
+              ? t("harvest_logbook_sub", "Record apiary honey extractions, verify quality standards, and sync with your village KVIC node.")
               : isKvic
                 ? `${blocks.length} blocks · ${frozenCount} frozen · tip ${tip ? `${tip.hash.slice(0, 10)}…` : "—"} · KVIC multi-centre custody management`
                 : `${blocks.length} blocks · ${frozenCount} frozen · public immutable DAG chain · CBRTI NABL lab verified`}
           </p>
         </div>
         <div className="actions">
-          <Link className="btn btn-outline" to="/verify">Verify a jar</Link>
-          <Link className="btn btn-primary" to="/graph">Graph explorer</Link>
+          {isBeekeeper ? (
+            <>
+              <Link className="btn btn-primary" to="/twin">{t("my_twin", "My Farm Twin")} →</Link>
+              <Link className="btn btn-outline" to="/verify">{t("verify_jar", "Verify a Jar")}</Link>
+            </>
+          ) : (
+            <>
+              <Link className="btn btn-outline" to="/verify">Verify a jar</Link>
+              <Link className="btn btn-primary" to="/graph">Graph explorer</Link>
+            </>
+          )}
         </div>
       </div>
 
@@ -212,21 +223,21 @@ export default function Ledger() {
             <div className="sync-status-left">
               <span className="sync-dot live" />
               <div>
-                <strong>Local Apiary Logbook · Offline-Ready</strong>
-                <p>Harvest records are stored locally with offline timestamps and can be synced at the village KVIC centre.</p>
+                <strong>{t("local_logbook_offline", "Apiary Logbook · Offline-Ready")}</strong>
+                <p>{t("local_logbook_desc", "Stored securely on-device. Ready to sync with your village KVIC node.")}</p>
               </div>
             </div>
             <div className="sync-status-right">
-              <span className="sync-counter">{beekeeperBlocks.length} Records Logged</span>
+              <span className="sync-counter">{beekeeperBlocks.length} {t("records_logged", "Records")}</span>
               <button
                 type="button"
-                className="btn btn-sm btn-primary"
+                className="btn btn-sm btn-outline sync-btn"
                 onClick={() => {
                   load();
                   alert("✓ Harvest records verified and synced with local KVIC node.");
                 }}
               >
-                🔄 Sync with KVIC Node
+                🔄 {t("sync_with_kvic", "Sync with KVIC Node")}
               </button>
             </div>
           </div>
@@ -235,8 +246,8 @@ export default function Ledger() {
             {/* Left Column: My Harvests */}
             <div className="logbook-records">
               <div className="section-head">
-                <h3>My Harvest Entries (मधु पुस्तिका)</h3>
-                <span className="record-count">{beekeeperBlocks.length} total entries</span>
+                <h3>{t("my_harvest_entries", "My Harvest Entries")}</h3>
+                <span className="record-count">{beekeeperBlocks.length} entries</span>
               </div>
 
               {beekeeperBlocks.length === 0 ? (
@@ -248,7 +259,7 @@ export default function Ledger() {
                   const isGen = b.stage === "beekeeper_registration";
                   const harvestDate = b.data?.harvest_date || b.createdAt;
                   const weightKg = b.data?.weight_kg || b.data?.quantity_kg || 12;
-                  const flowerSource = b.data?.flower_source || b.data?.flower_type || "Mustard (सरसों)";
+                  const flowerSource = b.data?.flower_source || b.data?.flower_type || t("mustard", "Mustard");
                   const hiveId = b.data?.hive_id || "HIVE-01";
                   const mspValue = typeof weightKg === "number" ? `₹${(weightKg * 225).toLocaleString()}` : "₹2,700";
 
@@ -256,7 +267,7 @@ export default function Ledger() {
                     <div key={b.hash} className="card harvest-card">
                       <div className="harvest-card-head">
                         <div className="harvest-badge">
-                          {isGen ? "🐝 Registered Apiary (Genesis)" : "🍯 Honey Harvest"}
+                          {isGen ? `🐝 ${t("registered_apiary", "Registered Apiary")}` : `🍯 ${t("honey_harvest", "Honey Harvest")}`}
                         </div>
                         <span className="harvest-date">
                           {new Date(harvestDate).toLocaleDateString("en-IN", {
@@ -269,56 +280,56 @@ export default function Ledger() {
 
                       {isGen ? (
                         <div className="harvest-gen-info" style={{ marginBottom: 12 }}>
-                          <h4 style={{ margin: "4px 0" }}>{b.beekeeper?.name || b.data?.name} — {b.beekeeper?.village || b.data?.village}</h4>
+                          <h4 style={{ margin: "4px 0" }}>{b.beekeeper?.name || b.data?.name || "Rameshwar Patel"} — {b.beekeeper?.village || b.data?.village || "Alwar Khurd"}</h4>
                           <p style={{ margin: 0, fontSize: 12.5, color: "var(--color-text-muted)" }}>
-                            {b.data?.noOfBeeColonies || 5} Bee Colonies Active · Aadhaar KYC Verified · NBHM ID: {b.data?.clusterId || "ALW-KVIC-04"}
+                            {b.data?.noOfBeeColonies || 18} Bee Colonies Active · Aadhaar KYC Verified · NBHM ID: {b.data?.clusterId || "ALW-KVIC-04"}
                           </p>
                         </div>
                       ) : (
                         <div className="harvest-metrics-grid">
                           <div className="h-metric">
-                            <span className="hm-label">Hive Number</span>
+                            <span className="hm-label">{t("hive_number", "Hive Number")}</span>
                             <span className="hm-val">{hiveId}</span>
                           </div>
                           <div className="h-metric">
-                            <span className="hm-label">Honey Yield</span>
+                            <span className="hm-label">{t("honey_yield", "Yield")}</span>
                             <span className="hm-val accent">{weightKg} kg</span>
                           </div>
                           <div className="h-metric">
-                            <span className="hm-label">Floral Source</span>
+                            <span className="hm-label">{t("floral_source", "Floral Source")}</span>
                             <span className="hm-val">{flowerSource}</span>
                           </div>
                           <div className="h-metric">
-                            <span className="hm-label">KVIC MSP (₹225/kg)</span>
+                            <span className="hm-label">{t("kvic_msp", "KVIC MSP")}</span>
                             <span className="hm-val success">{mspValue}</span>
                           </div>
                         </div>
                       )}
 
                       <div className="harvest-status-row">
-                        <span className="status-label">KVIC Procurement Status:</span>
+                        <span className="status-label">KVIC Status:</span>
                         <span className="status-pill status-healthy">
-                          {isGen ? "✓ Apiary Registered" : "📦 Ready for Village KVIC Collection"}
+                          {isGen ? "✓ Apiary Registered" : `📦 ${t("ready_for_kvic", "Ready for Village KVIC Collection")}`}
                         </span>
                       </div>
 
                       <div className="harvest-card-actions">
                         <Link className="btn btn-outline btn-sm" to={`/verify/${b.hash}`}>
-                          Verify Purity Certificate
+                          {t("verify_purity_cert", "Verify Certificate")}
                         </Link>
                         <button
                           type="button"
                           className="btn btn-outline btn-sm"
                           onClick={() => toggleQr(b.hash)}
                         >
-                          {expandedQr[b.hash] ? "▲ Hide QR" : "📱 Show Harvest QR"}
+                          {expandedQr[b.hash] ? `▲ ${t("hide_qr", "Hide QR")}` : `📱 ${t("show_harvest_qr", "Show QR")}`}
                         </button>
                         <button
                           type="button"
                           className="btn btn-outline btn-sm"
                           onClick={() => toggleHash(b.hash)}
                         >
-                          {expandedHash[b.hash] ? "▲ Hide Proof Hash" : "# Proof Hash"}
+                          {expandedHash[b.hash] ? "▲ Hide Hash" : `# ${t("proof_hash", "Proof Hash")}`}
                         </button>
                       </div>
 
@@ -364,26 +375,18 @@ export default function Ledger() {
               />
 
               <div className="card fssai-field-card" style={{ marginTop: 16 }}>
-                <h4>🌾 Pre-Harvest Field Standards (FSSAI / Agmark)</h4>
-                <p className="dashboard-sub" style={{ fontSize: 12, margin: "4px 0 10px" }}>
-                  Perform these quick checks before handing over to the KVIC collection centre:
-                </p>
+                <h4 style={{ margin: "0 0 8px", fontSize: 14 }}>🌾 {t("fssai_standards_title", "Pre-Harvest Field Standards")}</h4>
                 <ul className="field-checklist">
-                  <li><strong>Moisture ≤ 20%:</strong> Ensure honey is taken only from sealed/capped honeycombs (75%+ sealed).</li>
-                  <li><strong>Food-Grade Container:</strong> Use designated stainless steel food cans or food-grade HDPE buckets provided by KVIC.</li>
-                  <li><strong>Zero Brood Contamination:</strong> Use queen excluders so honey extraction is free from bee larvae and brood wax.</li>
-                  <li><strong>No Direct Heating:</strong> Do not heat honey over direct flame; natural raw crystallization is normal and accepted.</li>
+                  <li><strong>Moisture ≤ 20%:</strong> Extract only from ≥75% capped comb cells.</li>
+                  <li><strong>Food-Grade Container:</strong> Use designated stainless steel or HDPE buckets.</li>
+                  <li><strong>Zero Brood Contamination:</strong> Always extract with queen excluders in place.</li>
+                  <li><strong>No Direct Heating:</strong> Raw crystallization is natural and accepted.</li>
                 </ul>
-              </div>
-
-              <div className="card" style={{ marginTop: 16, background: "var(--color-primary-light)", borderColor: "var(--color-primary)" }}>
-                <h4>🍯 Track Your Honey Beyond The Apiary</h4>
-                <p style={{ fontSize: 12, margin: "4px 0 12px", color: "var(--color-text-muted)" }}>
-                  Want to see which Khadi store your honey lot reached after KVIC collection and CBRTI testing?
-                </p>
-                <Link to="/twin" className="btn btn-primary btn-sm" style={{ width: "100%", textAlign: "center" }}>
-                  Open My Twin (Traceability Journey) →
-                </Link>
+                <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--color-border)" }}>
+                  <Link to="/twin" className="btn btn-outline btn-sm" style={{ width: "100%", textAlign: "center" }}>
+                    {t("open_my_twin", "Track Honey Beyond Apiary in My Twin →")}
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

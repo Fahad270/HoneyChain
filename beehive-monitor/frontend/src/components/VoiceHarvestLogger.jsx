@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import api from "../api.js";
 
 const SAMPLE_UTTERANCES = [
-  "aaj bara kg honey tha from 3",
-  "Log twelve kilos of mustard honey from hive three today",
-  "Recorded 15.5 kg litchi honey from box 2",
-  "aaj hive 5 se 8 kilo shahad nikala",
-  "बॉक्स 4 से 10 किलो सरसों का शहद निकाला",
+  "12 kg mustard honey from hive 3",
+  "16 kg multiflora honey from hive 5",
 ];
 
 const OFFLINE_QUEUE_KEY = "honeychain_offline_harvest_queue";
@@ -231,36 +228,35 @@ export default function VoiceHarvestLogger({ onCommitHarvest, defaultPrevHash = 
   }
 
   return (
-    <div className="card" style={{ border: "2px solid #E8C46A", background: "#FEFDF8", marginBottom: 20 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: 8 }}>
-          <span>🎙️ Voice-First Harvest Logging</span>
-          <span className="status-pill status-warning" style={{ fontSize: 10 }}>Confirm-Before-Commit</span>
+    <div className="card voice-logger-card" style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <h3 style={{ margin: 0, fontSize: 16, display: "flex", alignItems: "center", gap: 6 }}>
+          <span>🎙️ Voice Harvest Logging</span>
         </h3>
         {offlineQueue.length > 0 && (
-          <span className="status-pill status-critical" style={{ fontSize: 11 }}>
+          <span className="status-pill status-warning" style={{ fontSize: 11 }}>
             ✈️ {offlineQueue.length} queued offline
           </span>
         )}
       </div>
 
-      <p className="dashboard-sub" style={{ marginBottom: 12 }}>
-        Speak naturally in English, Hindi, or Hinglish. Slots are extracted into a structured preview — you review and confirm before anything touches the blockchain.
+      <p className="dashboard-sub" style={{ fontSize: 12.5, margin: "0 0 10px", color: "var(--color-text-muted)" }}>
+        Speak naturally or type harvest details. Verify extracted slots before saving.
       </p>
 
       {/* Voice controls & input */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
         <input
           type="text"
           value={transcript}
           onChange={(e) => setTranscript(e.target.value)}
-          placeholder="Speak or type (e.g. 'Log 12 kg mustard honey from hive 3 today')"
-          style={{ flex: 1, padding: "8px 12px", borderRadius: 8, border: "1px solid #D1D5DB" }}
+          placeholder="e.g. 12 kg mustard honey from hive 3"
+          style={{ flex: 1, padding: "7px 10px", borderRadius: 8, border: "1px solid var(--color-border)", fontSize: 13 }}
           onKeyDown={(e) => e.key === "Enter" && handleParse()}
         />
         <button
           type="button"
-          className="btn btn-honey"
+          className="btn btn-honey btn-sm"
           onClick={startSpeech}
           disabled={listening || parsing}
           style={{ whiteSpace: "nowrap" }}
@@ -269,7 +265,7 @@ export default function VoiceHarvestLogger({ onCommitHarvest, defaultPrevHash = 
         </button>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-primary btn-sm"
           onClick={() => handleParse()}
           disabled={parsing || !transcript.trim()}
           style={{ whiteSpace: "nowrap" }}
@@ -279,20 +275,20 @@ export default function VoiceHarvestLogger({ onCommitHarvest, defaultPrevHash = 
       </div>
 
       {/* Quick sample chips */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-        <span style={{ fontSize: 11, color: "#6B7280", alignSelf: "center" }}>Try sample:</span>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 10 }}>
+        <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Quick samples:</span>
         {SAMPLE_UTTERANCES.map((sample, idx) => (
           <button
             key={idx}
             type="button"
             className="filter-btn"
-            style={{ fontSize: 11, padding: "3px 8px" }}
+            style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6 }}
             onClick={() => {
               setTranscript(sample);
               handleParse(sample);
             }}
           >
-            {sample.slice(0, 30)}…
+            "{sample}"
           </button>
         ))}
       </div>
