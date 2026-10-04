@@ -1,6 +1,6 @@
 # HoneyChain (Madhu Shakti) — Video Presentation Script
 **Smart India Hackathon 2026 · Problem Statement ID: 26021 · Team: 125181 (BEE6)**  
-**Target Duration:** ~3.5 Minutes (Fast, natural, human delivery)  
+**Target Duration:** ~3.5 Minutes (Clear, professional, human delivery)  
 
 ---
 
@@ -19,63 +19,63 @@
 
 "Namaste Evaluators. We are Team **125181 (BEE6)**, presenting **HoneyChain** for Problem Statement **26021: Blockchain-based tracking of honey from source to retail.**
 
-Commercial honey in India faces rampant adulteration with synthetic C3 and C4 syrups, while rural beekeepers operating in forest dead zones get cheated without a verifiable paper trail. HoneyChain solves this with an **offline-first Directed Acyclic Graph (DAG) blockchain** coupled with **Edge AI running on dead-cheap hardware**: a $4 ESP32 acoustic sensor in the hive, and a $30 Raspberry Pi node at the village KVIC centre."
+Commercial honey in India faces widespread adulteration with synthetic C3 and C4 syrups, while rural beekeepers operating in remote areas lack an auditable, verifiable record of origin. HoneyChain resolves this with an **offline-first Directed Acyclic Graph (DAG) blockchain** combined with **Edge AI on low-cost hardware**: an affordable ₹350 ESP32 acoustic sensor in the hive, and a ₹2,500 Raspberry Pi gateway node at village KVIC centres."
 
 ---
 
 ### [0:25 – 1:15] Rural Beekeeper: Genesis & Voice Harvest Logging
 *(Screen: Log in as Rameshwar Patel → go to Harvest Log `/ledger`)*
 
-"We start at the apiary with our beekeeper, **Rameshwar Patel**.
+"We begin at the apiary with our beekeeper, **Rameshwar Patel**.
 
-His view is completely uncluttered. Every harvest is cryptographically anchored back to his **Genesis Block (Block 0)**, which binds his verified Aadhaar KYC and apiary location.
+His dashboard is streamlined for field operations. Every harvest is cryptographically anchored back to his **Genesis Block (Block 0)**, binding his verified Aadhaar KYC and apiary location.
 
-When working in remote orchards with thick gloves and no internet, the farmer speaks naturally into our offline speech-to-JSON engine *(Click sample: '12 kg mustard honey from hive 3' → click Extract)*.
+When working in remote orchards without cellular connectivity, the farmer speaks naturally into our offline speech-to-JSON engine *(Click sample: '12 kg mustard honey from hive 3' → click Extract)*.
 
-With our **Confirm-Before-Commit** safety protocol, the farmer reviews the extracted weight, hive ID, and flower type before signing. Clicking **Show QR** *(Click Show Harvest QR)* generates the offline cryptographic token for village collection. And with our language toggle *(Click 🌐 हिन्दी)*, the entire interface instantly switches to Hindi."
+Through our **Confirm-Before-Commit** safety protocol, the beekeeper reviews the extracted weight, hive number, and floral variety before signing. Clicking **Show QR** *(Click Show Harvest QR)* generates the offline cryptographic custody token for village collection. And using our language toggle *(Click 🌐 हिन्दी)*, the entire interface immediately switches to Hindi."
 
 ---
 
 ### [1:15 – 2:05] KVIC Officer: Multi-Farmer DAG Pooling
 *(Screen: Log in as Aditya Verma → Custody Ledger `/ledger`)*
 
-"Now, the beekeeper brings his honey cans to the village KVIC centre. We switch to **Aditya Verma, KVIC Custody Officer**.
+"Next, the beekeeper delivers his harvested containers to the village KVIC centre. We switch to **Aditya Verma, KVIC Custody Officer**.
 
-Real honey doesn't travel in a single straight line. Multiple farmers contribute to a collective lot. Traditional blockchains cannot represent this without fragmenting data.
+In authentic honey procurement, lots do not move in a single linear thread—multiple smallholder harvests converge into a single processing batch. Traditional linear blockchains cannot represent this without fragmenting provenance.
 
-HoneyChain uses a **Multi-Parent DAG convergence**: notice how harvests from Rameshwar, Sunita Devi, and Vikram Singh merge into a single 55kg **Collective Pool Block** *(Click # Proof Hash)* via deterministic hashing, strictly conserving mass balance. 
+HoneyChain utilizes a **Multi-Parent DAG convergence**: notice how harvests from Rameshwar, Sunita Devi, and Vikram Singh merge into a single 55-kilogram **Collective Pool Block** *(Click # Proof Hash)* via deterministic hashing, strictly preserving mass balance. 
 
-Every subsequent custody transfer—transport, processing, and packaging—appends an immutable block. We can also view the visual parent-child tree at any time on the **DAG Graph** *(Click DAG Graph)*."
+Every subsequent custody transfer—temperature-regulated transport, micro-filtration, and packaging—appends an immutable block. Evaluators can inspect the full parent-child provenance tree on the **DAG Graph** *(Click DAG Graph)*."
 
 ---
 
-### [2:05 – 2:40] Edge AI on Dead-Cheap Hardware ($4 ESP32 + Safety Gate)
+### [2:05 – 2:40] Edge AI on Low-Cost Hardware (₹350 ESP32 + Safety Gateway)
 *(Screen: AI Lab `/diagnose`)*
 
-"How does our AI work without expensive cloud subscriptions? It runs on dead-cheap edge hardware:
+"Our AI infrastructure operates without recurrent cloud subscriptions by utilizing accessible edge hardware:
 
-First, an in-hive acoustic sensor on a **$4 ESP32** analyzes worker bee hum vibrations every 4 seconds, detecting queenless colony distress with 95% accuracy offline.
+First, an in-hive acoustic sensor running on a **₹350 ESP32 microcontroller** analyzes colony vibration frequencies every 4 seconds, detecting queenless distress with 95% accuracy offline.
 
-Second, our offline advisory uses a **Deterministic Safety Gate**: if a farmer asks for chemical pesticide dosages *(Type: 'kitna formic acid dalna hai?' → click Ask Advisory)*, the model strictly refuses to hallucinate toxic milligrams and escalates to a certified veterinarian.
+Second, our offline advisory incorporates a **Deterministic Safety Gate**: if a farmer inquires about chemical pesticide dosages *(Type: 'kitna formic acid dalna hai?' → click Ask Advisory)*, the system refuses to suggest unverified dosages and automatically escalates to a certified veterinary officer.
 
-Third, our automated **FSSAI Compliance Engine** *(Click 'High Moisture (>20%)' → click Evaluate)* checks moisture and sugar limits before lab blocks can ever be minted."
+Third, our automated **FSSAI Compliance Engine** *(Click 'High Moisture (>20%)' → click Evaluate)* verifies moisture and sugar limits before any laboratory certification block can be committed to the chain."
 
 ---
 
 ### [2:40 – 3:15] Retail Consumer Purity Passport
 *(Screen: Open jar verify URL)*
 
-"Finally, when a consumer buys a jar of honey at Khadi Bhavan in New Delhi and scans the QR code, they land on the **Certified Pure Khadi Honey Passport**.
+"Finally, when a consumer purchases a jar of honey at Khadi Bhavan in New Delhi and scans the QR code, they receive the **Certified Pure Khadi Honey Passport**.
 
-It confirms the jar is genuine and frozen at retail, meaning this batch cannot be reused. It displays official NABL test results from **CBRTI Pune** confirming zero C4 corn sugar and zero C3 rice syrup adulteration. It verifies that farmer Rameshwar Patel received the official MSP of ₹225/kg via an Aadhaar Direct Benefit Transfer escrow.
+It confirms the jar is genuine and frozen at retail, preventing reuse. It presents accredited NABL test results from **CBRTI Pune**, certifying zero C4 corn sugar and zero C3 rice syrup adulteration. It also confirms that farmer Rameshwar Patel received the official Minimum Support Price of ₹225 per kilogram directly through an Aadhaar Direct Benefit Transfer escrow.
 
-And to stop label counterfeiting, our **Dual-Key Protocol** requires the paper cashier receipt code to claim ownership—preventing photocopied QR code fraud."
+To protect against label counterfeiting, our **Dual-Key Protocol** requires the paper cashier receipt code to claim ownership—rendering photocopied QR codes invalid."
 
 ---
 
 ### [3:15 – 3:30] Conclusion
 *(Screen: My Twin `/twin`)*
 
-"HoneyChain bridges the gap between rural beekeepers and modern retail shelves. By combining an offline-first DAG blockchain with edge AI on affordable microcontrollers, we eliminate adulteration, guarantee MSP to farmers, and give consumers complete faith in every drop of Khadi honey.
+"HoneyChain bridges the gap between rural beekeepers and retail consumers. By integrating an offline-first DAG blockchain with low-cost edge intelligence, we eliminate adulteration, secure guaranteed MSP for farmers, and restore complete consumer trust in authentic Khadi honey.
 
 Thank you!"
