@@ -100,10 +100,10 @@ export default function Graph() {
           {user && (
             <div className="ledger-filters">
               <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => { setScope("mine"); load("mine"); }}>
-                {role === "beekeeper" ? "My honey" : "My lots"}
+                {role === "beekeeper" ? "My honey" : "Interacted chains"}
               </button>
               <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => { setScope("all"); load("all"); }}>
-                Full chain
+                All chains
               </button>
             </div>
           )}
@@ -129,13 +129,6 @@ export default function Graph() {
           ))}
         </div>
         {searchMsg && <div className="form-msg error" style={{ marginTop: 8 }}>{searchMsg}</div>}
-        {scope === "mine" && scopeInfo && (
-          <div className="scope-note" style={{ marginTop: 8 }}>
-            {scopeInfo.type === "beekeeper"
-              ? `Tied to ${scopeInfo.beekeeper?.name || "your profile"} — your blocks plus every hop downstream.`
-              : `Lots you minted${scopeInfo.centre ? ` · ${scopeInfo.centre.name}` : ""} — plus where they travelled.`}
-          </div>
-        )}
       </div>
 
       <LedgerGraph
@@ -143,7 +136,7 @@ export default function Graph() {
         selected={selected}
         onSelect={pickBlock}
         dimStages={dimStages}
-        title={scope === "mine" && user ? "Personal graph" : "The living chain"}
+        title={scope === "mine" && user ? (role === "beekeeper" ? "My Honey Journey" : "Interacted Chains") : "All Chains"}
       />
 
       {selectedBlock ? (
@@ -183,9 +176,7 @@ export default function Graph() {
             <Link className="btn btn-outline" to="/ledger">Back to ledger</Link>
           </div>
         </div>
-      ) : (
-        <p className="dashboard-sub" style={{ textAlign: "center" }}>Click any node — or find it by hash — to inspect and verify it.</p>
-      )}
+      ) : null}
     </div>
   );
 }

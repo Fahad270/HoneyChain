@@ -178,27 +178,13 @@ export default function Ledger() {
 
   return (
     <div className="page-container ledger-page">
-      {!isBeekeeper && (
-        <div className="role-line">
-          <span className="badge">{isKvic ? "KVIC" : "Public view"}</span>
-          <span>
-            {isKvic
-              ? "Oversee village honey collection, collective lot pooling, laboratory clearance, and retail supply chain custody."
-              : "Browsing the chain in read-only public audit mode. Log in with an authorized account to append custody blocks."}
-          </span>
-          {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
-        </div>
-      )}
-
       <div className="pagehead">
         <div>
           <h1>{isBeekeeper ? t("harvest_logbook_title", "Harvest Logbook") : isKvic ? t("custody_ledger_title", "Blockchain Custody Ledger") : t("public_ledger_title", "Public Blockchain Ledger")}</h1>
           <p>
             {isBeekeeper
-              ? t("harvest_logbook_sub", "Record apiary honey extractions, verify quality standards, and sync with your village KVIC node.")
-              : isKvic
-                ? `${blocks.length} blocks · ${frozenCount} frozen · tip ${tip ? `${tip.hash.slice(0, 10)}…` : "—"} · KVIC multi-centre custody management`
-                : `${blocks.length} blocks · ${frozenCount} frozen · public immutable DAG chain · CBRTI NABL lab verified`}
+              ? "Apiary honey extraction records & village custody handoff"
+              : `${blocks.length} blocks on-chain · ${frozenCount} frozen at retail`}
           </p>
         </div>
         <div className="actions">
@@ -345,9 +331,6 @@ export default function Ledger() {
                           </div>
                           <div className="qr-meta">
                             <strong>Official Harvest Proof QR</strong>
-                            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--color-text-muted)" }}>
-                              Show this QR to the KVIC field officer during village collection to transfer custody and trigger your Aadhaar DBT payment.
-                            </p>
                           </div>
                         </div>
                       )}
@@ -404,19 +387,12 @@ export default function Ledger() {
             <div className="scope-bar">
               <div className="ledger-filters">
                 <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => switchScope("mine")}>
-                  My lots
+                  Interacted chains
                 </button>
                 <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => switchScope("all")}>
-                  Full chain
+                  All chains
                 </button>
               </div>
-              <span className="scope-note">
-                {scope === "mine"
-                  ? scopeInfo?.type === "officer"
-                    ? `Lots you minted${scopeInfo.centre ? ` · ${scopeInfo.centre.name}` : ""} — plus where they travelled.`
-                    : "Your personal view."
-                  : "Every block on the public chain."}
-              </span>
             </div>
           )}
           {scopeError && (
@@ -428,12 +404,9 @@ export default function Ledger() {
           {/* The graph — evocative, elucidatory: stages as lanes, pools converging. */}
           <LedgerGraph
             blocks={blocks}
-            title={scope === "mine" && user ? "Lots I touched" : "The living chain"}
+            title={scope === "mine" && user ? "Interacted chains" : "All chains"}
             onSelect={(b) => navigate(b.scan_secret ? `/verify/${b.hash}?s=${encodeURIComponent(b.scan_secret)}` : `/verify/${b.hash}`)}
           />
-          <div style={{ textAlign: "right", margin: "-10px 2px 16px" }}>
-            <Link className="qr-link" to="/graph">Open full graph explorer →</Link>
-          </div>
 
           {/* Workflow progress bar — diagram 1→9 */}
           <div className="card workflow-bar">
@@ -449,11 +422,6 @@ export default function Ledger() {
                   </div>
                 );
               })}
-            </div>
-            <div className="workflow-legend">
-              <span><span className="wf-dot on" style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, verticalAlign: "middle", marginRight: 6 }} />has block</span>
-              <span>3′ = collective pool (many → one)</span>
-              <span>Retail freezes • Consumer only verifies</span>
             </div>
           </div>
 
@@ -559,11 +527,7 @@ export default function Ledger() {
                                 ? "🏛️ Custody Handoff QR Code"
                                 : "🔍 Public Verification QR"}
                         </div>
-                        <p style={{ margin: "4px 0 8px", fontSize: 12, color: "var(--color-text-muted)", lineHeight: 1.4 }}>
-                          {isFrozen
-                            ? "Consumer authenticity token. Scan to view NABL lab tests and origin passport."
-                            : "Scan with mobile camera to verify custody and append next block."}
-                        </p>
+
                         <Link className="btn btn-outline btn-xs" style={{ width: "fit-content", padding: "4px 10px", fontSize: 11.5 }} to={`/verify/${b.hash}?s=${b.scan_secret}`}>
                           🔗 Open Verification Page ↗
                         </Link>
@@ -645,16 +609,6 @@ export default function Ledger() {
             </>
           ) : (
           <>
-          <p className="dashboard-sub" style={{ marginBottom: 12 }}>
-            Scan previous QR → paste hash → pick stage → add data. Collective pools many hashes with “pooled”.
-          </p>
-
-          <div className="role-hint" style={{ fontSize: 11, color: isBeekeeper ? "var(--color-success)" : "var(--color-primary)", background: isBeekeeper ? "var(--color-success-bg)" : "var(--color-primary-light)", padding: "8px 10px", borderRadius: 8, marginBottom: 12 }}>
-            {isBeekeeper
-              ? "Beekeeper: log your harvest as Honey Extraction with your genesis hash as previous block. Collection onward requires authorized KVIC custody."
-              : "KVIC: oversee the collective network from village collection to retail freeze. Supporting institutions: Primary Cooperatives, logistics fleet, processing facilities, CBRTI/NABL testing labs, and Khadi outlets."}
-          </div>
-
           {isBeekeeper && (
             <VoiceHarvestLogger
               defaultPrevHash={form.prev_hash || (blocks.length > 0 ? blocks[blocks.length - 1].hash : "")}
@@ -673,7 +627,7 @@ export default function Ledger() {
           <form onSubmit={handleCreate} className="create-form">
 
             <label className="field">
-              <span>Stage * — filtered by your role ({role})</span>
+              <span>Stage *</span>
               <select value={form.stage} onChange={(e) => setForm((f) => ({ ...f, stage: e.target.value }))}>
                 {allowedStages.map((k) => (
                   <option key={k} value={k}>{stageOptions[k]}</option>
@@ -683,60 +637,35 @@ export default function Ledger() {
 
             {form.stage === "pooled" ? (
               <label className="field">
-                <span>Prev hashes * (paste 2+ hashes, comma or newline separated — collective batches multiple farmers)</span>
+                <span>Parent Hashes (Comma-separated) *</span>
                 <textarea rows={3} value={form.prev_hashes} onChange={(e) => setForm((f) => ({ ...f, prev_hashes: e.target.value }))} placeholder="hash1, hash2, hash3 …" />
               </label>
             ) : (
               <label className="field">
-                <span>Prev hash (scan previous QR; leave blank only for genesis)</span>
-                <input value={form.prev_hash} onChange={(e) => setForm((f) => ({ ...f, prev_hash: e.target.value }))} placeholder="paste hash from QR above" />
+                <span>Previous Block Hash</span>
+                <input value={form.prev_hash} onChange={(e) => setForm((f) => ({ ...f, prev_hash: e.target.value }))} placeholder="paste hash from previous block" />
               </label>
             )}
 
             <label className="field">
-              <span>Collective name (for pooled / Khadi store)</span>
-              <input value={form.collective_name} onChange={(e) => setForm((f) => ({ ...f, collective_name: e.target.value }))} placeholder="Nashik Madhu Collective / Khadi India — Connaught Place" />
+              <span>Collective / Facility Name</span>
+              <input value={form.collective_name} onChange={(e) => setForm((f) => ({ ...f, collective_name: e.target.value }))} placeholder="Alwar Honey Producers Federation" />
             </label>
 
             <label className="field">
-              <span>Block data (JSON — any stage fields, hashed canonically)</span>
+              <span>Block Payload (JSON)</span>
               <textarea rows={7} value={form.dataRaw} onChange={(e) => setForm((f) => ({ ...f, dataRaw: e.target.value }))} />
             </label>
-
-            <div className="field-hint">
-              Examples: extraction (beekeeper) →{" "}
-              <code>{`{"hive_id":"HIVE-01","weight_kg":12,"flower_source":"mustard"}`}</code>
-              <br />
-              collection →{" "}
-              <code>{`{"quantity_kg":12,"flower_type":"mustard","collector_name":"Raigad Madhu Collective","destination_lab":"KVIC Lab Pune"}`}</code>
-              <br />
-              processing → <code>{`{"filtered":true,"pasteurized":true,"moisture":"18%","fssai":"ok"}`}</code>
-              <br />
-              lab →{" "}
-              <code>{`{"ca_number":"CA/KVIC/2024/118","cert_hash":"sha256:abc…","tester":"NABL Lab Pune","moisture":"17%","purity":"99%"}`}</code>
-            </div>
 
             {msg && <div className={`form-msg ${msg.type}`}>{msg.text}</div>}
 
             <button type="submit" className="btn btn-primary" disabled={creating || !allowedStages.includes(form.stage)} style={{ width: "100%", marginTop: 8 }}>
-              {creating ? "Minting…" : form.stage === "pooled" ? "Pool & mint convergent block" : "Mint block"}
+              {creating ? "Minting…" : form.stage === "pooled" ? "Pool & Mint Block" : "Mint Block"}
             </button>
-            {!allowedStages.includes(form.stage) && <div className="form-msg error">Not allowed for your {role} account.</div>}
+            {!allowedStages.includes(form.stage) && <div className="form-msg error">Not allowed for your account.</div>}
           </form>
           </>
           )}
-
-          <div className="ledger-help">
-            <h4>How the chain follows your diagram</h4>
-            <ol>
-              <li><strong>Reg</strong> → first block + QR shown right after Register</li>
-              <li><strong>Collective</strong> picks many farmer hashes → <em>pooled</em> (many→one)</li>
-              <li><strong>Processor</strong> scans pooled QR → adds <em>processing</em></li>
-              <li><strong>Lab</strong> scans processing QR → adds <em>lab_certified</em></li>
-              <li><strong>Retail</strong> scans → <em>retail</em> → chain <strong>freezes</strong></li>
-              <li><strong>Consumer</strong> at Khadi store only <Link to={tip ? `/verify/${tip.hash}` : "/verify"}>verifies</Link> — no writes</li>
-            </ol>
-          </div>
         </div>
       </div>
       </>

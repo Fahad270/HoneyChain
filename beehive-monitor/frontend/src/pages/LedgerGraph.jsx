@@ -103,8 +103,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
         <div>
           <div className="graph-title">{title}</div>
           <div className="graph-sub">
-            {blocks.length} block{blocks.length === 1 ? "" : "s"} · one column per stage, left (hive) to right (Khadi shelf) ·
-            converging lines are collective pools · <span className="graph-frozen-key">red = frozen at retail</span>
+            {blocks.length} block{blocks.length === 1 ? "" : "s"} on-chain
           </div>
         </div>
         <div className="graph-legend">
@@ -184,7 +183,6 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
           })}
         </svg>
       </div>
-      <div className="graph-foot">Click any node to open its Khadi verification card.</div>
     </div>
   );
 }

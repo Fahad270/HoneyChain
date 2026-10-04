@@ -152,22 +152,36 @@ function attributionMatch(b, beekeeperId) {
   return String(ref || "") === String(beekeeperId) || String(b.data?.beekeeperId || "") === String(beekeeperId);
 }
 
-function journeyFromSeeds(all, seeds) {
+function journeyFromSeeds(all, seeds, bidirectional = false) {
+  const byHash = new Map(all.map((b) => [b.hash, b]));
   const childrenMap = new Map();
+  const parentsMap = new Map();
   for (const b of all) {
     const parents = b.prev_hashes && b.prev_hashes.length ? b.prev_hashes : b.prev_hash ? [b.prev_hash] : [];
+    parentsMap.set(b.hash, parents);
     for (const p of parents) {
       if (!childrenMap.has(p)) childrenMap.set(p, []);
       childrenMap.get(p).push(b);
     }
   }
-  const visited = new Set(seeds);
-  const queue = [...seeds];
+  const visited = new Set(seeds.filter((s) => byHash.has(s)));
+  const queue = [...visited];
   while (queue.length) {
-    for (const kid of childrenMap.get(queue.shift()) || []) {
+    const curr = queue.shift();
+    // 1. Downstream: children
+    for (const kid of childrenMap.get(curr) || []) {
       if (!visited.has(kid.hash)) {
         visited.add(kid.hash);
         queue.push(kid.hash);
+      }
+    }
+    // 2. Upstream: parents (for officers to see full chain lineage)
+    if (bidirectional) {
+      for (const pHash of parentsMap.get(curr) || []) {
+        if (byHash.has(pHash) && !visited.has(pHash)) {
+          visited.add(pHash);
+          queue.push(pHash);
+        }
       }
     }
   }
@@ -192,7 +206,7 @@ async function getMine(req, res) {
       }
       const beekeeperDoc = await store.findBeekeeperById(me.beekeeperId);
       const seeds = all.filter((b) => attributionMatch(b, me.beekeeperId)).map((b) => b.hash);
-      const journey = journeyFromSeeds(all, seeds).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
+      const journey = journeyFromSeeds(all, seeds, false).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
       return res.json({
         success: true,
         data: {
@@ -212,7 +226,7 @@ async function getMine(req, res) {
 
     const mine = all.filter((b) => String(b.createdBy?.userId || "") === String(me._id));
     const seeds = mine.map((b) => b.hash);
-    const journey = journeyFromSeeds(all, seeds).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
+    const journey = journeyFromSeeds(all, seeds, true).map((b) => ({ ...b, stage_meta: stageMeta(b.stage) }));
     const centre = me.assignedCentreId
       ? require("../data/kvicDirectory").KVIC_CENTRES.find((c) => c.id === me.assignedCentreId) || null
       : null;

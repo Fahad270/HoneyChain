@@ -49,6 +49,32 @@ async function seed() {
       createdAt: "2026-10-01T09:00:00.000Z",
       updatedAt: "2026-10-01T09:00:00.000Z",
     },
+    {
+      _id: "bk_kailash04",
+      name: "Kailash Chand Verma",
+      aadhaarNo: "789012345678",
+      phoneNumber: "9876543213",
+      village: "Keoladeo Rural",
+      district: "Bharatpur",
+      state: "rajasthan",
+      noOfBeeColonies: 20,
+      status: "verified",
+      createdAt: "2026-10-01T09:30:00.000Z",
+      updatedAt: "2026-10-01T09:30:00.000Z",
+    },
+    {
+      _id: "bk_anita05",
+      name: "Anita Choudhary",
+      aadhaarNo: "890123456789",
+      phoneNumber: "9876543214",
+      village: "Bayana",
+      district: "Bharatpur",
+      state: "rajasthan",
+      noOfBeeColonies: 16,
+      status: "verified",
+      createdAt: "2026-10-01T10:00:00.000Z",
+      updatedAt: "2026-10-01T10:00:00.000Z",
+    },
   ];
 
   // 2. User Accounts
@@ -64,6 +90,30 @@ async function seed() {
       status: "active",
       createdAt: "2026-10-01T08:00:00.000Z",
       updatedAt: "2026-10-01T08:00:00.000Z",
+    },
+    {
+      _id: "user_bk_kailash04",
+      name: "Kailash Chand Verma",
+      phone: "9876543213",
+      email: "kailash@honeychain.org",
+      passwordHash,
+      role: "beekeeper",
+      beekeeperId: "bk_kailash04",
+      status: "active",
+      createdAt: "2026-10-01T09:30:00.000Z",
+      updatedAt: "2026-10-01T09:30:00.000Z",
+    },
+    {
+      _id: "user_bk_anita05",
+      name: "Anita Choudhary",
+      phone: "9876543214",
+      email: "anita@honeychain.org",
+      passwordHash,
+      role: "beekeeper",
+      beekeeperId: "bk_anita05",
+      status: "active",
+      createdAt: "2026-10-01T10:00:00.000Z",
+      updatedAt: "2026-10-01T10:00:00.000Z",
     },
     {
       _id: "user_kvic_aditya02",
@@ -428,6 +478,220 @@ async function seed() {
     createdAt: "2026-10-04T12:00:00.000Z",
   });
 
+  // =========================================================================
+  // --- CHAIN 2 (DEMO): Bharatpur Wild Berry Honey FPO -> Khadi Jaipur ---
+  // =========================================================================
+  // Kailash Chand Verma (Keoladeo Rural, Bharatpur)
+  const b2_1 = addLinearBlock({
+    stage: "beekeeper_registration",
+    prev_hash: null,
+    data: {
+      beekeeper_id: "bk_kailash04",
+      name: "Kailash Chand Verma",
+      village: "Keoladeo Rural",
+      district: "Bharatpur",
+      state: "Rajasthan",
+      noOfBeeColonies: 20,
+      aadhaar_masked: "XXXXXXXX5678",
+    },
+    beekeeper: "bk_kailash04",
+    createdBy: { userId: "user_bk_kailash04", name: "Kailash Chand Verma", role: "beekeeper" },
+    createdAt: "2026-10-01T10:15:00.000Z",
+  });
+
+  const b2_2 = addLinearBlock({
+    stage: "honey_extraction",
+    prev_hash: b2_1.hash,
+    data: {
+      hive_id: "HIVE-B1",
+      weight_kg: 18.0,
+      flower_source: "wild_berry",
+      harvest_date: "2026-10-02",
+      moisture_est_pct: 17.5,
+    },
+    beekeeper: "bk_kailash04",
+    createdBy: { userId: "user_bk_kailash04", name: "Kailash Chand Verma", role: "beekeeper" },
+    createdAt: "2026-10-02T08:30:00.000Z",
+  });
+
+  const b2_3 = addLinearBlock({
+    stage: "collection",
+    prev_hash: b2_2.hash,
+    data: {
+      collection_centre: "KVIC Bharatpur Village Mandi Node",
+      weight_received_kg: 18.0,
+      tare_weight_kg: 1.2,
+      net_honey_kg: 18.0,
+      moisture_refractometer_pct: 17.5,
+      quality_grade: "Grade A Raw",
+    },
+    beekeeper: "bk_kailash04",
+    createdBy: { userId: "user_kvic_dinesh", name: "Dinesh Kumar", role: "kvic", centreId: "kvic-bharatpur" },
+    createdAt: "2026-10-02T10:30:00.000Z",
+  });
+
+  // Anita Choudhary (Bayana, Bharatpur)
+  const b2_4 = addLinearBlock({
+    stage: "beekeeper_registration",
+    prev_hash: null,
+    data: {
+      beekeeper_id: "bk_anita05",
+      name: "Anita Choudhary",
+      village: "Bayana",
+      district: "Bharatpur",
+      state: "Rajasthan",
+      noOfBeeColonies: 16,
+      aadhaar_masked: "XXXXXXXX6789",
+    },
+    beekeeper: "bk_anita05",
+    createdBy: { userId: "user_bk_anita05", name: "Anita Choudhary", role: "beekeeper" },
+    createdAt: "2026-10-01T10:45:00.000Z",
+  });
+
+  const b2_5 = addLinearBlock({
+    stage: "honey_extraction",
+    prev_hash: b2_4.hash,
+    data: {
+      hive_id: "HIVE-A2",
+      weight_kg: 15.5,
+      flower_source: "wild_berry",
+      harvest_date: "2026-10-02",
+      moisture_est_pct: 17.8,
+    },
+    beekeeper: "bk_anita05",
+    createdBy: { userId: "user_bk_anita05", name: "Anita Choudhary", role: "beekeeper" },
+    createdAt: "2026-10-02T09:00:00.000Z",
+  });
+
+  const b2_6 = addLinearBlock({
+    stage: "collection",
+    prev_hash: b2_5.hash,
+    data: {
+      collection_centre: "KVIC Bharatpur Village Mandi Node",
+      weight_received_kg: 15.5,
+      tare_weight_kg: 1.1,
+      net_honey_kg: 15.5,
+      moisture_refractometer_pct: 17.8,
+      quality_grade: "Grade A Raw",
+    },
+    beekeeper: "bk_anita05",
+    createdBy: { userId: "user_kvic_dinesh", name: "Dinesh Kumar", role: "kvic", centreId: "kvic-bharatpur" },
+    createdAt: "2026-10-02T11:00:00.000Z",
+  });
+
+  // Collective Pool for Chain 2 — Minted by Aditya Verma (Nodal Officer)
+  const b2_Pool = addPooledBlock({
+    stage: "pooled",
+    prev_hashes: [b2_3.hash, b2_6.hash],
+    collective_name: "Bharatpur Organic Honey FPO",
+    data: {
+      lot_id: "LOT-BHP-2026-002",
+      total_weight_kg: 33.5,
+      member_farmers_count: 2,
+      flora: "Wild Berry & Ber (Ziziphus mauritiana)",
+      seal_id: "KVIC-SEAL-88931",
+    },
+    createdBy: { userId: "user_kvic_aditya02", name: "Aditya Verma", role: "kvic", centreId: "kvic-jaipur" },
+    createdAt: "2026-10-02T16:00:00.000Z",
+  });
+
+  const b2_Trans = addLinearBlock({
+    stage: "transport",
+    prev_hash: b2_Pool.hash,
+    data: {
+      transporter: "Rajasthan State Road Logistics",
+      vehicle_no: "RJ-05-GA-4419",
+      gps_trace_id: "GPS-TRK-RJ05-8812",
+      temperature_c: 23,
+      dispatch_time: "2026-10-03T07:00:00Z",
+      destination: "KVIC Processing Plant, Jaipur",
+    },
+    createdBy: { userId: "user_transport_mahesh", name: "Mahesh Gurjar", role: "transporter", centreId: "kvic-jaipur" },
+    createdAt: "2026-10-03T07:00:00.000Z",
+  });
+
+  const b2_Proc = addLinearBlock({
+    stage: "processing",
+    prev_hash: b2_Trans.hash,
+    data: {
+      facility: "KVIC State Processing Facility, Jaipur",
+      filtration_mesh: 80,
+      settling_hours: 48,
+      temperature_c: 41,
+      raw_unheated: true,
+      enzyme_activity_guaranteed: true,
+    },
+    qa: { passed: true, inspection_officer: "Dr. K. S. Rathore", date: "2026-10-03" },
+    createdBy: { userId: "user_proc_dr_rathore", name: "Dr. K. S. Rathore", role: "processor", centreId: "kvic-jaipur" },
+    createdAt: "2026-10-03T12:00:00.000Z",
+  });
+
+  const b2_Lab = addLinearBlock({
+    stage: "lab_certified",
+    prev_hash: b2_Proc.hash,
+    data: {
+      lab_name: "Central Bee Research & Training Institute (CBRTI), Pune",
+      nabl_accr_no: "TC-5489",
+      test_standard: "FSSAI Honey Standards (Gazette 2020) & Agmark Special Grade",
+      certificate_no: "CBRTI-QC-2026-10-00892",
+      moisture_pct: 17.6,
+      c4_sugars_pct: 0.4,
+      c3_sugars_pct: 0.1,
+      hmf_mg_per_kg: 11.8,
+      diastase_activity_dn: 14.5,
+      fructose_pct: 39.4,
+      glucose_pct: 32.1,
+      fg_ratio: 1.23,
+      sucrose_pct: 1.5,
+      pollen_profile: "Monofloral Wild Berry >78%",
+      antibiotics: "ND (Not Detected)",
+    },
+    createdBy: { userId: "user_cbrti_dr_sharma", name: "Dr. Sneha Sharma", role: "lab_analyst", centreId: "cbrti-pune" },
+    createdAt: "2026-10-03T17:00:00.000Z",
+  });
+
+  const b2_Pack = addLinearBlock({
+    stage: "packaging",
+    prev_hash: b2_Lab.hash,
+    data: {
+      packager: "KVIC Automated Packaging Unit, Jaipur",
+      jar_type: "Glass Jar with Tamper-Evident NFC & QR Seal",
+      net_weight_g: 500,
+      total_units_packed: 67,
+      batch_code: "KHADI-RAW-BERRY-500G-B02",
+      best_before: "2028-10-03",
+    },
+    createdBy: { userId: "user_pack_anil", name: "Anil Kumar", role: "packager", centreId: "kvic-jaipur" },
+    createdAt: "2026-10-03T19:00:00.000Z",
+  });
+
+  const b2_Dist = addLinearBlock({
+    stage: "distribution",
+    prev_hash: b2_Pack.hash,
+    data: {
+      distributor: "KVIC Rajasthan State Distribution",
+      dispatch_manifest: "MANIFEST-JAIPUR-009",
+      consignee: "Khadi Gramodyog Bhavan, JLN Marg, Jaipur 302004",
+    },
+    createdBy: { userId: "user_dist_harish", name: "Harish Chander", role: "distributor", centreId: "kvic-delhi" },
+    createdAt: "2026-10-04T06:00:00.000Z",
+  });
+
+  const b2_Retail = addLinearBlock({
+    stage: "retail",
+    prev_hash: b2_Dist.hash,
+    is_frozen: true,
+    data: {
+      store: "Khadi Gramodyog Bhavan, JLN Marg, Jaipur 302004",
+      shelf_date: "2026-10-04",
+      retail_price_inr: 375,
+      qr_verified: true,
+      offlineStoreId: "khadi-jaipur",
+    },
+    createdBy: { userId: "user_retail_rajendra", name: "Rajendra Prasad", role: "retailer", centreId: "khadi-jaipur" },
+    createdAt: "2026-10-04T09:30:00.000Z",
+  });
+
   // 4. Jars
   const jars = [
     {
@@ -461,6 +725,38 @@ async function seed() {
       verifyCount: 0,
       createdAt: "2026-10-04T09:30:00.000Z",
       updatedAt: "2026-10-04T09:30:00.000Z",
+    },
+    {
+      _id: "jar_003",
+      jarSerial: "KHADI-BERRY-2026-0001",
+      hash: b2_Retail.hash,
+      publicKey: sha256(`KHADI-BERRY-2026-0001|${b2_Retail.hash}`),
+      packagingHash: b2_Pack.hash,
+      sold: true,
+      channel: "offline",
+      platform: "Khadi Gramodyog Bhavan",
+      storeName: "Khadi Gramodyog Bhavan, JLN Marg, Jaipur",
+      billNo: "BILL-KGB-JPR-2026-4401",
+      offlineStoreId: "khadi-jaipur",
+      verifyCount: 1,
+      lastVerifiedAt: "2026-10-04T10:30:00.000Z",
+      firstVerifiedAt: "2026-10-04T10:30:00.000Z",
+      createdAt: "2026-10-04T09:45:00.000Z",
+      updatedAt: "2026-10-04T10:30:00.000Z",
+    },
+    {
+      _id: "jar_004",
+      jarSerial: "KHADI-BERRY-2026-0002",
+      hash: b2_Retail.hash,
+      publicKey: sha256(`KHADI-BERRY-2026-0002|${b2_Retail.hash}`),
+      packagingHash: b2_Pack.hash,
+      sold: false,
+      channel: "offline",
+      storeName: "Khadi Gramodyog Bhavan, JLN Marg, Jaipur",
+      offlineStoreId: "khadi-jaipur",
+      verifyCount: 0,
+      createdAt: "2026-10-04T09:45:00.000Z",
+      updatedAt: "2026-10-04T09:45:00.000Z",
     },
   ];
 
