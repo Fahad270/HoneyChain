@@ -39,7 +39,7 @@ export default function App() {
             Madhu Shakti · HoneyChain
           </span>
           <span>Beekeeper → Collective → Processor → Lab → Khadi · every hop a block, every jar a proof</span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>SHA256 · DAG · IPFS</span>
+          <span style={{ fontFamily: "monospace", fontSize: 11 }}>SHA256 · DAG · IPFS</span>
         </div>
       </footer>
     </div>

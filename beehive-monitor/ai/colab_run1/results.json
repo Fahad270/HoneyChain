@@ -1,0 +1,73 @@
+{
+  "classes": [
+    "queenless",
+    "queenright",
+    "swarming-or-piping"
+  ],
+  "n": 90,
+  "mlp_holdout_acc": 0.8888888888888888,
+  "cnn_holdout_acc": 0.6666666865348816,
+  "cnn_params": 4995,
+  "per_class": {
+    "queenless": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "queenright": {
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8
+    },
+    "swarming-or-piping": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571
+    }
+  },
+  "mlp_confusion": [
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      0,
+      4,
+      2
+    ],
+    [
+      0,
+      0,
+      6
+    ]
+  ],
+  "cnn_confusion": [
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      6
+    ]
+  ],
+  "loho_accs": [
+    1.0,
+    0.875,
+    0.8095238095238095,
+    1.0
+  ],
+  "mean_loho_acc": 0.9211309523809523,
+  "mel_norm": {
+    "mean": -1.5818829536437988,
+    "std": 0.530550479888916
+  }
+}
