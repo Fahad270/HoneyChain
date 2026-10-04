@@ -88,19 +88,19 @@ export default function Graph() {
 
   return (
     <div className="page-container graph-page">
-      <div className="kicker">Supply-chain DAG · Live</div>
-      <h1 className="section-title">Chain <em>Graph</em></h1>
-      <p className="dashboard-sub">
-        Every block a node, every handoff an edge. Columns are workflow stages —
-        converging lines are collective pools where many farmers become one lot.
-      </p>
+      <div className="pagehead">
+        <div>
+          <h1>Chain graph</h1>
+          <p>Every block a node, every handoff an edge — converging lines are collective pools.</p>
+        </div>
+      </div>
 
       <div className="card graph-controls">
         <div className="graph-controls-row">
           {user && (
             <div className="ledger-filters">
               <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => { setScope("mine"); load("mine"); }}>
-                {role === "beekeeper" ? "🍯 My honey" : "🏛️ My lots"}
+                {role === "beekeeper" ? "My honey" : "My lots"}
               </button>
               <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => { setScope("all"); load("all"); }}>
                 Full chain

@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon --ignore \"**/runtime-store.json\" --ignore \"**/logs/**\" --ignore \"**/registry-key.txt\" server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

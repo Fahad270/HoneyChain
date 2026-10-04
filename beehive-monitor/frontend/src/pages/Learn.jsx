@@ -25,15 +25,12 @@ export default function Learn() {
 
   return (
     <div className="page-container">
-      <div className="learn-head">
+      <div className="pagehead">
         <div>
-          <div className="kicker">NBHM upskilling · 3 languages</div>
-          <h1>Skill Building</h1>
-          <p className="dashboard-sub">
-            Short lessons from NBHM's upskilling initiative — watch in whichever language works for you.
-          </p>
+          <h1>Skill building</h1>
+          <p>NBHM upskilling lessons · English / हिंदी / मराठी</p>
         </div>
-        <div className="lang-toggle">
+        <div className="actions lang-toggle">
           {LANGUAGES.map((l) => (
             <button
               key={l.key}

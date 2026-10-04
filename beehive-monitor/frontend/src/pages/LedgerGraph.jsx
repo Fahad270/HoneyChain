@@ -9,16 +9,16 @@ import "./LedgerGraph.css";
 
 // Node colors per stage (order/labels/icons shared via stages.js).
 const STAGE_COLORS = {
-  beekeeper_registration: { fill: "#E4EFE8", stroke: "#14503F", text: "#0C2E25" },
-  honey_extraction: { fill: "#E9F6ED", stroke: "#1E7A4C", text: "#14532D" },
+  beekeeper_registration: { fill: "#e6ece1", stroke: "#2e4b3c", text: "#1e3529" },
+  honey_extraction: { fill: "#e9f0e6", stroke: "#3e7a4e", text: "#2c5a37" },
   collection: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  pooled: { fill: "#FFF3D4", stroke: "#B87F22", text: "#5C3F06", dashed: true },
+  pooled: { fill: "#faf3df", stroke: "#b97f1f", text: "#5c430c", dashed: true },
   transport: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
   processing: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  lab_certified: { fill: "#EFE7FB", stroke: "#6D3BC7", text: "#3E2273" },
+  lab_certified: { fill: "#ece7f0", stroke: "#6a5a8a", text: "#453a5c" },
   packaging: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
   distribution: { fill: "#E7EEFB", stroke: "#2B4EA3", text: "#1E2F66" },
-  retail: { fill: "#FBEAE8", stroke: "#C0453B", text: "#8A231C" },
+  retail: { fill: "#f9e9e4", stroke: "#b0472e", text: "#7c3a24" },
 };
 
 function stageStyle(stage) {
@@ -108,10 +108,10 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
           </div>
         </div>
         <div className="graph-legend">
-          <span><i style={{ background: "#1E7A4C" }} />beekeeper</span>
-          <span><i style={{ background: "#2B4EA3" }} />kvic chain</span>
-          <span><i style={{ background: "#B87F22" }} />pooled</span>
-          <span><i style={{ background: "#C0453B" }} />retail freeze</span>
+          <span><i style={{ background: "#3e7a4e" }} />beekeeper</span>
+          <span><i style={{ background: "#3b5a8a" }} />kvic chain</span>
+          <span><i style={{ background: "#b97f1f" }} />pooled</span>
+          <span><i style={{ background: "#b0472e" }} />retail freeze</span>
         </div>
       </div>
       <div className="graph-scroll">
@@ -164,7 +164,7 @@ export default function LedgerGraph({ blocks = [], selected = null, onSelect = n
                   height={NODE_H}
                   rx={14}
                   fill={st.fill}
-                  stroke={isSel ? "#0C2E25" : st.stroke}
+                  stroke={isSel ? "#20241f" : st.stroke}
                   strokeWidth={isSel ? 3 : b.is_frozen ? 2.5 : 1.5}
                   strokeDasharray={st.dashed ? "7 4" : b.is_frozen ? "" : ""}
                   className="graph-node-rect"

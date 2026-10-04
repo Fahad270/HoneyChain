@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
+import BeeMark from "./components/BeeMark.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Learn from "./pages/Learn.jsx";
@@ -34,7 +35,7 @@ export default function App() {
       <footer className="app-footer">
         <div className="app-footer-inner">
           <span className="app-footer-brand">
-            <span className="app-footer-hex">🐝</span>
+            <BeeMark size={28} />
             Madhu Shakti · HoneyChain
           </span>
           <span>Beekeeper → Collective → Processor → Lab → Khadi · every hop a block, every jar a proof</span>

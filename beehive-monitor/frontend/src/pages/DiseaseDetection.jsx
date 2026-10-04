@@ -7,11 +7,12 @@ const SEASONS = ["spring", "summer", "monsoon", "autumn", "winter"];
 export default function DiseaseDetection() {
   return (
     <div className="page-container">
-      <div className="kicker">AI Lab · Vision + RAG Advisory + Standards</div>
-      <h1 className="section-title">Disease Detection, Advisory <span className="amp">&</span> <em>Standards</em></h1>
-      <p className="dashboard-sub">
-        Offline-first advisory: quoted extension cards, deterministic FSSAI compliance verification, and crop yield trends.
-      </p>
+      <div className="pagehead">
+        <div>
+          <h1>AI Lab</h1>
+          <p>Vision disease check · field advisory · FSSAI lab standards · reference library</p>
+        </div>
+      </div>
       <div className="diagnose-layout">
         <DiseasePanel />
         <ProductivityPanel />

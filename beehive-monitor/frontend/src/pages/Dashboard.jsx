@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import api from "../api.js";
+import HiveComb from "../components/HiveComb.jsx";
 import "./Dashboard.css";
 
 const STATUS_LABEL = { healthy: "Healthy", warning: "Attention", critical: "Critical" };
@@ -43,41 +45,50 @@ export default function Dashboard() {
     [hives]
   );
 
-  const rows = [];
-  for (let i = 0; i < hives.length; i += 5) rows.push(hives.slice(i, i + 5));
+  const avgTemp = useMemo(() => {
+    if (!hives.length) return "—";
+    const ts = hives.map((h) => Number(h.temp)).filter((t) => Number.isFinite(t));
+    if (!ts.length) return "—";
+    return (ts.reduce((a, b) => a + b, 0) / ts.length).toFixed(1) + "°";
+  }, [hives]);
 
   if (loading) return <div className="page-container">Loading hive data…</div>;
 
   return (
     <div className="page-container">
-      <div className="dashboard-topbar">
+      <div className="pagehead">
         <div>
-          <div className="kicker">Live apiary · Mock telemetry</div>
-          <h1>Apiary Overview</h1>
-          <p className="dashboard-sub">{hives.length} hives · ideal brood temperature is 35°C · tap a comb to inspect</p>
+          <h1>Hives</h1>
+          <p className="dashboard-sub">{hives.length} hives · ideal brood temperature is 35°C · synced just now</p>
         </div>
-        <div className="stat-row">
-          <Stat label="Healthy" value={counts.healthy} color="var(--color-success)" />
-          <Stat label="Attention" value={counts.warning} color="var(--color-warning)" />
-          <Stat label="Critical" value={counts.critical} color="var(--color-danger)" />
+        <div className="actions">
+          <Link className="btn btn-outline" to="/map">Map view</Link>
+          <Link className="btn btn-primary" to="/ledger">+ Log harvest</Link>
         </div>
+      </div>
+
+      {weather && (
+        <div className="card weather-strip">
+          <div className="w-temp"><b>{weather.tempC}°C</b><span>Apiary weather</span></div>
+          <div className="w-cell"><b>{weather.humidity}%</b><span>Humidity</span></div>
+          <div className="w-cell"><b>{weather.wind} km/h</b><span>Wind</span></div>
+          <div className="w-cell"><b>{weather.pressure} hPa</b><span>Pressure</span></div>
+          <div className="w-cell"><b>35°C</b><span>Brood ideal</span></div>
+          {weather.note && <div className="w-note"><b>Advisory:</b> {weather.note}</div>}
+        </div>
+      )}
+
+      <div className="stat-row">
+        <Stat label="Healthy" value={counts.healthy} color="var(--color-success)" />
+        <Stat label="Attention" value={counts.warning} color="var(--color-warning)" />
+        <Stat label="Critical" value={counts.critical} color="var(--color-danger)" />
+        <Stat label="Avg brood °C" value={avgTemp} color="var(--color-ink)" />
       </div>
 
       <div className="dashboard-layout">
         <div className="dashboard-left">
           <div className="card">
-            <h3>Weather &amp; India climate context</h3>
-            {weather && (
-              <div className="weather-row">
-                <div className="weather-temp">{weather.tempC}°C</div>
-                <div className="weather-meta">
-                  <div>Humidity {weather.humidity}%</div>
-                  <div>Wind {weather.wind} km/h</div>
-                  <div>Pressure {weather.pressure} hPa</div>
-                </div>
-              </div>
-            )}
-            {weather && <p className="weather-note">{weather.note}</p>}
+            <h3>India climate context</h3>
             <div className="climate-facts">
               <ClimateFact
                 title="Monsoon"
@@ -95,27 +106,11 @@ export default function Dashboard() {
           </div>
 
           <div className="card">
-            <h3>Hives — tap to inspect</h3>
-            <div className="hex-wrap">
-              {rows.map((row, ri) => (
-                <div className={"hex-row" + (ri % 2 === 1 ? " odd" : "")} key={ri}>
-                  {row.map((h) => (
-                    <button
-                      key={h.id}
-                      className={`hex hex-${h.status}` + (h.id === selectedId ? " active" : "")}
-                      onClick={() => setSelectedId(h.id)}
-                      title={h.name}
-                    >
-                      <span className="hex-n">#{h.id + 1}</span>
-                      <span className="hex-v">{h.temp}°</span>
-                    </button>
-                  ))}
-                </div>
-              ))}
-            </div>
+            <h3>Hives — tap a cell to inspect</h3>
+            <HiveComb hives={hives} selectedId={selectedId} onSelect={setSelectedId} />
             <div className="legend">
-              <LegendItem color="var(--color-success)" label="Healthy" />
-              <LegendItem color="var(--color-warning)" label="Attention" />
+              <LegendItem color="var(--comb-healthy)" label="Healthy" />
+              <LegendItem color="var(--comb-warn)" label="Attention" />
               <LegendItem color="var(--color-danger)" label="Critical" />
             </div>
           </div>
@@ -155,12 +150,12 @@ export default function Dashboard() {
             <div className="chart-label">24h brood temp &amp; humidity</div>
             <ResponsiveContainer width="100%" height={150}>
               <LineChart data={selected.tempHistory} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#E1DFD3" vertical={false} />
+                <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="t" tick={{ fontSize: 10 }} interval={3} tickLine={false} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={42} domain={["dataMin - 1", "dataMax + 1"]} />
                 <Tooltip />
-                <Line type="monotone" dataKey="temp" stroke="#E3A23D" strokeWidth={2} dot={false} name="Temp °C" />
-                <Line type="monotone" dataKey="hum" stroke="#1F5D50" strokeWidth={2} dot={false} name="Humidity %" />
+                <Line type="monotone" dataKey="temp" stroke="var(--color-accent)" strokeWidth={2} dot={false} name="Temp °C" />
+                <Line type="monotone" dataKey="hum" stroke="var(--color-primary)" strokeWidth={2} dot={false} name="Humidity %" />
               </LineChart>
             </ResponsiveContainer>
 
@@ -169,15 +164,15 @@ export default function Dashboard() {
               <AreaChart data={selected.weightHistory} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2F8558" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#2F8558" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#3e7a4e" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="#3e7a4e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#E1DFD3" vertical={false} />
+                <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10 }} tickLine={false} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={42} domain={["dataMin - 1", "dataMax + 1"]} />
                 <Tooltip />
-                <Area type="monotone" dataKey="weight" stroke="#2F8558" strokeWidth={2} fill="url(#wfill)" />
+                <Area type="monotone" dataKey="weight" stroke="var(--color-success)" strokeWidth={2} fill="url(#wfill)" />
               </AreaChart>
             </ResponsiveContainer>
 
