@@ -131,9 +131,12 @@ export default function Account() {
     const beekeeper = meData?.beekeeper || null;
     return (
       <div className="page-container account-page">
-        <div className="kicker">Two-tier account · {user.role === "kvic" ? "KVIC staff" : "Beekeeper"}</div>
-        <h1 className="section-title">Your <em>Account</em></h1>
-        <p className="dashboard-sub">Your tier comes from this account and travels in the login token — there is no role switch.</p>
+        <div className="pagehead">
+          <div>
+            <h1>Account</h1>
+            <p>Your tier comes from this account and travels in the login token — there is no role switch.</p>
+          </div>
+        </div>
 
         <div className="account-grid">
           <div className="card account-card">
@@ -225,9 +228,12 @@ export default function Account() {
 
   return (
     <div className="page-container account-page">
-      <div className="kicker">Two-tier access · Beekeeper &amp; KVIC</div>
-      <h1 className="section-title">Account <em>Access</em></h1>
-      <p className="dashboard-sub">One login, two tiers. Beekeepers own steps 1–2, KVIC staff run steps 3–8 — enforced by the server on every write.</p>
+      <div className="pagehead">
+        <div>
+          <h1>Account</h1>
+          <p>One login, two tiers — enforced by the server on every write.</p>
+        </div>
+      </div>
 
       <div className="account-grid">
         <div className="card account-card">

@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useRole } from "../context/RoleContext.jsx";
+import BeeMark from "./BeeMark.jsx";
 import "./Navbar.css";
 
 const links = [
-  { to: "/", label: "Register", end: true, icon: "📝" },
-  { to: "/dashboard", label: "Hives", icon: "⬡" },
-  { to: "/map", label: "Map", icon: "🗺️" },
-  { to: "/ledger", label: "Ledger", icon: "🔗" },
-  { to: "/graph", label: "Graph", icon: "📊" },
-  { to: "/twin", label: "My Twin", icon: "🍯" },
-  { to: "/learn", label: "Learn", icon: "🎓" },
-  { to: "/diagnose", label: "AI Lab", icon: "🔬" },
+  { to: "/", label: "Register", end: true },
+  { to: "/dashboard", label: "Hives" },
+  { to: "/map", label: "Map" },
+  { to: "/ledger", label: "Ledger" },
+  { to: "/graph", label: "Graph" },
+  { to: "/twin", label: "My Twin" },
+  { to: "/learn", label: "Learn" },
+  { to: "/diagnose", label: "AI Lab" },
 ];
 
 export default function Navbar() {
@@ -27,10 +28,9 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar-glow" aria-hidden />
       <div className="navbar-inner">
         <Link className="navbar-brand" to="/" onClick={() => setOpen(false)}>
-          <span className="brand-hex" aria-hidden>🐝</span>
+          <BeeMark size={32} />
           <span className="brand-text">
             <span className="brand-name">Madhu Shakti</span>
             <span className="brand-sub">HoneyChain · NBHM</span>
@@ -55,7 +55,6 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
               className={({ isActive }) => "navbar-link" + (isActive ? " active" : "")}
             >
-              <span className="nav-ico" aria-hidden>{l.icon}</span>
               {l.label}
             </NavLink>
           ))}

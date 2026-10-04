@@ -7,11 +7,12 @@ const SEASONS = ["spring", "summer", "monsoon", "autumn", "winter"];
 export default function DiseaseDetection() {
   return (
     <div className="page-container">
-      <div className="kicker">AI Lab · Vision + Yield</div>
-      <h1 className="section-title">Disease Detection <span className="amp">&</span> <em>Yield Prediction</em></h1>
-      <p className="dashboard-sub">
-        Upload a photo for a quick visual read, or estimate expected honey yield from current sensor trends.
-      </p>
+      <div className="pagehead">
+        <div>
+          <h1>AI Lab</h1>
+          <p>Vision disease check + explainable yield estimate</p>
+        </div>
+      </div>
       <div className="diagnose-layout">
         <DiseasePanel />
         <ProductivityPanel />

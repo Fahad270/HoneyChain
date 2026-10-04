@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Popup, CircleMarker, useMap } from "react-leaflet";
+import { MapContainer, Popup, CircleMarker, useMap } from "react-leaflet";
 import { Link } from "react-router-dom";
 import api from "../api.js";
 import L from "leaflet";
@@ -7,8 +7,36 @@ import "./Map.css";
 
 const INDIA_CENTER = [22.5, 79.5];
 
+// TileLayer that retries failed tiles with backoff instead of dropping them.
+// Beekeepers open this map on patchy rural networks — a dropped tile there
+// is usually congestion, not a dead URL.
+const RetryTileLayer = L.TileLayer.extend({
+  _tileOnError(done, tile) {
+    const tries = (tile._retryCount || 0) + 1;
+    if (tries <= 3) {
+      tile._retryCount = tries;
+      setTimeout(() => { tile.src = tile.src; }, 500 * tries);
+    } else {
+      L.TileLayer.prototype._tileOnError.call(this, done, tile);
+    }
+  },
+});
+
 const KIND_COLORS = { kvic: "#2563eb", gov: "#f59e0b", khadi: "#7c3aed", training: "#0d9488" };
 const LEVEL_LABEL = { headquarters: "HQ", zonal: "Zonal", state: "State", divisional: "Divisional", store: "Khadi store", institute: "Institute", board: "Board" };
+
+function RetryTiles() {
+  const map = useMap();
+  useEffect(() => {
+    const layer = new RetryTileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+      { attribution: "Tiles © Esri — Source: Esri, HERE, Garmin, OpenStreetMap contributors" }
+    );
+    layer.addTo(map);
+    return () => { map.removeLayer(layer); };
+  }, [map]);
+  return null;
+}
 
 function FixLeafletIcons() {
   const map = useMap();
@@ -52,34 +80,26 @@ export default function MapPage() {
 
   return (
     <div className="page-container map-page">
-      <div className="map-head">
+      <div className="pagehead">
         <div>
-          <div className="ledger-kicker">Honey Chain • India Clusters</div>
-          <h1>Bee Farmer Clusters <span className="amp">&</span> KVIC Centres</h1>
-          <p className="dashboard-sub">
-            {centres.length} real, published KVIC / Khadi / beekeeping offices across India — addresses from the
-            PMEGP directory, kvic.gov.in and nbb.gov.in (pins are city-level; the street address is authoritative).
-            Clusters show bee farmer collectives with their assigned collectors.
-          </p>
+          <h1>Clusters &amp; KVIC centres</h1>
+          <p>{centres.length} published offices · pins are city-level, street address is authoritative</p>
         </div>
-        <div className="map-legend">
-          <span><span className="legend-dot kvic" />KVIC Centre</span>
-          <span><span className="legend-dot gov" />Gov Institution</span>
-          <span><span className="legend-dot khadi" />Khadi Centre</span>
-          <span><span className="legend-dot training" />Bee Institute</span>
-          <span><span className="legend-dot farmer" />Bee Farmer</span>
-          <span><span className="legend-dot cluster" />Cluster Centre</span>
-        </div>
+      </div>
+      <div className="map-legend">
+        <span><span className="legend-dot kvic" />KVIC Centre</span>
+        <span><span className="legend-dot gov" />Gov Institution</span>
+        <span><span className="legend-dot khadi" />Khadi Centre</span>
+        <span><span className="legend-dot training" />Bee Institute</span>
+        <span><span className="legend-dot farmer" />Bee Farmer</span>
+        <span><span className="legend-dot cluster" />Cluster Centre</span>
       </div>
 
       <div className="map-layout">
         <div className="map-container">
           <MapContainer center={INDIA_CENTER} zoom={5} style={{ height: "100%", width: "100%", borderRadius: 12 }}>
             <FixLeafletIcons />
-            <TileLayer
-              attribution='Tiles &copy; Esri &mdash; Source: Esri, HERE, Garmin, <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
-            />
+            <RetryTiles />
 
             {centres.map((c) => {
               const color = KIND_COLORS[c.kind] || "#7c3aed";
@@ -150,10 +170,10 @@ export default function MapPage() {
 
         <div className="map-sidebar">
           <div className="card">
-            <h3>Real KVIC centres</h3>
+            <h3>KVIC centres ({centres.length})</h3>
             <p className="dashboard-sub">Published offices — pick one for address, source and staff.</p>
             <label className="field" style={{ marginTop: 10 }}>
-              <span>Centre ({centres.length})</span>
+              <span>Centre</span>
               <select value={selectedCentre || ""} onChange={(e) => setSelectedCentre(e.target.value || null)}>
                 <option value="">— Select —</option>
                 {centres.map((c) => (
@@ -161,50 +181,49 @@ export default function MapPage() {
                 ))}
               </select>
             </label>
-          </div>
-
-          {selectedCentreData && (
-            <div className="card cluster-detail">
-              <h3>{selectedCentreData.name}</h3>
-              <div className="detail-grid">
-                <div className="detail-row"><span>Level</span><strong>{LEVEL_LABEL[selectedCentreData.level] || selectedCentreData.level || "—"}</strong></div>
-                <div className="detail-row"><span>Address</span><strong>{selectedCentreData.address}{selectedCentreData.pin ? ` — ${selectedCentreData.pin}` : ""}</strong></div>
-                {selectedCentreData.phone && <div className="detail-row"><span>Phone</span><strong>{selectedCentreData.phone}</strong></div>}
-                {selectedCentreData.email && <div className="detail-row"><span>Email</span><strong>{selectedCentreData.email}</strong></div>}
-                <div className="detail-row"><span>Source</span><strong>{selectedCentreData.verified === "official" ? "✓ published" : "directory listing"}</strong></div>
-                {(selectedCentreData.clusters || []).length > 0 && (
-                  <div className="detail-row"><span>Honey clusters</span><strong>{selectedCentreData.clusters.map((c) => c.name).join(", ")}</strong></div>
+            {selectedCentreData && (
+              <div className="inline-detail">
+                <h3>{selectedCentreData.name}</h3>
+                <div className="detail-grid">
+                  <div className="detail-row"><span>Level</span><strong>{LEVEL_LABEL[selectedCentreData.level] || selectedCentreData.level || "—"}</strong></div>
+                  <div className="detail-row"><span>Address</span><strong>{selectedCentreData.address}{selectedCentreData.pin ? ` — ${selectedCentreData.pin}` : ""}</strong></div>
+                  {selectedCentreData.phone && <div className="detail-row"><span>Phone</span><strong>{selectedCentreData.phone}</strong></div>}
+                  {selectedCentreData.email && <div className="detail-row"><span>Email</span><strong>{selectedCentreData.email}</strong></div>}
+                  <div className="detail-row"><span>Source</span><strong>{selectedCentreData.verified === "official" ? "✓ published" : "directory listing"}</strong></div>
+                  {(selectedCentreData.clusters || []).length > 0 && (
+                    <div className="detail-row"><span>Honey clusters</span><strong>{selectedCentreData.clusters.map((c) => c.name).join(", ")}</strong></div>
+                  )}
+                </div>
+                {(selectedCentreData.staff || []).length > 0 ? (
+                  <>
+                    <h4 style={{ marginTop: 12 }}>Claimed staff ({selectedCentreData.staff.length})</h4>
+                    <div className="farmer-list">
+                      {selectedCentreData.staff.map((s, i) => (
+                        <div key={i} className="farmer-item card" style={{ padding: 10, marginBottom: 8 }}>
+                          <div className="farmer-head">
+                            <strong>{s.name}</strong>
+                            {!s.centreVerified && <span className="badge">self-asserted</span>}
+                          </div>
+                          <div className="farmer-meta">
+                            <span>{[s.designation, s.orgName].filter(Boolean).join(" · ") || "KVIC staff"}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="dashboard-sub" style={{ marginTop: 10 }}>No staff claimed this centre yet — <Link to="/account">create a KVIC account</Link> to attach.</p>
                 )}
               </div>
-              {(selectedCentreData.staff || []).length > 0 ? (
-                <>
-                  <h4 style={{ marginTop: 12 }}>Claimed staff ({selectedCentreData.staff.length})</h4>
-                  <div className="farmer-list">
-                    {selectedCentreData.staff.map((s, i) => (
-                      <div key={i} className="farmer-item card" style={{ padding: 10, marginBottom: 8 }}>
-                        <div className="farmer-head">
-                          <strong>{s.name}</strong>
-                          {!s.centreVerified && <span className="badge">self-asserted</span>}
-                        </div>
-                        <div className="farmer-meta">
-                          <span>{[s.designation, s.orgName].filter(Boolean).join(" · ") || "KVIC staff"}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p className="dashboard-sub" style={{ marginTop: 10 }}>No staff claimed this centre yet — <Link to="/account">create a KVIC account</Link> to attach.</p>
-              )}
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="card">
             <h3>Clusters</h3>
             <p className="dashboard-sub">Select a cluster to view farmers and collector details.</p>
             <div className="cluster-list">
               {clusters.map((cl) => (
-                <button key={cl.id} className={`cluster-item ${selectedCluster === cl.id ? "active" : ""}`} onClick={() => setSelectedCluster(cl.id)}>
+                <button key={cl.id} className={`cluster-item ${selectedCluster === cl.id ? "active" : ""}`} onClick={() => setSelectedCluster(selectedCluster === cl.id ? null : cl.id)}>
                   <div className="cluster-item-head">
                     <strong>{cl.name}</strong>
                     <span className="badge">{cl.state}</span>
@@ -217,44 +236,43 @@ export default function MapPage() {
                 </button>
               ))}
             </div>
+            {selectedCluster && (() => {
+              const cl = clusters.find((c) => c.id === selectedCluster);
+              if (!cl) return null;
+              return (
+                <div className="inline-detail">
+                  <h3>{cl.name}</h3>
+                  <div className="detail-grid">
+                    <div className="detail-row"><span>State</span><strong>{cl.state}</strong></div>
+                    <div className="detail-row"><span>Flower source</span><strong>{cl.flower}</strong></div>
+                    <div className="detail-row"><span>Collector</span><strong>{cl.collector?.name} ({cl.collector?.org})</strong></div>
+                    <div className="detail-row"><span>Collector phone</span><strong>{cl.collector?.phone}</strong></div>
+                    <div className="detail-row"><span>Farmers in cluster</span><strong>{cl.farmers?.length || 0}</strong></div>
+                  </div>
+
+                  <h4 style={{ marginTop: 12 }}>Farmers</h4>
+                  <div className="farmer-list">
+                    {cl.farmers?.map((f, i) => (
+                      <div key={i} className="farmer-item card" style={{ padding: 10, marginBottom: 8 }}>
+                        <div className="farmer-head">
+                          <strong>{f.name}</strong>
+                          <span className="badge">{f.village}</span>
+                        </div>
+                        <div className="farmer-meta">
+                          <span>Colonies: {f.colonies}</span>
+                          <span>Phone: {f.phone}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="cluster-actions">
+                    <Link className="btn btn-primary" to="/" style={{ width: "100%", textAlign: "center" }}>Register new farmer</Link>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
-
-          {selectedCluster && (() => {
-            const cl = clusters.find((c) => c.id === selectedCluster);
-            if (!cl) return null;
-            return (
-              <div className="card cluster-detail">
-                <h3>{cl.name}</h3>
-                <div className="detail-grid">
-                  <div className="detail-row"><span>State</span><strong>{cl.state}</strong></div>
-                  <div className="detail-row"><span>Flower source</span><strong>{cl.flower}</strong></div>
-                  <div className="detail-row"><span>Collector</span><strong>{cl.collector?.name} ({cl.collector?.org})</strong></div>
-                  <div className="detail-row"><span>Collector phone</span><strong>{cl.collector?.phone}</strong></div>
-                  <div className="detail-row"><span>Farmers in cluster</span><strong>{cl.farmers?.length || 0}</strong></div>
-                </div>
-
-                <h4 style={{ marginTop: 12 }}>Farmers</h4>
-                <div className="farmer-list">
-                  {cl.farmers?.map((f, i) => (
-                    <div key={i} className="farmer-item card" style={{ padding: 10, marginBottom: 8 }}>
-                      <div className="farmer-head">
-                        <strong>{f.name}</strong>
-                        <span className="badge">{f.village}</span>
-                      </div>
-                      <div className="farmer-meta">
-                        <span>Colonies: {f.colonies}</span>
-                        <span>Phone: {f.phone}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="cluster-actions">
-                  <Link className="btn btn-primary" to="/" style={{ width: "100%", textAlign: "center" }}>Register new farmer</Link>
-                </div>
-              </div>
-            );
-          })()}
         </div>
       </div>
     </div>

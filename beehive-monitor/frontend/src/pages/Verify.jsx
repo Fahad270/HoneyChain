@@ -77,14 +77,11 @@ export default function Verify() {
 
   return (
     <div className="page-container verify-page">
-      <div className="verify-head">
-        <div className="badge" style={{ marginBottom: 6, background: "rgba(232,149,10,0.15)", color: "var(--color-primary-dark)" }}>
-          KVIC Honey Mission • National Provenance Portal
+      <div className="pagehead">
+        <div>
+          <h1>Verify</h1>
+          <p>Khadi counters + ekhadiindia.com orders · public, no login · paste the hash from the jar QR</p>
         </div>
-        <h1>Khadi Honey Verification & Traceability</h1>
-        <p className="dashboard-sub">
-          Dual-verification system supporting both physical Khadi Gramodyog Bhavans and ekhadiindia.com online fulfillment.
-        </p>
       </div>
 
       <div className="card verify-search">
@@ -225,7 +222,7 @@ export default function Verify() {
 
           {/* Innovation 3: Farmer Direct Benefit Transfer (DBT) Fair Procurement Guarantee */}
           {(data.escrow || block.beekeeper) && (
-            <div className="card" style={{ borderColor: "#854d0e", background: "linear-gradient(to right, rgba(234,179,8,0.06), rgba(22,163,74,0.04))", marginBottom: 18 }}>
+            <div className="card" style={{ borderColor: "#854d0e", background: "#FFFBEB", marginBottom: 18 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 24 }}>🌾</span>
@@ -258,7 +255,7 @@ export default function Verify() {
 
           {/* CBRTI Pune Apex Purity Certificate Badge */}
           {labBlock && (
-            <div className="card" style={{ borderColor: "#16a34a", background: "linear-gradient(to right, rgba(22,163,74,0.06), rgba(232,149,10,0.04))", marginBottom: 18 }}>
+            <div className="card" style={{ borderColor: "#16a34a", background: "#F0FDF4", marginBottom: 18 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 24 }}>🔬</span>

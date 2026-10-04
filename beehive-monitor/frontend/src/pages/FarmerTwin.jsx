@@ -70,19 +70,15 @@ export default function FarmerTwin(){
 
   return (
     <div className="page-container twin-page">
-      <div className="twin-head">
+      <div className="pagehead">
         <div>
-          <div className="ledger-kicker">Bonus — Digital Twin • Track your honey</div>
-          <h1>My Honey Twin</h1>
-          <p className="dashboard-sub">
-            Paste your genesis QR hash or pick your name. See where your honey is right now — from your hive, through the collective pool, processing and lab, to the Khadi shelf. Live on the same ledger, same chain.
-          </p>
+          <h1>My Twin</h1>
+          <p>Paste your genesis QR hash or pick your name — live on the same ledger, same chain</p>
         </div>
-        <div className="twin-role-hint">
+        <div className="actions">
           {role
-            ? <span className={`role-pill ${role}`}>{role === "beekeeper" ? "🐝 Beekeeper view" : "🏛️ KVIC view"}</span>
-            : <span className="role-pill">👁️ Public view</span>}
-          <span className="small-muted">{role ? "Tier from your login." : "Log in to log stages; tracking is public."}</span>
+            ? <span className="badge">{role === "beekeeper" ? "Beekeeper view" : "KVIC view"}</span>
+            : <span className="badge">Public view · log in to log stages</span>}
         </div>
       </div>
 
@@ -185,7 +181,7 @@ export default function FarmerTwin(){
           </div>
 
           {/* Innovation 3: Automated Direct Benefit Transfer (DBT) & Smart Escrow Payouts */}
-          <div className="card dbt-escrow-card" style={{ borderColor: "#ca8a04", background: "linear-gradient(to right, rgba(234,179,8,0.06), rgba(22,163,74,0.04))", marginBottom: 18 }}>
+          <div className="card dbt-escrow-card" style={{ borderColor: "#ca8a04", background: "#FFFBEB", marginBottom: 18 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -305,25 +301,24 @@ export default function FarmerTwin(){
 
           {/* Journey timeline */}
           <div className="twin-layout">
-            <div className="twin-timeline">
+            <div className="story">
               {journey.length===0 && <div className="card">No blocks yet. As Beekeeper, go to Ledger and add an extraction block with your genesis hash as prev. Your twin will then start moving.</div>}
               {journey.map((b,idx)=>(
-                <div key={b.hash} className={`twin-card card ${b.hash===current?.hash?"current":""} ${b.is_frozen?"frozen":""}`}>
-                  <div className="twin-card-head">
-                    <div className="twin-card-icon">{b.stage_meta?.icon}</div>
-                    <div>
-                      <div className="twin-card-stage">{b.stage_meta?.label}</div>
-                      <div className="twin-card-sub">Step {b.stage_meta?.step} • {new Date(b.createdAt).toLocaleString()} {b.collective_name?`• ${b.collective_name}`:""}</div>
+                <div key={b.hash} className={`story-item${b.prev_hashes ? " pool" : ""}`}>
+                  <div className="story-card">
+                    <span className="story-tag">{b.stage_meta?.label || b.stage} · Step {b.stage_meta?.step}{idx===journey.length-1 ? " · current" : ""}</span>
+                    <h3>{b.collective_name || (b.beekeeper ? `${b.beekeeper.name}` : b.stage_meta?.label || b.stage)}</h3>
+                    <div className="story-date">{new Date(b.createdAt).toLocaleString()}</div>
+                    <div className="hash-row" style={{ marginTop: 10 }}>
+                      <span className="hash-label">Hash</span><code className="hash-val">{b.hash}</code>
                     </div>
-                    <span className={`twin-card-pill ${idx===journey.length-1?"current":""}`}>{idx===journey.length-1?"current":"✓"}</span>
-                  </div>
-                  <div className="hash-row"><span className="hash-label">Hash</span><code className="hash-val">{b.hash}</code></div>
-                  <div className="hash-row"><span className="hash-label">Prev</span><code className="hash-val small">{b.prev_hash || (b.prev_hashes?b.prev_hashes.join(", ").slice(0,40)+"…":"genesis")}</code></div>
-                  {b.prev_hashes && <div className="twin-pooled">Pooled from {b.prev_hashes.length} farmer lots — your honey included</div>}
-                  <pre className="payload-pre">{JSON.stringify(b.data,null,2)}</pre>
-                  <div className="twin-card-actions">
-                    <Link className="btn btn-outline" to={`/ledger`}>Open ledger</Link>
-                    <Link className="btn btn-primary" to={`/verify/${b.hash}?s=${b.scan_secret}`}>Verify</Link>
+                    <div className="hash-row"><span className="hash-label">Prev</span><code className="hash-val small">{b.prev_hash || (b.prev_hashes?b.prev_hashes.join(", ").slice(0,40)+"…":"genesis")}</code></div>
+                    {b.prev_hashes && <div className="story-meta">Pooled from {b.prev_hashes.length} farmer lots — your honey included</div>}
+                    <pre className="payload-pre">{JSON.stringify(b.data,null,2)}</pre>
+                    <div className="block-actions">
+                      <Link className="btn btn-outline" to={`/ledger`}>Open ledger</Link>
+                      <Link className="btn btn-primary" to={`/verify/${b.hash}?s=${b.scan_secret}`}>Verify</Link>
+                    </div>
                   </div>
                 </div>
               ))}

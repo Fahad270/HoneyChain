@@ -4,7 +4,7 @@ import api from "../api.js";
 import { QRCodeSVG } from "qrcode.react";
 import { useRole } from "../context/RoleContext.jsx";
 import LedgerGraph from "./LedgerGraph.jsx";
-import { STAGE_LABEL, STAGE_ICON, WORKFLOW_STEPS } from "../stages.js";
+import { STAGE_LABEL, WORKFLOW_STEPS } from "../stages.js";
 import "./Ledger.css";
 
 function shortHash(h) {
@@ -165,45 +165,26 @@ export default function Ledger() {
 
   return (
     <div className="page-container ledger-page">
-      {/* Role banner from image */}
-      <div className={`card role-banner role-${role || "none"}`}>
-        <span className="role-badge">{isBeekeeper ? "🐝 Beekeeper" : isKvic ? "🏛️ KVIC" : "👁️ Public view"}</span>
+      <div className="role-line">
+        <span className="badge">{isBeekeeper ? "Beekeeper" : isKvic ? "KVIC" : "Public view"}</span>
         <span>
           {isBeekeeper
-              ? "You manage steps 1–2: registration + honey harvest. Paste your genesis QR hash, log weight / hive / flower — your collective then pools it onward. Collection, transport, processing, lab, packaging, distribution and retail freeze are handled by the KVIC network."
+              ? "You manage steps 1–2: registration + honey harvest. Paste your genesis QR hash, log weight / hive / flower — your collective then pools it onward."
               : isKvic
-                ? "You are KVIC: steps 3–8 — Cooperative/NGO collection, pooled batches, transport, processing & QC, lab certification, packaging, branding, distribution and Khadi retail. Beekeepers only do 1–2 (registration + extraction)."
-                : "You are browsing the chain read-only. Beekeepers own steps 1–2 (registration + harvest), KVIC runs steps 3–8 through retail freeze — log in with the matching account to append blocks."}
+                ? "You are KVIC: steps 3–8 — collection, pooled batches, transport, processing & QC, lab certification, packaging, distribution and Khadi retail."
+                : "You are browsing the chain read-only. Log in with the matching account to append blocks."}
         </span>
         {user && <span className="role-allowed">Allowed: {allowedStages.map((s) => stageOptions[s].split(" — ")[1]).join(" • ")}</span>}
       </div>
 
-      {/* Header */}
-      <div className="ledger-head">
+      <div className="pagehead">
         <div>
-          <div className="ledger-kicker">Honey Workflow 1 → 9 • Live on ledger</div>
-          <h1>Honey <span style={{ background: "var(--color-honey-gradient)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>Ledger</span></h1>
-          <p className="dashboard-sub">
-            Every hop is a block. First block after registration is your genesis QR — scan it to append the next hop.
-            Collective pools many farmer blocks into one (DAG), processor scans, lab scans & certifies, retail freezes.
-            Browsing is public; appending needs a logged-in beekeeper or KVIC account.
-          </p>
+          <h1>Ledger</h1>
+          <p>{blocks.length} blocks · {frozenCount} frozen · tip {tip ? `${tip.hash.slice(0, 10)}…` : "—"} · appending needs a login</p>
         </div>
-        <div className="ledger-stats">
-          <div className="ledger-stat">
-            <div className="ledger-stat-num">{blocks.length}</div>
-            <div className="ledger-stat-label">Blocks</div>
-          </div>
-          <div className="ledger-stat">
-            <div className="ledger-stat-num">{frozenCount}</div>
-            <div className="ledger-stat-label">Frozen</div>
-          </div>
-          <div className="ledger-stat">
-            <div className="ledger-stat-num ledger-stat-tip" title={tip ? tip.hash : ""}>
-              {tip ? `${tip.hash.slice(0, 10)}…` : "—"}
-            </div>
-            <div className="ledger-stat-label">Tip</div>
-          </div>
+        <div className="actions">
+          <Link className="btn btn-outline" to="/verify">Verify a jar</Link>
+          <Link className="btn btn-primary" to="/graph">Graph explorer</Link>
         </div>
       </div>
 
@@ -212,7 +193,7 @@ export default function Ledger() {
         <div className="scope-bar">
           <div className="ledger-filters">
             <button className={`filter-btn ${scope === "mine" ? "active" : ""}`} onClick={() => switchScope("mine")}>
-              {isBeekeeper ? "🍯 My honey" : "🏛️ My lots"}
+              {isBeekeeper ? "My honey" : "My lots"}
             </button>
             <button className={`filter-btn ${scope === "all" ? "active" : ""}`} onClick={() => switchScope("all")}>
               Full chain
@@ -300,82 +281,69 @@ export default function Ledger() {
             const veryFirst = idx === 0 && isGenesis && b.stage === "beekeeper_registration";
 
             return (
-              <div key={b.hash} className={`block-card card ${veryFirst ? "block-genesis" : ""} ${isFrozen ? "block-frozen" : ""}`}>
-                {veryFirst && <div className="genesis-badge">★ GENESIS • First block on ledger — beekeeper QR</div>}
-
-                <div className="block-head">
-                  <div className="block-icon" title={b.stage}>{STAGE_ICON[b.stage] || "⬡"}</div>
-                  <div className="block-title">
-                    <div className="block-stage">
-                      {STAGE_LABEL[b.stage] || b.stage}
-                      {isFrozen && <span className="status-pill status-critical" style={{ marginLeft: 8 }}>Frozen at retail</span>}
-                      {isPooled && <span className="status-pill status-warning" style={{ marginLeft: 8 }}>DAG • {b.prev_hashes.length}→1</span>}
-                    </div>
-                    <div className="block-sub">
-                      {b.collective_name ? <span className="badge">{b.collective_name}</span> : null}
-                      {b.beekeeper ? ` ${b.beekeeper.name} • ${b.beekeeper.village}` : ""}
-                      <span className="block-time">{new Date(b.createdAt).toLocaleString()}</span>
-                    </div>
+              <div key={b.hash} className={`story-item${isPooled ? " pool" : ""}`}>
+                <div className="story-card">
+                  <span className="story-tag">
+                    {veryFirst ? "★ Genesis" : STAGE_LABEL[b.stage] || b.stage} · Step {b.stage_meta?.step || "•"}
+                  </span>
+                  <h3>
+                    {b.collective_name || (b.beekeeper ? `${b.beekeeper.name} • ${b.beekeeper.village}` : STAGE_LABEL[b.stage] || b.stage)}
+                    {isFrozen && <span className="status-pill status-critical" style={{ marginLeft: 8 }}>Frozen at retail</span>}
+                    {isPooled && <span className="status-pill status-warning" style={{ marginLeft: 8 }}>DAG • {b.prev_hashes.length}→1</span>}
+                  </h3>
+                  <div className="story-date">{new Date(b.createdAt).toLocaleString()}</div>
+                  <div className="hash-row" style={{ marginTop: 10 }}>
+                    <span className="hash-label">Hash</span>
+                    <code className="hash-val">{b.hash}</code>
+                    <button className="copy-btn" onClick={async () => { try { await navigator.clipboard.writeText(b.hash); } catch { const ta = document.createElement("textarea"); ta.value = b.hash; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); } }} title="Copy">⎘</button>
                   </div>
-                  <div className="block-step-badge">Step {b.stage_meta?.step || "•"}</div>
-                </div>
-
-                <div className="block-grid">
-                  <div className="block-data">
-                    <div className="hash-row">
-                      <span className="hash-label">Hash</span>
-                      <code className="hash-val">{b.hash}</code>
-                      <button className="copy-btn" onClick={async () => { try { await navigator.clipboard.writeText(b.hash); } catch { const ta = document.createElement("textarea"); ta.value = b.hash; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); } }} title="Copy">⎘</button>
-                    </div>
-                    <div className="hash-row">
-                      <span className="hash-label">Prev</span>
-                      {isPooled ? (
-                        <div className="prev-pooled">
-                          {b.prev_hashes.map((ph) => (
-                            <code key={ph} className="hash-val small">{ph.slice(0, 16)}…</code>
-                          ))}
-                        </div>
-                      ) : (
-                        <code className="hash-val small">{b.prev_hash || "— genesis"}</code>
-                      )}
-                    </div>
-
-                    {/* Data pretty */}
-                    <div className="block-payload">
-                      <div className="payload-label">Block data</div>
-                      <pre className="payload-pre">{JSON.stringify(b.data || {}, null, 2)}</pre>
-                      {b.lab && Object.values(b.lab).some(Boolean) && (
-                        <pre className="payload-pre">lab: {JSON.stringify(b.lab, null, 2)}</pre>
-                      )}
-                      {b.qa && Object.values(b.qa).some(Boolean) && (
-                        <pre className="payload-pre">qa: {JSON.stringify(b.qa, null, 2)}</pre>
-                      )}
-                    </div>
-
-                    <div className="block-actions">
-                      <Link className="btn btn-primary" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
-                        Verify chain
-                      </Link>
-                      <button className="btn btn-outline" onClick={() => setForm((f) => ({ ...f, prev_hash: b.hash }))}>
-                        Use as prev
-                      </button>
-                      <span className="scan-hint">scan_secret: <code>{b.scan_secret}</code></span>
-                    </div>
+                  <div className="hash-row">
+                    <span className="hash-label">Prev</span>
+                    {isPooled ? (
+                      <div className="prev-pooled">
+                        {b.prev_hashes.map((ph) => (
+                          <code key={ph} className="hash-val small">{ph.slice(0, 16)}…</code>
+                        ))}
+                      </div>
+                    ) : (
+                      <code className="hash-val small">{b.prev_hash || "— genesis"}</code>
+                    )}
                   </div>
 
-                  <div className="block-qr">
+                  <div className="block-payload">
+                    <div className="payload-label">Block data</div>
+                    <pre className="payload-pre">{JSON.stringify(b.data || {}, null, 2)}</pre>
+                    {b.lab && Object.values(b.lab).some(Boolean) && (
+                      <pre className="payload-pre">lab: {JSON.stringify(b.lab, null, 2)}</pre>
+                    )}
+                    {b.qa && Object.values(b.qa).some(Boolean) && (
+                      <pre className="payload-pre">qa: {JSON.stringify(b.qa, null, 2)}</pre>
+                    )}
+                  </div>
+
+                  <div className="story-qr">
                     <div className="qr-box">
-                      <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={140} level="M" />
+                      <QRCodeSVG value={`${window.location.origin}/verify/${b.hash}?s=${b.scan_secret}`} size={110} level="M" />
                     </div>
-                    <div className="qr-caption">Scan to append next hop</div>
-                    <Link className="qr-link" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
-                      {window.location.host}/verify/{shortHash(b.hash)}?s=…
+                    <div>
+                      <div className="qr-caption">Scan to append next hop</div>
+                      <Link className="qr-link" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
+                        {window.location.host}/verify/{shortHash(b.hash)}?s=…
+                      </Link>
+                      {isFrozen && <div className="frozen-note">Frozen — no children allowed. Consumer verifies at Khadi store.</div>}
+                    </div>
+                  </div>
+
+                  <div className="block-actions">
+                    <Link className="btn btn-primary" to={`/verify/${b.hash}?s=${b.scan_secret}`}>
+                      Verify chain
                     </Link>
-                    {isFrozen && <div className="frozen-note">🔒 Frozen — no children allowed. Consumer verifies at Khadi store.</div>}
+                    <button className="btn btn-outline" onClick={() => setForm((f) => ({ ...f, prev_hash: b.hash }))}>
+                      Use as prev
+                    </button>
+                    <span className="scan-hint">scan_secret: <code>{b.scan_secret}</code></span>
                   </div>
                 </div>
-
-                {idx < filtered.length - 1 && <div className="chain-connector">↓</div>}
               </div>
             );
           })}
